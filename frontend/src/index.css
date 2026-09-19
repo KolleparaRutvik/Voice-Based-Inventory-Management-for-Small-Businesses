@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  html {
+    @apply scroll-smooth;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    @apply bg-surface-50 text-surface-900 antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-400;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-soft;
+  }
+  
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-primary-500 to-primary-700;
+  }
+  
+  .gradient-accent {
+    @apply bg-gradient-to-br from-accent-500 to-primary-600;
+  }
+  
+  .gradient-warm {
+    @apply bg-gradient-to-br from-orange-400 to-rose-500;
+  }
+  
+  .gradient-success {
+    @apply bg-gradient-to-br from-emerald-400 to-teal-500;
+  }
+  
+  /* Mic button */
+  .mic-button {
+    @apply w-16 h-16 rounded-full flex items-center justify-center text-white
+           shadow-lg transition-all duration-300 active:scale-95;
+  }
+  
+  .mic-button-ready {
+    @apply mic-button gradient-primary hover:shadow-glow;
+  }
+  
+  .mic-button-recording {
+    @apply mic-button bg-red-500 animate-mic-pulse;
+  }
+  
+  .mic-button-processing {
+    @apply mic-button bg-amber-500 animate-pulse;
+  }
+  
+  /* Status badge */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  /* Touch-friendly button */
+  .touch-btn {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center
+           rounded-xl font-medium transition-all duration-200 active:scale-95;
+  }
+  
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+  
+  /* Input field */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-surface-200 
+           bg-white text-surface-900 placeholder-surface-400
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-all duration-200;
+  }
+  
+  /* Stat card gradient borders */
+  .stat-card {
+    @apply relative overflow-hidden rounded-2xl bg-white p-5 shadow-soft
+           border border-surface-100;
+  }
+  
+  .stat-card::before {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-1 rounded-t-2xl;
+  }
+  
+  /* Quick action button */
+  .quick-action {
+    @apply flex flex-col items-center gap-2 p-4 rounded-2xl bg-white
+           border border-surface-100 shadow-sm transition-all duration-200
+           hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer;
+  }
+  
+  /* Mobile nav item */
+  .nav-item {
+    @apply flex flex-col items-center gap-1 py-2 px-3 rounded-xl
+           text-surface-400 transition-all duration-200;
+  }
+  
+  .nav-item-active {
+    @apply nav-item text-primary-600 bg-primary-50;
+  }
+  
+  /* Page container */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 lg:pb-8;
+  }
+  
+  /* Section header */
+  .section-header {
+    @apply text-lg font-semibold text-surface-800 mb-3;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600;
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
