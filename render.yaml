@@ -1,0 +1,45 @@
+services:
+  # Backend API Web Service
+  - type: web
+    name: dukaansetu-api
+    runtime: python
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT run:app --workers 2 --threads 4 --timeout 120"
+    plan: free
+    rootDir: backend
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+
+  # Frontend Static Site
+  - type: web
+    name: dukaansetu-web
+    runtime: static
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: "./dist"
+    plan: free
+    rootDir: frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: dukaansetu-api
+          property: host
