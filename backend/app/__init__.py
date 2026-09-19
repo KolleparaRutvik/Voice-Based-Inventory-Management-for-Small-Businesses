@@ -75,10 +75,22 @@ def register_error_handlers(app):
 def register_routes(app):
     """Register all route blueprints."""
 
-    # Health check
+    # Root landing and Health check
+    @app.route('/')
+    @app.route('/api')
+    def root():
+        return jsonify({
+            "name": "DukaanSetu API",
+            "status": "online",
+            "version": "1.0.0",
+            "message": "DukaanSetu backend is running successfully. Connect frontend to /api routes.",
+            "health": "/health"
+        })
+
     @app.route('/health')
+    @app.route('/api/health')
     def health():
-        return jsonify({"status": "ok"})
+        return jsonify({"status": "ok", "app": "DukaanSetu"})
 
     # Import and register blueprints
     from app.routes.auth import auth_bp
