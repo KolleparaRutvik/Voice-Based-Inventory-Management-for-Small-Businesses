@@ -47,6 +47,21 @@ Small businesses often manage inventory using physical notebooks, memory, spread
 
 ---
 
+## 🏬 Multi-Store Retail Verticals & Demo Logins
+
+DukaanSetu supports specialized retail verticals with industry-specific catalogs, trade units, and personalized multilingual voice assistants:
+
+| Store Type | Shop Name | Merchant Name | Demo Email | Password | Trade Units & Focus |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **🌾 Kirana Store** | Sri Lakshmi Kirana Store | Srinivas Rao | `srinivas@dukaansetu.com` | `password123` | kg, bag (25kg), litres, can (15L), packets, FMCG staples |
+| **💎 Jewellery Shop** | Sri Swarna Mahal Jewellers | Rajesh Varma | `jewellery@dukaansetu.com` | `password123` | grams (`g`), tolas (11.66g), pavans (8g), carats, 22K 916 gold, 24K bullion, silver, Girvi/gold loans |
+| **🌸 Flower Mart** | Sri Venkateswara Flower Mart | Anand Rao | `flowers@dukaansetu.com` | `password123` | mora, kattu/bundles, garlands/dandalu, stems, fresh perishable blooms, pooja & wedding event orders |
+
+> 💡 **1-Click Login:** Visit `/login` and click the **1-Click Explore** button on any of the 3 store cards to instantly enter that store.
+
+---
+
+
 ## 🏗️ Architecture
 
 ```mermaid
