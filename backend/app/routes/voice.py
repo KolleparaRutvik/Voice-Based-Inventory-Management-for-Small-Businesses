@@ -236,6 +236,7 @@ Kirana Trade Rules:
 - STOCK_CHECK: 'entha undi', 'kitna hai', 'stock entha', 'how much left'
 - CREDIT_CHECK: 'who owes money', 'appu evaru unnaru', 'balance entha', 'udhar kiska hai', 'how much loan does X have'
 - BUSINESS_INSIGHT / SARIPOTHUNDA: 'saripothunda', 'next week ki సరిపోతుందా', 'enough for next week'
+- FESTIVAL_DEMAND_CHECK: 'what items do i need for the festival', 'festival demand', 'dussehra items', 'diwali stock', 'pandaga items', 'sarukulu kavali', 'tyohar ka saman', 'festival ki em kavali', 'festival recommendations'
 - PURCHASE: 'order cheyyi', 'mangwa lo', 'place purchase order'
 
 Important Customer Rules:
@@ -244,7 +245,7 @@ Important Customer Rules:
 
 Return strictly a JSON object with this structure (no markdown fences, no extra text):
 {{
-    "intent": "STOCK_IN|STOCK_OUT|SALE|BORROW_OUT|BORROW_RETURN|BORROW_CLEAR|STOCK_CHECK|CREDIT_CHECK|BUSINESS_INSIGHT|PURCHASE|STOCK_ADJUST|CUSTOMER_ADD|PRODUCT_ADD|GENERAL|UNKNOWN",
+    "intent": "STOCK_IN|STOCK_OUT|SALE|BORROW_OUT|BORROW_RETURN|BORROW_CLEAR|STOCK_CHECK|CREDIT_CHECK|BUSINESS_INSIGHT|PURCHASE|STOCK_ADJUST|CUSTOMER_ADD|PRODUCT_ADD|FESTIVAL_DEMAND_CHECK|FESTIVAL_PO_CREATE|GENERAL|UNKNOWN",
     "raw_product": "Spoken product name or null",
     "raw_customer": "Spoken customer name or null",
     "raw_supplier": "Spoken supplier name or null",
@@ -388,6 +389,54 @@ Return strictly a JSON object with this structure (no markdown fences, no extra 
                 else:
                     answer = f"లేదు, {matched_prod['name']} స్టాక్ {stock_val} {stk_u} మాత్రమే ఉంది (కనీసం {min_stock} {stk_u} కావాలి). వెంటనే రీఆర్డర్ చేయడం మంచిది."
                     voice_text = f"స్టాక్ తక్కువగా ఉంది. రీఆర్డర్ చేయడం మంచిది."
+
+        elif detected_intent == 'FESTIVAL_DEMAND_CHECK':
+            from app.services.festival_service import analyze_festival_demand
+            target_fest = None
+            t_lower = transcript.lower()
+            for cand in ['diwali', 'dussehra', 'navratri', 'sankranti', 'pongal', 'ugadi', 'eid', 'ramadan', 'onam', 'ganesh', 'chaturthi', 'wedding', 'christmas', 'దసరా', 'దీపావళి', 'ఉగాది', 'दशहरा', 'दिवाली']:
+                if cand in t_lower:
+                    target_fest = cand
+                    break
+
+            fest_analysis = analyze_festival_demand(shop_id=shop_id, festival_name=target_fest, window_days=15)
+            fest = fest_analysis.get('festival')
+            if fest:
+                ev_name = fest['event']
+                d_left = fest['days_until']
+                deficits = [r for r in fest_analysis.get('recommendations', []) if r['reorder_needed']]
+                top_items_str = ", ".join([f"{r['item_name']} (+{r['deficit']} {r['base_unit']})" for r in deficits[:3]])
+                
+                seasonal = fest_analysis.get('seasonal_new_items', [])
+                seasonal_str = ", ".join([s['item_name'] for s in seasonal[:3]])
+                
+                if lang == 'te':
+                    answer = f"వచ్చే {fest.get('telugu_name') or ev_name} పండుగకి {d_left} రోజుల సమయం ఉంది. డిమాండ్ 1.8 రెట్లు పెరుగుతుంది.\n"
+                    if deficits:
+                        answer += f"స్టాక్ తక్కువగా ఉన్నవి: {top_items_str}.\n"
+                    if seasonal_str:
+                        answer += f"పండుగ సీజనల్ వస్తువులు: {seasonal_str}.\n"
+                    answer += "సప్లయర్ లీడ్ టైమ్ దృష్ట్యా ఇప్పుడే పర్చేస్ ఆర్డర్ పెట్టడం మంచిది."
+                    voice_text = f"{ev_name} పండుగకి {d_left} రోజులు సమయం ఉంది. డిమాండ్ పెరుగుతుంది, వెంటనే ఆర్డర్ పెట్టడం మంచిది."
+                elif lang == 'hi':
+                    answer = f"आने वाले {fest.get('hindi_name') or ev_name} के लिए {d_left} दिन बचे हैं। त्योहार पर 1.8 गुना मांग बढ़ेगी।\n"
+                    if deficits:
+                        answer += f"कम स्टॉक वाले सामान: {top_items_str}.\n"
+                    if seasonal_str:
+                        answer += f"मौसमी विशेष सामान: {seasonal_str}.\n"
+                    answer += "सप्लायर लीड टाइम को देखते हुए तुरंत परचेज ऑर्डर तैयार करें।"
+                    voice_text = f"{ev_name} के लिए {d_left} दिन बाकी हैं। कृपया स्टॉक तुरंत मंगाएं।"
+                else:
+                    answer = f"Upcoming {ev_name} is in {d_left} days. Demand multiplier is expected up to 1.8x.\n"
+                    if deficits:
+                        answer += f"Items needing reorder: {top_items_str}.\n"
+                    if seasonal_str:
+                        answer += f"Recommended seasonal festival items: {seasonal_str}.\n"
+                    answer += "Supplier lead time requires ordering now to prevent festival stockout."
+                    voice_text = f"{ev_name} is in {d_left} days. Demand will surge up to 1.8x. Recommended reorder: {top_items_str or 'festival staples'}."
+            else:
+                answer = "ప్రస్తుతానికి 15 రోజుల వ్యవధిలో పండుగలేవీ లేవు." if lang == 'te' else "No festivals currently in the 15-day prior alert window."
+                voice_text = answer
 
         # Mutating action confirmation prompt
         confirmation_prompt = ai_data.get('confirmation_prompt')
@@ -889,6 +938,49 @@ def execute_voice_action():
                 }).execute()
             action_summary = f"Added new product '{p_data.get('name', product_name)}' with initial stock of {init_stock} {base_u} at ₹{sell_p}."
 
+        # ---- 10. FESTIVAL PURCHASE ORDER AUTO-CREATE ----
+        elif intent == 'FESTIVAL_PO_CREATE':
+            from app.services.festival_service import analyze_festival_demand
+            fest_name = data.get('festival_name')
+            analysis = analyze_festival_demand(shop_id=shop_id, festival_name=fest_name)
+            fest = analysis.get('festival') or {}
+            event_name = fest.get('event', fest_name or 'Upcoming Festival')
+            recs = [r for r in analysis.get('recommendations', []) if r['reorder_needed']]
+            if not recs:
+                recs = analysis.get('recommendations', [])[:3]
+
+            if not recs:
+                return error_response("No festival items available to order", "NO_ITEMS", 400)
+
+            # Fetch supplier
+            supp_res = supabase.table('suppliers').select('id').eq('shop_id', shop_id).limit(1).execute()
+            supplier_id = supp_res.data[0]['id'] if supp_res.data else None
+
+            po_number = f"PO-FEST-{int(datetime.utcnow().timestamp())}"
+            total_amt = sum(float(r.get('deficit') or 10) * float(r.get('unit_price') or 100) for r in recs)
+
+            po_res = supabase.table('purchase_orders').insert({
+                'shop_id': shop_id,
+                'supplier_id': supplier_id,
+                'order_number': po_number,
+                'status': 'PENDING',
+                'total_amount': total_amt,
+                'notes': f"Voice ordered festival stock for {event_name}",
+                'created_by': user_id
+            }).execute()
+
+            po_id = po_res.data[0]['id'] if po_res.data else None
+            for r in recs:
+                supabase.table('purchase_order_items').insert({
+                    'order_id': po_id,
+                    'product_id': r.get('product_id'),
+                    'quantity': float(r.get('deficit') or 10),
+                    'unit_price': float(r.get('unit_price') or 100),
+                    'total_price': float(r.get('deficit') or 10) * float(r.get('unit_price') or 100)
+                }).execute()
+
+            action_summary = f"Created purchase order {po_number} for {len(recs)} festival items ahead of {event_name} (₹{total_amt:,.2f})."
+
         else:
             return error_response(f"Action '{intent}' is not executable", "INVALID_INTENT", 400)
 
@@ -1030,6 +1122,11 @@ def build_local_interpretation(transcript, last_prod, last_cust, facts):
         intent = 'STOCK_CHECK'
     elif any(w in lower for w in ['who owes', 'balance entha', 'udhar kiska', 'how much loan', 'loan entha', 'ఎంత బాకీ', 'ఎవరు బాకీ', 'బాకీ ఎంత', 'ఖాతా ఎంత', 'అప్పు ఎంత', 'किसका उधार', 'कितना बाकी', 'बकाया']):
         intent = 'CREDIT_CHECK'
+    elif any(w in lower for w in [
+        'festival', 'pandaga', 'tyohar', 'tyoohar', 'dussehra', 'diwali', 'navratri', 'sankranti',
+        'ugadi', 'onam', 'ramadan', 'eid', 'chaturthi', 'పండుగ', 'దసరా', 'దీపావళి', 'ఉగాది', 'त्योहार', 'दशहरा'
+    ]) and any(w in lower for w in ['demand', 'items', 'kavali', 'sarukulu', 'chahiye', 'need', 'what', 'stock', 'recommend', 'ఏమి', 'కావాలి', 'ఎంత', 'सामान', 'मंगाना', 'order']):
+        intent = 'FESTIVAL_DEMAND_CHECK'
     elif any(w in lower for w in ['order cheyyi', 'mangwa lo', 'purchase', 'ఆర్డర్ చేయి', 'మంగళో']):
         intent = 'PURCHASE'
 

@@ -2,6 +2,7 @@
 from flask import Blueprint
 from app.utils import require_auth, success_response, error_response, get_current_shop_id
 from app.utils.supabase_client import get_supabase
+from app.services.festival_service import sync_festival_notifications
 
 notifications_bp = Blueprint('notifications', __name__)
 
@@ -11,6 +12,12 @@ notifications_bp = Blueprint('notifications', __name__)
 def list_notifications():
     shop_id = get_current_shop_id()
     try:
+        # Proactively sync festival demand recommendations if within 15-day prior alert window
+        try:
+            sync_festival_notifications(shop_id=shop_id)
+        except Exception as sync_err:
+            pass
+
         supabase = get_supabase()
         result = supabase.table('notifications').select('*').eq('shop_id', shop_id).order('created_at', desc=True).limit(50).execute()
         return success_response({"items": result.data or []})

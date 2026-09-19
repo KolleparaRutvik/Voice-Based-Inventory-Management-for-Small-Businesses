@@ -274,3 +274,23 @@ export const reorderService = {
     return res.data;
   },
 };
+
+// ---- Festival Service ----
+export const festivalService = {
+  async getUpcoming(params?: { window_days?: number; reference_date?: string }) {
+    const res = await api.get<ApiResponse>('/api/festivals/upcoming', { params });
+    return res.data;
+  },
+  async getRecommendations(params?: { festival?: string; window_days?: number; reference_date?: string }) {
+    const res = await api.get<ApiResponse>('/api/festivals/recommendations', { params });
+    return res.data;
+  },
+  async syncNotifications(data?: { reference_date?: string }) {
+    const res = await api.post<ApiResponse>('/api/festivals/sync-notifications', data || {});
+    return res.data;
+  },
+  async createFestivalPo(data: { festival_name: string; items: Array<{ product_id: string; quantity: number; unit_price: number }>; supplier_id?: string }) {
+    const res = await api.post<ApiResponse>('/api/festivals/create-po', data);
+    return res.data;
+  },
+};

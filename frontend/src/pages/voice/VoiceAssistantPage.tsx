@@ -366,20 +366,22 @@ export default function VoiceAssistantPage() {
       case 'STOCK_ADJUST': return 'Adjust Stock Count';
       case 'CUSTOMER_ADD': return 'Add New Customer Profile';
       case 'PRODUCT_ADD': return 'Add New Product to Inventory';
+      case 'FESTIVAL_DEMAND_CHECK': return 'Festival Demand Surge & Recommendations';
+      case 'FESTIVAL_PO_CREATE': return 'Create Festival Purchase Order';
       default: return `Confirm ${intent.replace(/_/g, ' ')}`;
     }
   };
 
   // Quick Kirana query suggestions
   const quickSuggestions = [
+    { label: 'What items do I need for the upcoming festival?', query: 'What items do I need for the upcoming festival?' },
+    { label: 'దసరా పండుగకి ఏ సరుకులు కావాలి?', query: 'దసరా పండుగకి ఏ సరుకులు కావాలి?' },
+    { label: 'Check festival demand', query: 'Check festival demand' },
     { label: 'one person Kiran has taken a loan of 500', query: 'one person Kiran has taken a loan of 500' },
     { label: 'How much loan does Kiran have?', query: 'How much loan does Kiran have?' },
     { label: 'Clear loan of Kiran', query: 'Clear loan of Kiran' },
     { label: 'రైస్ స్టాక్ ఎంత ఉంది?', query: 'రైస్ స్టాక్ ఎంత ఉంది?' },
     { label: 'Ramesh ki 500 udhar rasi pettu', query: 'Ramesh ki 500 udhar rasi pettu' },
-    { label: '5 bags biyyam add cheyyi', query: '5 bags biyyam add cheyyi 1450 rupees' },
-    { label: 'Ramesh 200 paid chesadu', query: 'Ramesh 200 paid chesadu' },
-    { label: 'Next week ki saripothunda?', query: 'Next week ki saripothunda?' },
   ];
 
   return (
