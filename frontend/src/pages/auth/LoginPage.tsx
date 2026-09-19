@@ -100,27 +100,128 @@ export default function LoginPage() {
           <div className="w-full border-t border-white/10"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[#0f172a] px-3 text-surface-400 font-medium">Or explore instantly</span>
+          <span className="bg-[#0f172a] px-3 text-surface-400 font-medium">Or explore personalized demo stores</span>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={async () => {
-          setLoading(true);
-          try {
-            await loginAsDemo();
-            navigate('/');
-          } catch (err) {
-            setError(err instanceof Error ? err.message : 'Demo login failed');
-          } finally {
-            setLoading(false);
-          }
-        }}
-        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500/20 to-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:text-white hover:bg-emerald-500/30 font-semibold text-sm transition-all flex items-center justify-center gap-2 min-h-[48px] shadow-lg shadow-emerald-950/30"
-      >
-        <span>⚡</span> Explore Demo Store (Sri Lakshmi Kirana)
-      </button>
+      <div className="space-y-2.5 mb-6">
+        {/* Kirana Store Demo */}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await loginAsDemo('kirana');
+              navigate('/');
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'Demo login failed');
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="w-full p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-left transition-all group flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">🌾</span>
+            <div>
+              <div className="text-sm font-semibold text-emerald-300 group-hover:text-white flex items-center gap-2">
+                Sri Lakshmi Kirana Store
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-normal">Kirana</span>
+              </div>
+              <div className="text-xs text-surface-400">Rice, Dal, Oil, FMCG & Customer Udhar</div>
+            </div>
+          </div>
+          <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
+        </button>
+
+        {/* Jewellery Shop Demo */}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await loginAsDemo('jewellery');
+              navigate('/');
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'Jewellery demo login failed');
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="w-full p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-left transition-all group flex items-center justify-between shadow-lg shadow-amber-950/20"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl p-2 rounded-lg bg-amber-500/20 border border-amber-500/30">💎</span>
+            <div>
+              <div className="text-sm font-semibold text-amber-300 group-hover:text-white flex items-center gap-2">
+                Sri Swarna Mahal Jewellers
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-normal">Jewellery</span>
+              </div>
+              <div className="text-xs text-surface-400">22K Gold 916, Silver, Diamonds, Grams & Loans</div>
+            </div>
+          </div>
+          <span className="text-xs font-semibold text-amber-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
+        </button>
+
+        {/* Flower Shop Demo */}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await loginAsDemo('flowers');
+              navigate('/');
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'Flower demo login failed');
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="w-full p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-left transition-all group flex items-center justify-between shadow-lg shadow-rose-950/20"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl p-2 rounded-lg bg-rose-500/20 border border-rose-500/30">🌸</span>
+            <div>
+              <div className="text-sm font-semibold text-rose-300 group-hover:text-white flex items-center gap-2">
+                Sri Venkateswara Flower Mart
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-normal">Flowers</span>
+              </div>
+              <div className="text-xs text-surface-400">Jasmine, Marigold, Garlands, Mora & Temple Decor</div>
+            </div>
+          </div>
+          <span className="text-xs font-semibold text-rose-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
+        </button>
+      </div>
+
+      <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-surface-400">
+        <div className="font-medium text-surface-300 mb-1.5">Quick Auto-Fill Credentials:</div>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            onClick={() => { setEmail('srinivas@dukaansetu.com'); setPassword('password123'); }}
+            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-surface-300 hover:text-white transition-colors"
+          >
+            🌾 Kirana Login
+          </button>
+          <button
+            type="button"
+            onClick={() => { setEmail('jewellery@dukaansetu.com'); setPassword('password123'); }}
+            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-amber-300 hover:text-white transition-colors"
+          >
+            💎 Jewellery Login
+          </button>
+          <button
+            type="button"
+            onClick={() => { setEmail('flowers@dukaansetu.com'); setPassword('password123'); }}
+            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-rose-300 hover:text-white transition-colors"
+          >
+            🌸 Flower Login
+          </button>
+        </div>
+      </div>
 
       <p className="text-center text-surface-400 text-sm mt-6">
         Don't have an account?{' '}

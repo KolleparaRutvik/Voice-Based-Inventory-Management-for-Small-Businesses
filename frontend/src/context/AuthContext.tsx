@@ -5,7 +5,7 @@ import type { User, Shop, AuthState, LoginCredentials, RegisterData } from '../t
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
-  loginAsDemo: () => Promise<void>;
+  loginAsDemo: (storeType?: 'kirana' | 'jewellery' | 'flowers') => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -45,17 +45,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check initial session
     const initAuth = async () => {
-      if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
-        setState(prev => ({
-          ...prev,
-          token: 'demo-token-dukaansetu',
-          isAuthenticated: true,
-        }));
-        await refreshProfile();
-        return;
-      }
-
       try {
+        if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
+          const demoToken = localStorage.getItem('dukaansetu_demo_token') || 'demo-token-dukaansetu';
+          setState(prev => ({
+            ...prev,
+            token: demoToken,
+            isAuthenticated: true,
+          }));
+          await refreshProfile();
+          return;
+        }
+
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           setState(prev => ({
@@ -100,12 +101,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, [refreshProfile]);
 
-  const loginAsDemo = async () => {
+  const loginAsDemo = async (storeType: 'kirana' | 'jewellery' | 'flowers' = 'kirana') => {
     localStorage.setItem('dukaansetu_demo_mode', 'true');
-    localStorage.setItem('vyapari_demo_mode', 'true');
+    localStorage.setItem('dukaansetu_store_type', storeType);
+    const token = storeType === 'jewellery' ? 'demo-token-jewellery' : (
+      storeType === 'flowers' ? 'demo-token-flowers' : 'demo-token-dukaansetu'
+    );
+    localStorage.setItem('dukaansetu_demo_token', token);
     setState(prev => ({
       ...prev,
-      token: 'demo-token-dukaansetu',
+      token,
       isAuthenticated: true,
       isLoading: true,
     }));
@@ -113,8 +118,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (credentials: LoginCredentials) => {
+    const email = credentials.email.trim().toLowerCase();
+    // Support quick login for the specialized stores
+    if (email === 'jewellery@dukaansetu.com' || email.includes('jewel') || email.includes('swarna')) {
+      await loginAsDemo('jewellery');
+      return;
+    }
+    if (email === 'flowers@dukaansetu.com' || email.includes('flower') || email.includes('pushpa')) {
+      await loginAsDemo('flowers');
+      return;
+    }
+    if (email === 'srinivas@dukaansetu.com' || email.includes('kirana')) {
+      await loginAsDemo('kirana');
+      return;
+    }
+
     localStorage.removeItem('dukaansetu_demo_mode');
     localStorage.removeItem('vyapari_demo_mode');
+    localStorage.removeItem('dukaansetu_demo_token');
+    localStorage.removeItem('dukaansetu_store_type');
     const { data, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,

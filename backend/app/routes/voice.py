@@ -201,11 +201,17 @@ def interpret_voice():
                         if not last_customer_name:
                             last_customer_name = c['name']
 
-        # 6. Build prompt for Gemini interpretation
-        catalog_names = [f"{p['name']} (Local: {p.get('local_name', '')}, Stock: {p['current_stock']} {p['stock_unit']})" for p in products]
-        customer_names = [f"{c['name']} (Debt: ₹{customer_debt_map.get(c['id'], 0)})" for c in customers]
+        # 6. Build prompt for Gemini interpretation tailored to shop type
+        shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'kirana')
+        shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'DukaanSetu Store')
+        if shop_type == 'jewellery':
+            business_role = f"the intelligent personal assistant for '{shop_name}' (Gold & Jewellery Showroom). You specialize in 22K 916 Gold, Silver, Diamonds, units (grams, tola, pavan, carats), making charges, wastage, and gold loan/girvi accounts."
+        elif shop_type == 'flowers':
+            business_role = f"the intelligent personal assistant for '{shop_name}' (Fresh Flower Mart & Garland Store). You specialize in fresh flowers (Jasmine/Mallepoolu, Marigold/Banthi, Roses/Gulabi, Lotus/Kamalam, Chamanthi), units (mora, kattu, bundle, garland/danda, basket, kg), pooja offerings, and wedding decor."
+        else:
+            business_role = f"the intelligent business assistant for '{shop_name}' (Kirana & Retail Store)."
 
-        prompt = f"""You are 'DukaanSetu', the intelligent business assistant for an Indian Kirana store.
+        prompt = f"""You are 'DukaanSetu', {business_role}
 Analyze this voice transcript spoken by the shopkeeper. The speech may be in English, Telugu, Hindi, or mixed.
 
 Voice Command: "{transcript}"

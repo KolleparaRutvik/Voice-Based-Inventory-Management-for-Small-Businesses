@@ -90,8 +90,17 @@ def ask_assistant():
         supp_res = supabase.table('suppliers').select('id, name, phone').eq('shop_id', shop_id).execute()
         suppliers_summary = supp_res.data or []
 
-        # 5. Build prompt
-        prompt = f"""You are 'DukaanSetu', an expert Kirana & retail business AI assistant in India.
+        # 5. Build prompt tailored to shop type
+        shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'kirana')
+        shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'DukaanSetu Store')
+        if shop_type == 'jewellery':
+            advisor_role = f"an expert Jewellery & Gold Bullion AI business advisor for '{shop_name}'. You advise on gold rates, gram-level margins, bridal bookings, and customer gold loans."
+        elif shop_type == 'flowers':
+            advisor_role = f"an expert Floral & Fresh Produce AI business advisor for '{shop_name}'. You advise on fresh flower stock, garland pricing, perishable wastage prevention, and festival pooja demand."
+        else:
+            advisor_role = f"an expert Kirana & retail business AI assistant for '{shop_name}' in India."
+
+        prompt = f"""You are 'DukaanSetu', {advisor_role}
 
 The shopkeeper asked:
 "{question}"

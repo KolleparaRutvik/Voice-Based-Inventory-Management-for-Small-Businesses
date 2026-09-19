@@ -213,31 +213,47 @@ class PostgresAuth:
         self.db = db_client
 
     def get_user(self, token):
-        # Look up user in live database
-        res = self.db.table('users').select('*').limit(1).execute()
-        user = res.data[0] if res.data else None
+        # Look up user in live database based on token
+        target_email = "jewellery@dukaansetu.com" if token in ('demo-token-jewellery', 'demo-token-gold') else (
+            "flowers@dukaansetu.com" if token in ('demo-token-flowers', 'demo-token-pushpa') else "srinivas@dukaansetu.com"
+        )
+        res = self.db.table('users').select('*').eq('email', target_email).limit(1).execute()
+        user = res.data[0] if (res.data and len(res.data) > 0) else None
+        if not user:
+            res_any = self.db.table('users').select('*').limit(1).execute()
+            user = res_any.data[0] if res_any.data else None
+
         auth_id = user['auth_id'] if user else "11111111-1111-1111-1111-111111111111"
-        email = user['email'] if user else "srinivas@dukaansetu.com"
+        email = user['email'] if user else target_email
 
         user_obj = type('MockUser', (), {
             'id': auth_id,
             'email': email,
-            'user_metadata': {'full_name': user.get('full_name', 'Srinivas Kumar') if user else 'Srinivas Kumar'}
+            'user_metadata': {'full_name': user.get('full_name', 'Shopkeeper') if user else 'Shopkeeper'}
         })()
         res_obj = type('AuthResponse', (), {'user': user_obj})()
         return res_obj
 
     def sign_in_with_password(self, credentials):
-        email = credentials.get('email', '')
+        email = credentials.get('email', '').strip().lower()
         res = self.db.table('users').select('*').eq('email', email).limit(1).execute()
-        user = res.data[0] if res.data else None
-        auth_id = user['auth_id'] if user else "11111111-1111-1111-1111-111111111111"
+        user = res.data[0] if (res.data and len(res.data) > 0) else None
+
+        token = 'demo-token-jewellery' if ('jewel' in email or 'swarna' in email) else (
+            'demo-token-flowers' if ('flower' in email or 'pushpa' in email) else 'demo-token-dukaansetu'
+        )
+
+        auth_id = user['auth_id'] if user else (
+            "33333333-3333-3333-3333-333333333333" if 'jewel' in email else (
+                "44444444-4444-4444-4444-444444444444" if 'flower' in email else "11111111-1111-1111-1111-111111111111"
+            )
+        )
 
         user_obj = type('MockUser', (), {'id': auth_id, 'email': email})()
         res_obj = type('AuthResponse', (), {
             'user': user_obj,
             'session': type('Session', (), {
-                'access_token': 'demo-token-dukaansetu',
+                'access_token': token,
                 'refresh_token': 'demo-refresh-token'
             })()
         })()
