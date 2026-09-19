@@ -91,6 +91,9 @@ def register_routes(app):
     from app.routes.borrowings import borrowings_bp
     from app.routes.notifications import notifications_bp
     from app.routes.assistant import assistant_bp
+    from app.routes.reorder import reorder_bp
+    from app.routes.customers import customers_bp
+    from app.routes.orders import orders_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(products_bp, url_prefix='/api/products')
@@ -102,3 +105,6 @@ def register_routes(app):
     app.register_blueprint(borrowings_bp, url_prefix='/api/borrowings')
     app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
     app.register_blueprint(assistant_bp, url_prefix='/api/assistant')
+    app.register_blueprint(reorder_bp, url_prefix='/api/reorder')
+    app.register_blueprint(customers_bp, url_prefix='/api/customers')
+    app.register_blueprint(orders_bp, url_prefix='/api/purchase-orders')

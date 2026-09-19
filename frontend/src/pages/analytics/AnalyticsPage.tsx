@@ -69,9 +69,9 @@ export default function AnalyticsPage() {
                 <IndianRupee className="w-4 h-4 text-emerald-500" />
               </div>
               <p className="text-2xl font-black text-emerald-600">
-                ₹{(analytics?.estimated_margin || 6870).toLocaleString('en-IN')}
+                ₹{(analytics?.estimated_margin || 0).toLocaleString('en-IN')}
               </p>
-              <p className="text-xs text-surface-500">~12.4% avg retail margin</p>
+              <p className="text-xs text-surface-500">Sell value − purchase cost of inventory</p>
             </div>
 
             <div className="card p-4 space-y-2">
@@ -80,7 +80,7 @@ export default function AnalyticsPage() {
                 <AlertTriangle className="w-4 h-4 text-amber-500" />
               </div>
               <p className="text-2xl font-black text-amber-600">
-                {analytics?.low_stock_count || 1} Item
+                {analytics?.low_stock_count || 0} Item{(analytics?.low_stock_count || 0) !== 1 ? 's' : ''}
               </p>
               <p className="text-xs text-amber-700">Needs immediate reorder</p>
             </div>
@@ -91,9 +91,9 @@ export default function AnalyticsPage() {
                 <TrendingDown className="w-4 h-4 text-blue-500" />
               </div>
               <p className="text-2xl font-black text-surface-900">
-                ₹{(analytics?.borrowed_value || 1250).toLocaleString('en-IN')}
+                ₹{(analytics?.borrowed_value || 0).toLocaleString('en-IN')}
               </p>
-              <p className="text-xs text-surface-500">{analytics?.active_borrowings || 1} pending credit</p>
+              <p className="text-xs text-surface-500">{analytics?.active_borrowings || 0} pending credit</p>
             </div>
           </div>
 
@@ -147,8 +147,13 @@ export default function AnalyticsPage() {
               <h3 className="font-bold text-sm">Vyapari Voice Smart Reorder Suggestions</h3>
             </div>
             <div className="space-y-2 text-xs text-purple-950">
-              <p>• <strong>Jaggery (Bellam)</strong> is at 8 kg (minimum threshold is 20 kg). Recommended order: <strong>25 kg</strong> from Srinivas Wholesale.</p>
-              <p>• <strong>Sunflower Oil</strong> has 35 litres remaining with high weekend turnover. Consider adding 1 box (15L) before Friday.</p>
+              {(analytics?.low_stock_products || []).length > 0 ? (
+                (analytics?.low_stock_products || []).slice(0, 3).map((item: any, idx: number) => (
+                  <p key={idx}>• <strong>{item.product_name}</strong> is at {item.current_stock} {item.stock_unit} (minimum: {item.minimum_stock} {item.stock_unit}). Consider ordering more soon.</p>
+                ))
+              ) : (
+                <p>All products are above minimum stock levels. No urgent reorders needed.</p>
+              )}
             </div>
           </div>
         </>

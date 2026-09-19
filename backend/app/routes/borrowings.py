@@ -213,3 +213,67 @@ def return_borrowing(borrowing_id):
         
     except Exception as e:
         return error_response(f"Failed to process return: {str(e)}", "RETURN_ERROR", 500)
+
+
+@borrowings_bp.route('/<borrowing_id>/payment', methods=['POST'])
+@require_auth
+def record_payment(borrowing_id):
+    """Record a cash payment against a borrowing balance."""
+    shop_id = get_current_shop_id()
+    user_id = get_current_user_id()
+    data = request.get_json()
+
+    if not data or not data.get('amount'):
+        return error_response("Payment amount is required", "VALIDATION_ERROR")
+
+    amount = float(data['amount'])
+    if amount <= 0:
+        return error_response("Payment amount must be positive", "VALIDATION_ERROR")
+
+    try:
+        supabase = get_supabase()
+
+        borrowing = supabase.table('borrowings').select('*').eq('id', borrowing_id).eq('shop_id', shop_id).single().execute()
+        if not borrowing.data:
+            return error_response("Borrowing not found", "NOT_FOUND", 404)
+
+        borrow = borrowing.data
+        old_balance = float(borrow.get('remaining_balance') or borrow.get('total_value', 0))
+        old_paid = float(borrow.get('paid_amount', 0))
+
+        new_paid = old_paid + amount
+        new_balance = max(0, old_balance - amount)
+        new_status = 'RETURNED' if new_balance <= 0 else borrow['status']
+
+        supabase.table('borrowings').update({
+            'paid_amount': new_paid,
+            'remaining_balance': new_balance,
+            'status': new_status,
+        }).eq('id', borrowing_id).execute()
+
+        # Record in customer_credit ledger
+        supabase.table('customer_credit').insert({
+            'shop_id': shop_id,
+            'customer_id': borrow['customer_id'],
+            'credit_type': 'PAYMENT',
+            'amount': amount,
+            'running_balance': new_balance,
+            'reference_id': borrowing_id,
+            'notes': data.get('notes', f'Cash payment of ₹{amount}'),
+            'created_by': user_id,
+        }).execute()
+
+        # Update customer total_credit
+        cust = supabase.table('customers').select('total_credit').eq('id', borrow['customer_id']).single().execute()
+        if cust.data:
+            new_total = max(0, float(cust.data.get('total_credit', 0)) - amount)
+            supabase.table('customers').update({'total_credit': new_total}).eq('id', borrow['customer_id']).execute()
+
+        return success_response({
+            'message': f'Payment of ₹{amount} recorded',
+            'remaining_balance': new_balance,
+            'status': new_status,
+        })
+
+    except Exception as e:
+        return error_response(f"Failed to record payment: {str(e)}", "PAYMENT_ERROR", 500)

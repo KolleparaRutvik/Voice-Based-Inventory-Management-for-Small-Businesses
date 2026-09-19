@@ -1,26 +1,43 @@
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import AppLayout from './layouts/AppLayout';
 import AuthLayout from './layouts/AuthLayout';
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import ProductsPage from './pages/products/ProductsPage';
-import AddProductPage from './pages/products/AddProductPage';
-import ProductDetailPage from './pages/products/ProductDetailPage';
-import InventoryPage from './pages/inventory/InventoryPage';
-import StockInPage from './pages/inventory/StockInPage';
-import StockOutPage from './pages/inventory/StockOutPage';
-import TransactionsPage from './pages/transactions/TransactionsPage';
-import VoiceAssistantPage from './pages/voice/VoiceAssistantPage';
-import BorrowingsPage from './pages/borrowings/BorrowingsPage';
-import SuppliersPage from './pages/suppliers/SuppliersPage';
-import OrdersPage from './pages/orders/OrdersPage';
-import AnalyticsPage from './pages/analytics/AnalyticsPage';
-import NotificationsPage from './pages/notifications/NotificationsPage';
-import SettingsPage from './pages/SettingsPage';
-import MorePage from './pages/MorePage';
+
+// Route-level code splitting with React.lazy to fix initial page load lag
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ProductsPage = lazy(() => import('./pages/products/ProductsPage'));
+const AddProductPage = lazy(() => import('./pages/products/AddProductPage'));
+const ProductDetailPage = lazy(() => import('./pages/products/ProductDetailPage'));
+const InventoryPage = lazy(() => import('./pages/inventory/InventoryPage'));
+const StockInPage = lazy(() => import('./pages/inventory/StockInPage'));
+const StockOutPage = lazy(() => import('./pages/inventory/StockOutPage'));
+const TransactionsPage = lazy(() => import('./pages/transactions/TransactionsPage'));
+const VoiceAssistantPage = lazy(() => import('./pages/voice/VoiceAssistantPage'));
+const BorrowingsPage = lazy(() => import('./pages/borrowings/BorrowingsPage'));
+const SuppliersPage = lazy(() => import('./pages/suppliers/SuppliersPage'));
+const OrdersPage = lazy(() => import('./pages/orders/OrdersPage'));
+const AnalyticsPage = lazy(() => import('./pages/analytics/AnalyticsPage'));
+const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const MorePage = lazy(() => import('./pages/MorePage'));
+
+function PageLoader() {
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 space-y-3">
+      <div className="w-10 h-10 rounded-2xl gradient-primary flex items-center justify-center animate-pulse shadow-md">
+        <svg className="w-5 h-5 text-white animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+          <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+        </svg>
+      </div>
+      <p className="text-surface-500 text-xs font-medium tracking-wide">Loading page...</p>
+    </div>
+  );
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -58,36 +75,38 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Auth Routes */}
-      <Route element={<PublicRoute><AuthLayout /></PublicRoute>}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Route>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* Auth Routes */}
+        <Route element={<PublicRoute><AuthLayout /></PublicRoute>}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Route>
 
-      {/* App Routes */}
-      <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/products/new" element={<AddProductPage />} />
-        <Route path="/products/:id" element={<ProductDetailPage />} />
-        <Route path="/inventory" element={<InventoryPage />} />
-        <Route path="/stock/in" element={<StockInPage />} />
-        <Route path="/stock/out" element={<StockOutPage />} />
-        <Route path="/transactions" element={<TransactionsPage />} />
-        <Route path="/borrowings" element={<BorrowingsPage />} />
-        <Route path="/suppliers" element={<SuppliersPage />} />
-        <Route path="/orders" element={<OrdersPage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/voice" element={<VoiceAssistantPage />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/more" element={<MorePage />} />
-      </Route>
+        {/* App Routes */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/new" element={<AddProductPage />} />
+          <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/stock/in" element={<StockInPage />} />
+          <Route path="/stock/out" element={<StockOutPage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/borrowings" element={<BorrowingsPage />} />
+          <Route path="/suppliers" element={<SuppliersPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/voice" element={<VoiceAssistantPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/more" element={<MorePage />} />
+        </Route>
 
-      {/* Catch all */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Catch all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
 

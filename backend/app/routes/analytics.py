@@ -73,6 +73,35 @@ def get_dashboard():
             prod = prod_map.get(tx.get('product_id'))
             tx['product_name'] = prod['name'] if prod else 'Unknown'
         
+        # ── Fast-moving & slow-moving products (30-day sales velocity) ──
+        thirty_days_ago = (datetime.utcnow() - timedelta(days=30)).isoformat()
+        tx_30d = supabase.table('transactions').select('product_id, quantity, transaction_type').eq('shop_id', shop_id).gte('created_at', thirty_days_ago).execute()
+
+        sales_by_product = {}
+        for tx in (tx_30d.data or []):
+            if tx.get('transaction_type') in ('SALE', 'STOCK_OUT', 'BORROW_OUT'):
+                pid = tx['product_id']
+                sales_by_product[pid] = sales_by_product.get(pid, 0) + float(tx.get('quantity', 0))
+
+        # Build velocity list for all active products
+        velocity_list = []
+        for p in (prods.data or []):
+            pid = p['id']
+            total_sold = sales_by_product.get(pid, 0)
+            velocity_list.append({
+                'product_id': pid,
+                'product_name': p['name'],
+                'category': p.get('category', ''),
+                'total_sold_30d': round(total_sold, 1),
+                'avg_daily': round(total_sold / 30.0, 2),
+                'unit': p.get('base_unit', 'unit'),
+            })
+
+        # Sort by total_sold descending
+        velocity_list.sort(key=lambda x: x['total_sold_30d'], reverse=True)
+        fast_moving = velocity_list[:5]
+        slow_moving = sorted(velocity_list, key=lambda x: x['total_sold_30d'])[:5]
+
         return success_response({
             'today_sales': round(today_sales, 2),
             'today_purchases': round(today_purchases, 2),
@@ -84,9 +113,10 @@ def get_dashboard():
             'borrowed_value': round(borrowed_value, 2),
             'recent_transactions': recent_items,
             'low_stock_products': low_stock_items,
-            'fast_moving': [],  # TODO: Calculate from sales data
-            'slow_moving': [],  # TODO: Calculate from sales data
+            'fast_moving': fast_moving,
+            'slow_moving': slow_moving,
         })
         
     except Exception as e:
         return error_response(f"Failed to load dashboard: {str(e)}", "ANALYTICS_ERROR", 500)
+

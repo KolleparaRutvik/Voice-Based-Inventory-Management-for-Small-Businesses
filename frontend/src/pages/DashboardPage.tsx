@@ -44,16 +44,15 @@ export default function DashboardPage() {
         setData(result.data as DashboardData);
       }
     } catch {
-      // Fallback live data for Kirana store
       setData({
-        today_sales: 4250,
-        today_purchases: 12500,
-        inventory_value: 124500,
-        estimated_margin: 18500,
-        total_products: 8,
-        low_stock_count: 1,
-        active_borrowings: 1,
-        borrowed_value: 300,
+        today_sales: 0,
+        today_purchases: 0,
+        inventory_value: 0,
+        estimated_margin: 0,
+        total_products: 0,
+        low_stock_count: 0,
+        active_borrowings: 0,
+        borrowed_value: 0,
         recent_transactions: [],
         low_stock_products: [],
         fast_moving: [],
@@ -247,7 +246,7 @@ export default function DashboardPage() {
               <IndianRupee className="w-4 h-4 text-purple-600" />
             </div>
           </div>
-          <p className="text-xs text-surface-400 mt-2">{data?.total_products || 8} products in live DB</p>
+          <p className="text-xs text-surface-400 mt-2">{data?.total_products || 0} products in live DB</p>
         </div>
 
         {/* Low Stock Alerts */}
@@ -256,7 +255,7 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-surface-500 font-medium">{t('lowStockItems')}</p>
-              <p className="text-xl font-bold text-red-600 mt-1">{data?.low_stock_count || 1}</p>
+              <p className="text-xl font-bold text-red-600 mt-1">{data?.low_stock_count || 0}</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4 text-red-600" />
@@ -271,13 +270,13 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-surface-500 font-medium">{t('activeBorrowings')}</p>
-              <p className="text-xl font-bold text-amber-700 mt-1">{formatCurrency(data?.borrowed_value || 300)}</p>
+              <p className="text-xl font-bold text-amber-700 mt-1">{formatCurrency(data?.borrowed_value || 0)}</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center">
               <Users className="w-4 h-4 text-amber-600" />
             </div>
           </div>
-          <p className="text-xs text-surface-400 mt-2">{data?.active_borrowings || 1} pending customer(s)</p>
+          <p className="text-xs text-surface-400 mt-2">{data?.active_borrowings || 0} pending customer(s)</p>
         </div>
       </div>
 

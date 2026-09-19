@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Package, Filter, Loader2, AlertCircle } from 'lucide-react';
+import { Plus, Search, Package, Filter, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { productsService } from '../../services/api';
 import { useLanguage } from '../../context/LanguageContext';
+import { useDebounce } from '../../hooks/useDebounce';
 import type { Product } from '../../types';
 import { CATEGORIES } from '../../types';
 
@@ -11,27 +12,29 @@ export default function ProductsPage() {
   const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     loadProducts();
-  }, [search, categoryFilter]);
+  }, [debouncedSearch, categoryFilter]);
 
   const loadProducts = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const result = await productsService.getAll({ search, category: categoryFilter });
+      const result = await productsService.getAll({ search: debouncedSearch, category: categoryFilter });
       if (result.success && result.data) {
-        setProducts((result.data as { items: Product[] }).items || result.data as Product[]);
+        setProducts((result.data as { items: Product[] }).items || (result.data as Product[]) || []);
+      } else {
+        setProducts([]);
       }
-    } catch {
-      // Fallback demo data
-      setProducts([
-        { id: '1', shop_id: '', name: 'Rice (Biyyam)', local_name: 'Biyyam', category: 'Grains & Rice', base_unit: 'kg', purchase_unit: 'bag', selling_unit: 'kg', conversion_factor: 25, purchase_price: 1450, selling_price: 65, minimum_stock: 5, recommended_stock: 20, reorder_quantity: 10, is_active: true, created_at: '', updated_at: '', current_stock: 450, stock_value: 26100 },
-        { id: '2', shop_id: '', name: 'Sugar (Chakkera)', local_name: 'Chakkera', category: 'Sugar & Jaggery', base_unit: 'kg', purchase_unit: 'bag', selling_unit: 'kg', conversion_factor: 50, purchase_price: 2100, selling_price: 48, minimum_stock: 10, recommended_stock: 50, reorder_quantity: 25, is_active: true, created_at: '', updated_at: '', current_stock: 180, stock_value: 7560 },
-        { id: '3', shop_id: '', name: 'Sunflower Oil', local_name: 'Nune', category: 'Oils & Ghee', base_unit: 'litre', purchase_unit: 'can', selling_unit: 'litre', conversion_factor: 15, purchase_price: 2250, selling_price: 165, minimum_stock: 5, recommended_stock: 30, reorder_quantity: 15, is_active: true, created_at: '', updated_at: '', current_stock: 35, stock_value: 5250 },
-      ]);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to load products from database');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -108,6 +111,23 @@ export default function ProductsPage() {
               {cat}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Error Banner */}
+      {error && (
+        <div className="flex items-center justify-between p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={loadProducts}
+            className="flex items-center gap-1.5 font-semibold text-red-800 hover:underline ml-3"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry
+          </button>
         </div>
       )}
 

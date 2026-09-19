@@ -374,6 +374,18 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 );
 
 -- ============================================================
+-- PRODUCT ALIASES (regional name → product mapping)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS product_aliases (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    alias TEXT NOT NULL,
+    language TEXT DEFAULT 'te', -- te, hi, en
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================================
 -- INDEXES
 -- ============================================================
 CREATE INDEX idx_products_shop ON products(shop_id);

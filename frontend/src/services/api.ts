@@ -151,6 +151,10 @@ export const borrowingsService = {
     const res = await api.post<ApiResponse>(`/api/borrowings/${id}/return`, data);
     return res.data;
   },
+  async recordPayment(id: string, data: { amount: number; notes?: string }) {
+    const res = await api.post<ApiResponse>(`/api/borrowings/${id}/payment`, data);
+    return res.data;
+  },
 };
 
 // ---- Voice Service ----
@@ -159,6 +163,13 @@ export const voiceService = {
     const res = await api.post<ApiResponse>('/api/voice/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
+    });
+    return res.data;
+  },
+  async transcribeAudio(formData: FormData) {
+    const res = await api.post<ApiResponse>('/api/voice/transcribe', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000,
     });
     return res.data;
   },
@@ -178,11 +189,35 @@ export const voiceService = {
     const res = await api.delete<ApiResponse>(`/api/voice/${id}`);
     return res.data;
   },
+  async saveConversation(data: { user_message: string; language?: string; intent?: string; entities?: Record<string, unknown>; confirmation_status?: string }) {
+    const res = await api.post<ApiResponse>('/api/voice/save', data);
+    return res.data;
+  },
+};
+
+// ---- Customers Service ----
+export const customersService = {
+  async getAll(params?: { search?: string }) {
+    const res = await api.get<ApiResponse>('/api/customers', { params });
+    return res.data;
+  },
+  async getById(id: string) {
+    const res = await api.get<ApiResponse>(`/api/customers/${id}`);
+    return res.data;
+  },
+  async create(data: Record<string, unknown>) {
+    const res = await api.post<ApiResponse>('/api/customers', data);
+    return res.data;
+  },
+  async update(id: string, data: Record<string, unknown>) {
+    const res = await api.put<ApiResponse>(`/api/customers/${id}`, data);
+    return res.data;
+  },
 };
 
 // ---- Assistant Service ----
 export const assistantService = {
-  async query(data: { question: string }) {
+  async query(data: { question: string; conversation_history?: Array<{ role: string; content: string }>; language?: string }) {
     const res = await api.post<ApiResponse>('/api/assistant/query', data);
     return res.data;
   },
