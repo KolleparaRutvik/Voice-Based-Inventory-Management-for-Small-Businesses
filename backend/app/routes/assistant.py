@@ -200,9 +200,31 @@ def build_deterministic_answer(question, history, catalog, borrowings):
             if target_product:
                 break
 
-    # Default to first product if nothing found
-    if not target_product and catalog:
-        target_product = catalog[0]
+    # Never default to catalog[0] if no product found
+    if not target_product:
+        # Check if question is udhar / credit check first
+        if 'udhar' in q or 'credit' in q or 'ivvali' in q or 'appu' in q or 'who owes' in q:
+            if borrowings:
+                names = [f"{b['customer']} (₹{b['balance_due']:,})" for b in borrowings if b.get('balance_due', 0) > 0]
+                ans = f"బాకీ ఉన్న కస్టమర్లు: {', '.join(names[:5])}." if names else "ప్రస్తుతానికి ఎటువంటి కస్టమర్ అప్పులు బాకీ లేవు."
+            else:
+                ans = "ప్రస్తుతానికి ఎటువంటి కస్టమర్ అప్పులు బాకీ లేవు."
+            return {
+                "answer": ans,
+                "voice_text": ans,
+                "topic": "CREDIT_CHECK",
+                "language": "te",
+                "suggested_action": None
+            }
+        
+        # Product not specified
+        return {
+            "answer": "ఏ వస్తువు వివరాలు కావాలో దయచేసి చెప్పండి (ఉదాహరణకు: రైస్, షుగర్, లేదా ఆయిల్).",
+            "voice_text": "ఏ వస్తువు వివరాలు కావాలో చెప్పండి.",
+            "topic": "CLARIFICATION",
+            "language": "te",
+            "suggested_action": None
+        }
 
     # Mode 3: Next week check / saripothunda?
     if 'saripothunda' in q or 'enough' in q or 'next week' in q or 'saripoda' in q:
@@ -251,7 +273,7 @@ def build_deterministic_answer(question, history, catalog, borrowings):
     # Mode 2: Udhar / Credit check
     if 'udhar' in q or 'credit' in q or 'ivvali' in q:
         if borrowings:
-            names = [f"{b['customer']} (₹{b['balance_due']})" for b in borrowings[:3]]
+            names = [f"{b['customer']} (₹{b['balance_due']:,})" for b in borrowings[:3]]
             ans = f"బాకీ ఉన్న కస్టమర్లు: {', '.join(names)}."
         else:
             ans = "ప్రస్తుతానికి ఎటువంటి కస్టమర్ అప్పులు బాకీ లేవు."

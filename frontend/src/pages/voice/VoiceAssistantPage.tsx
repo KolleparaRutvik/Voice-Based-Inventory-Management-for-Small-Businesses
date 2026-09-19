@@ -10,83 +10,75 @@ import {
   Send,
   Sparkles,
   HelpCircle,
-  PlusCircle,
-  MinusCircle,
   AlertCircle,
   ShoppingBag,
   CheckCircle2,
+  XCircle,
   ArrowRight,
-  UserCheck
+  User,
+  Package,
+  CreditCard,
+  Layers,
+  Volume2
 } from 'lucide-react';
-import { voiceService, inventoryService, productsService, assistantService, purchaseOrdersService } from '../../services/api';
+import { voiceService, productsService, customersService } from '../../services/api';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
-import type { VoiceState, VoiceIntent, Product } from '../../types';
+import type { VoiceState, VoiceIntent, Product, Customer } from '../../types';
 
-interface ChatMessage {
+interface ChatTurn {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  topic?: string;
-  suggested_action?: {
-    action_type: 'CREATE_PURCHASE_ORDER' | 'ADD_STOCK' | 'RECORD_BORROWING';
-    product_id?: string;
-    product_name: string;
-    quantity: number;
-    unit: string;
-    supplier_id?: string;
-    customer_name?: string;
-    title: string;
-    description?: string;
-  } | null;
-  actionExecuted?: boolean;
   timestamp: string;
+  intent?: VoiceIntent | null;
+  actionExecuted?: boolean;
+  actionResult?: string;
+  clarificationCandidates?: string[];
 }
 
 export default function VoiceAssistantPage() {
   const navigate = useNavigate();
-  const { t, language, getSpeechLang } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const [activeTab, setActiveTab] = useState<'entry' | 'question'>('question');
+  const [conversationId] = useState<string>(() => `conv-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`);
   const [voiceState, setVoiceState] = useState<VoiceState>('ready');
   const [transcript, setTranscript] = useState('');
   const [manualText, setManualText] = useState('');
-  const [intent, setIntent] = useState<VoiceIntent | null>(null);
+  const [activeIntent, setActiveIntent] = useState<VoiceIntent | null>(null);
   const [error, setError] = useState('');
-  const [responseText, setResponseText] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
+  const [executingAction, setExecutingAction] = useState(false);
 
-  // Conversational Chat Stream (Modes 1, 2, 3)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+  // Edit fields for in-stream confirmation
+  const [editQty, setEditQty] = useState('');
+  const [editUnit, setEditUnit] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editCustomer, setEditCustomer] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Cached shop catalog for reference
+  const [products, setProducts] = useState<Product[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  // Conversational Stream
+  const [chatMessages, setChatMessages] = useState<ChatTurn[]>([
     {
-      id: 'welcome-1',
+      id: 'welcome-msg',
       role: 'assistant',
       content: language === 'te'
-        ? 'నమస్కారం! నేను మీ వ్యాపారి వాయిస్ అసిస్టెంట్. బియ్యం స్టాక్, అమ్మకాలు, వచ్చే వారానికి సరిపోతుందా లేదా అప్పుల వివరాలు ఏవైనా అడగవచ్చు.'
+        ? 'నమస్కారం! నేను మీ వ్యాపారి వాయిస్ అసిస్టెంట్. బియ్యం స్టాక్, అమ్మకాలు, వచ్చే వారానికి సరిపోతుందా లేదా అప్పుల వివరాలు ఏదైనా అడగవచ్చు లేదా వాయిస్ తో స్టాక్, ఉధార్ రికార్డ్ చేయవచ్చు.'
         : language === 'hi'
-        ? 'नमस्ते! मैं आपका व्यापारी वॉयस सहायक हूँ। आप स्टॉक, उधारी या अगले हफ्ते की जरूरत के बारे में पूछ सकते हैं।'
-        : 'Welcome! I am your Vyapari Voice assistant. Ask anything about stock levels, credit balances, or demand projections.',
-      topic: 'GENERAL',
+        ? 'नमस्ते! मैं आपका व्यापारी वॉयस सहायक हूँ। आप स्टॉक, उधारी, बिक्री या किसी भी Kirana कार्य के लिए बोल सकते हैं।'
+        : 'Welcome to Vyapari Voice! Speak naturally in Telugu, Hindi, or English to check stock, projection, customer udhar, or record sales and inventory.',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
 
-  // Question / Assistant Answer state
-  const [questionLoading, setQuestionLoading] = useState(false);
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
-
-  // Editable fields in confirmation modal
-  const [editQty, setEditQty] = useState('');
-  const [editUnit, setEditUnit] = useState('');
-  const [editPrice, setEditPrice] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const recognitionRef = useRef<any>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
-  // Load existing products for entity resolution
+  // Load shop products and customers on mount
   useEffect(() => {
     productsService.getAll().then(res => {
       if (res.success && res.data) {
@@ -94,423 +86,304 @@ export default function VoiceAssistantPage() {
         setProducts(list);
       }
     }).catch(() => {});
+
+    customersService.getAll().then(res => {
+      if (res.success && res.data) {
+        const list = (res.data as { items: Customer[] }).items || (res.data as Customer[]);
+        setCustomers(list);
+      }
+    }).catch(() => {});
   }, []);
 
-  // Scroll chat into view
+  // Scroll chat into view on updates
   useEffect(() => {
-    if (activeTab === 'question') {
-      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatMessages, questionLoading, activeTab]);
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages, voiceState]);
 
-  // Sync edit state when intent changes
-  useEffect(() => {
-    if (intent) {
-      setEditQty(String(intent.quantity || 1));
-      setEditUnit(intent.unit || 'kg');
-      setEditPrice(String(intent.price || 0));
-    }
-  }, [intent]);
-
-  // Text-to-Speech audio reader
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window) {
+  // Language-aware Text-to-Speech
+  const speakText = useCallback((text: string, langCode?: string) => {
+    if ('speechSynthesis' in window && text) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = getSpeechLang();
+      // Map detected language
+      if (langCode === 'te' || (!langCode && language === 'te')) {
+        utterance.lang = 'te-IN';
+      } else if (langCode === 'hi' || (!langCode && language === 'hi')) {
+        utterance.lang = 'hi-IN';
+      } else {
+        utterance.lang = 'en-IN';
+      }
       utterance.rate = 0.95;
       window.speechSynthesis.speak(utterance);
     }
-  };
+  }, [language]);
 
-  // Handle Conversational Multi-Turn Query (Modes 1, 2, 3)
-  const handleAskQuestion = async (queryText: string) => {
+  // ---- UNIFIED VOICE PIPELINE ----
+  // Step 1: Process text transcript (either from audio STT or typed input)
+  const processTranscript = async (queryText: string) => {
     if (!queryText.trim()) return;
-    setTranscript(queryText);
-    setQuestionLoading(true);
+    setVoiceState('understanding');
     setError('');
 
-    const userMsg: ChatMessage = {
+    const userTurn: ChatTurn = {
       id: `user-${Date.now()}`,
       role: 'user',
       content: queryText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    // Update stream with user question
-    const updatedHistory = [...chatMessages, userMsg];
+    const updatedHistory = [...chatMessages, userTurn];
     setChatMessages(updatedHistory);
 
     try {
-      // Format history for backend API context preservation
-      const apiHistory = updatedHistory.slice(-8).map(m => ({
+      // Format history for context preservation (send last 6 turns)
+      const apiHistory = updatedHistory.slice(-6).map(m => ({
         role: m.role,
         content: m.content
       }));
 
-      const res = await assistantService.query({
-        question: queryText,
+      const res = await voiceService.interpret({
+        transcript: queryText,
         conversation_history: apiHistory,
-        language
+        language,
+        conversation_id: conversationId
       });
 
-      if (res.success && res.data) {
-        const data = res.data as any;
-        const botMsg: ChatMessage = {
+      if (!res.success || !res.data) {
+        throw new Error(res.error?.message || 'Failed to interpret speech');
+      }
+
+      const intentData = res.data as VoiceIntent;
+      setActiveIntent(intentData);
+
+      // Pre-fill editable confirmation fields
+      setEditQty(intentData.quantity ? String(intentData.quantity) : '1');
+      setEditUnit(intentData.unit || 'unit');
+      setEditPrice(intentData.price ? String(intentData.price) : '0');
+      setEditCustomer(intentData.customer_name || '');
+      setIsEditing(false);
+
+      if (intentData.clarification_needed) {
+        // Ambiguity: Ask clarification without mutating
+        setVoiceState('ready');
+        const clarifyTurn: ChatTurn = {
           id: `asst-${Date.now()}`,
           role: 'assistant',
-          content: data.answer || 'Stock data checked successfully.',
-          topic: data.topic,
-          suggested_action: data.suggested_action,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          content: intentData.confirmation_prompt || "I found multiple matching items. Please choose one:",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          clarificationCandidates: intentData.ambiguous_candidates
         };
-        setChatMessages(prev => [...prev, botMsg]);
+        setChatMessages(prev => [...prev, clarifyTurn]);
+        speakText(clarifyTurn.content, intentData.language);
 
-        const speechMsg = data.voice_text || data.answer;
-        speakText(speechMsg);
+      } else if (intentData.confirmation_required) {
+        // Mutating action requiring confirmation
+        setVoiceState('confirming');
+        const confirmTurn: ChatTurn = {
+          id: `asst-confirm-${Date.now()}`,
+          role: 'assistant',
+          content: intentData.confirmation_prompt || `Should I record this ${intentData.intent}?`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          intent: intentData
+        };
+        setChatMessages(prev => [...prev, confirmTurn]);
+        speakText(confirmTurn.content, intentData.language);
 
-        // Persist conversation to database
-        voiceService.saveConversation({
-          user_message: queryText,
-          language,
-          intent: data.topic || 'GENERAL',
-          entities: data.suggested_action ? { suggested_action: data.suggested_action } : {},
-          confirmation_status: 'CONFIRMED',
-        }).catch(() => {}); // Non-blocking save
       } else {
-        throw new Error('Could not analyze question with database');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Assistant query failed');
-    } finally {
-      setQuestionLoading(false);
-      setVoiceState('ready');
-    }
-  };
-
-  // Execute 1-Click Action Card Suggested by AI
-  const handleExecuteAction = async (msgId: string, action: ChatMessage['suggested_action']) => {
-    if (!action) return;
-    setActionLoadingId(msgId);
-
-    try {
-      if (action.action_type === 'CREATE_PURCHASE_ORDER') {
-        const prod = products.find(p => p.id === action.product_id || p.name === action.product_name) || products[0];
-        await purchaseOrdersService.create({
-          supplier_id: action.supplier_id || prod?.supplier_id || 's1',
-          product_id: prod.id,
-          quantity: action.quantity || 10,
-          unit: action.unit || prod.base_unit || 'bag',
-          unit_price: prod.purchase_price || 1200,
-          notes: `Created via Vyapari Voice Assistant Action: ${action.title}`
-        });
-
-        // Mark executed
-        setChatMessages(prev => prev.map(m => m.id === msgId ? { ...m, actionExecuted: true } : m));
-
-        const confMsg: ChatMessage = {
-          id: `asst-conf-${Date.now()}`,
+        // Direct answer for informational inquiries (STOCK_CHECK, CREDIT_CHECK, etc.)
+        setVoiceState('completed');
+        const answerText = intentData.answer || intentData.voice_text || 'Completed.';
+        const answerTurn: ChatTurn = {
+          id: `asst-${Date.now()}`,
           role: 'assistant',
-          content: language === 'te'
-            ? `ఆర్డర్ సృష్టించబడింది! ${action.quantity} ${action.unit} ${action.product_name} కోసం పర్చేజ్ ఆర్డర్ రూపొందించబడింది.`
-            : `Purchase order created! Successfully placed order for ${action.quantity} ${action.unit} of ${action.product_name}.`,
+          content: answerText,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
-        setChatMessages(prev => [...prev, confMsg]);
-        speakText(confMsg.content);
-      } else if (action.action_type === 'ADD_STOCK') {
-        const prod = products.find(p => p.id === action.product_id || p.name === action.product_name) || products[0];
-        await inventoryService.stockIn({
-          product_id: prod.id,
-          quantity: action.quantity,
-          unit: action.unit || prod.base_unit,
-          price: prod.purchase_price || 0,
-          notes: 'Voice Action Execution'
-        });
+        setChatMessages(prev => [...prev, answerTurn]);
+        speakText(intentData.voice_text || answerText, intentData.language);
 
-        setChatMessages(prev => prev.map(m => m.id === msgId ? { ...m, actionExecuted: true } : m));
-
-        const confMsg: ChatMessage = {
-          id: `asst-conf-${Date.now()}`,
-          role: 'assistant',
-          content: `Stock updated! Added ${action.quantity} ${action.unit} of ${action.product_name}.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        setChatMessages(prev => [...prev, confMsg]);
-        speakText(confMsg.content);
+        // Save conversation log
+        voiceService.saveConversation({
+          conversation_id: conversationId,
+          speaker: 'assistant',
+          transcript: queryText,
+          response_text: answerText,
+          language: intentData.language || language,
+          intent: intentData.intent,
+          confidence: intentData.confidence || 0.95,
+          confirmation_status: 'CONFIRMED'
+        }).catch(() => {});
       }
+
     } catch (err: any) {
-      alert('Action execution error: ' + (err?.message || 'Server failed'));
-    } finally {
-      setActionLoadingId(null);
+      setError(err?.message || 'Failed to understand voice command');
+      setVoiceState('error');
     }
   };
 
-  // Handle Voice Command / Stock Entry (Pillars 2 & 4)
-  const processStockTranscript = async (text: string) => {
-    if (!text.trim()) return;
-    setTranscript(text);
-    setVoiceState('understanding');
+  // Step 2: Execute Confirmed Action
+  const handleConfirmAction = async (targetIntent: VoiceIntent) => {
+    setExecutingAction(true);
+    setVoiceState('executing');
     setError('');
 
-    const lower = text.toLowerCase();
-    const isQuestion = lower.includes('entha') || lower.includes('undi') || lower.includes('how much') ||
-      lower.includes('kitna') || lower.includes('baki') || lower.includes('stock?') || lower.includes('stock ?') ||
-      lower.includes('who owes') || lower.includes('low stock') || lower.includes('saripothunda') || lower.includes('enough');
-
-    if (activeTab === 'question' || isQuestion) {
-      setActiveTab('question');
-      setVoiceState('ready');
-      await handleAskQuestion(text);
-      return;
-    }
-
     try {
-      const res = await voiceService.interpret({ transcript: text, language });
-      const intentData = (res.data as any)?.intent;
-      if (res.success && intentData) {
-        const parsed = intentData;
-        const mappedIntent: VoiceIntent = {
-          intent: parsed.intent || 'STOCK_IN',
-          product: parsed.canonical_name || parsed.product_name || parsed.product || 'Rice (Biyyam)',
-          quantity: Number(parsed.quantity) || 5,
-          unit: parsed.unit || 'bag',
-          price: Number(parsed.unit_price || parsed.price) || 0,
-          supplier: parsed.supplier_name || parsed.supplier,
-          customer: parsed.customer_name || parsed.customer,
-          confidence: Number(parsed.confidence) || 0.95,
-        };
-        setIntent(mappedIntent);
-        setVoiceState('confirming');
-      } else {
-        throw new Error('Could not determine intent from voice');
-      }
-    } catch {
-      // Fallback intent resolution with alias matching
-      let detectedIntent: VoiceIntent['intent'] = 'STOCK_IN';
-      let prodName = 'Rice (Biyyam)';
-      let qty = 5;
-      let unit = 'bag';
+      const finalQty = Number(editQty) || targetIntent.quantity || 1;
+      const finalUnit = editUnit || targetIntent.unit || 'unit';
+      const finalPrice = Number(editPrice) || targetIntent.price || 0;
+      const finalCustomer = editCustomer || targetIntent.customer_name;
+      const finalAmount = targetIntent.amount || (finalQty * finalPrice);
 
-      if (lower.includes('sold') || lower.includes('ammad') || lower.includes('remove') || lower.includes('theesi') || lower.includes('becha')) {
-        detectedIntent = 'STOCK_OUT';
-      } else if (lower.includes('icha') || lower.includes('borrow') || lower.includes('udhar')) {
-        detectedIntent = 'BORROW_OUT';
+      const payload = {
+        intent: targetIntent.intent,
+        product_id: targetIntent.product_id,
+        customer_id: targetIntent.customer_id,
+        customer_name: finalCustomer,
+        phone: targetIntent.phone,
+        supplier_id: targetIntent.supplier_id,
+        quantity: finalQty,
+        unit: finalUnit,
+        price: finalPrice,
+        amount: finalAmount,
+        notes: `Voice verified: ${targetIntent.transcript || transcript}`,
+        conversation_id: conversationId,
+        transcript: targetIntent.transcript || transcript
+      };
+
+      const res = await voiceService.execute(payload);
+      if (!res.success || !res.data) {
+        throw new Error(res.error?.message || 'Failed to execute database action');
       }
 
-      if (lower.includes('sugar') || lower.includes('chakkera') || lower.includes('chini')) prodName = 'Sugar (Chakkera)';
-      else if (lower.includes('oil') || lower.includes('nune') || lower.includes('tel')) { prodName = 'Sunflower Oil (Nune)'; unit = 'litre'; }
-      else if (lower.includes('dal') || lower.includes('pappu')) prodName = 'Toor Dal (Kandi Pappu)';
-      else if (lower.includes('biscuit') || lower.includes('parle')) { prodName = 'Parle-G Biscuits'; unit = 'packet'; }
-      else if (lower.includes('tea') || lower.includes('chai')) { prodName = 'Red Label Tea'; unit = 'packet'; }
-      else if (lower.includes('bellam') || lower.includes('jaggery') || lower.includes('gud')) { prodName = 'Jaggery (Bellam)'; unit = 'kg'; }
+      const resData = res.data as { message: string; transaction_id?: string };
+      setVoiceState('completed');
 
-      const numMatch = lower.match(/\d+/);
-      if (numMatch) qty = parseInt(numMatch[0]);
+      // Update message stream with execution success
+      const successTurn: ChatTurn = {
+        id: `asst-success-${Date.now()}`,
+        role: 'assistant',
+        content: resData.message || 'Action executed successfully in database!',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        actionExecuted: true,
+        actionResult: resData.message
+      };
 
-      setIntent({
-        intent: detectedIntent,
-        product: prodName,
-        quantity: qty,
-        unit,
-        confidence: 0.92,
-      });
-      setVoiceState('confirming');
+      setChatMessages(prev => [...prev, successTurn]);
+      speakText(resData.message, targetIntent.language);
+      setActiveIntent(null);
+
+    } catch (err: any) {
+      setError(err?.message || 'Database execution failed');
+      setVoiceState('error');
+    } finally {
+      setExecutingAction(false);
     }
   };
 
-  // Start Voice Recording with Web Speech API & MediaRecorder Fallback
-  const startRecording = useCallback(() => {
+  // Step 3: Cancel Action
+  const handleCancelAction = () => {
+    setActiveIntent(null);
+    setVoiceState('ready');
+    const cancelMsg: ChatTurn = {
+      id: `asst-cancel-${Date.now()}`,
+      role: 'assistant',
+      content: language === 'te' ? 'సరే, ఏ చర్య చేపట్టబడలేదు.' : 'Action cancelled. Nothing was modified in database.',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChatMessages(prev => [...prev, cancelMsg]);
+    speakText(cancelMsg.content);
+  };
+
+  // Step 4: Microphone Recording via MediaRecorder (Primary Multilingual STT Pipeline)
+  const startRecording = useCallback(async () => {
     setError('');
     setTranscript('');
-    setIntent(null);
-    setResponseText('');
+    setActiveIntent(null);
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      try {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = getSpeechLang();
-
-        recognition.onstart = () => {
-          setVoiceState('listening');
-        };
-
-        recognition.onresult = (event: any) => {
-          const spoken = event.results[0][0].transcript;
-          if (activeTab === 'question') {
-            handleAskQuestion(spoken);
-          } else {
-            processStockTranscript(spoken);
-          }
-        };
-
-        recognition.onerror = () => {
-          fallbackMediaRecorder();
-        };
-
-        recognition.onend = () => {
-          if (voiceState === 'listening') {
-            setVoiceState('processing');
-          }
-        };
-
-        recognitionRef.current = recognition;
-        recognition.start();
-        return;
-      } catch {
-        fallbackMediaRecorder();
-      }
-    } else {
-      fallbackMediaRecorder();
-    }
-  }, [voiceState, activeTab, language]);
-
-  // Server-Side Audio Recording & Multimodal Transcription
-  const fallbackMediaRecorder = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       mediaRecorderRef.current = mediaRecorder;
-      chunksRef.current = [];
+      audioChunksRef.current = [];
 
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
       };
 
       mediaRecorder.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
-        setVoiceState('processing');
-
-        if (chunksRef.current.length > 0) {
-          try {
-            const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'speech.webm');
-
-            const trRes = await voiceService.transcribeAudio(formData);
-            if (trRes.success && (trRes.data as any)?.transcript) {
-              const transcribedText = (trRes.data as any).transcript;
-              if (activeTab === 'question') {
-                await handleAskQuestion(transcribedText);
-              } else {
-                await processStockTranscript(transcribedText);
-              }
-              return;
-            }
-          } catch (sttErr) {
-            console.warn('Server STT fallback:', sttErr);
-          }
+        stream.getTracks().forEach(track => track.stop());
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        if (audioBlob.size < 500) {
+          setVoiceState('ready');
+          setError("Audio was too short. Please hold or click mic, speak clearly, then finish.");
+          return;
         }
 
-        // Graceful backup query
-        if (activeTab === 'question') {
-          handleAskQuestion('రైస్ స్టాక్ ఎంత ఉంది?');
-        } else {
-          processStockTranscript('5 bags biyyam add cheyyi 1450 rupees');
+        setVoiceState('processing');
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.webm');
+
+        try {
+          const res = await voiceService.transcribeAudio(formData);
+          if (res.success && res.data) {
+            const spokenText = (res.data as { transcript: string }).transcript;
+            setTranscript(spokenText);
+            await processTranscript(spokenText);
+          } else {
+            throw new Error(res.error?.message || "I couldn't understand the audio. Please try speaking again.");
+          }
+        } catch (sttErr: any) {
+          setError(sttErr?.message || "Voice recognition error. Please try again.");
+          setVoiceState('error');
         }
       };
 
       mediaRecorder.start();
       setVoiceState('listening');
     } catch {
-      setError('Microphone access not granted. You can type or tap the quick command chips below!');
-      setVoiceState('ready');
-    }
-  };
-
-  const stopRecording = useCallback(() => {
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch {}
-    }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.stop();
-    }
-    setVoiceState('processing');
-  }, []);
-
-  // Human Confirmation Action Execution (Pillar 2)
-  const handleConfirm = async () => {
-    if (!intent) return;
-    setVoiceState('processing');
-
-    try {
-      const targetProd = products.find(p =>
-        p.name.toLowerCase().includes((intent.product || '').toLowerCase()) ||
-        (p.local_name && p.local_name.toLowerCase().includes((intent.product || '').toLowerCase()))
-      ) || products[0];
-
-      const prodId = targetProd ? targetProd.id : '55555555-0000-0000-0000-000000000001';
-      const prodName = targetProd ? targetProd.name : (intent.product || 'Product');
-      const finalQty = Number(editQty) || intent.quantity;
-      const finalUnit = editUnit || intent.unit || targetProd?.base_unit || 'kg';
-      const finalPrice = Number(editPrice) || intent.price || (targetProd?.purchase_price || 0);
-
-      if (intent.intent === 'STOCK_IN' || intent.intent === 'PURCHASE') {
-        await inventoryService.stockIn({
-          product_id: prodId,
-          quantity: finalQty,
-          unit: finalUnit,
-          price: finalPrice,
-          notes: `Voice: ${transcript}`,
-        });
-        const msg = language === 'te'
-          ? `పూర్తయింది! ${prodName} స్టాక్ లో ${finalQty} ${finalUnit} చేర్చబడ్డాయి.`
-          : language === 'hi'
-          ? `दर्ज हुआ! ${prodName} के स्टॉक में ${finalQty} ${finalUnit} जोड़ दिए गए।`
-          : `Done! Added ${finalQty} ${finalUnit} of ${prodName} to inventory.`;
-        setResponseText(msg);
-        speakText(msg);
-      } else if (intent.intent === 'STOCK_OUT' || intent.intent === 'SALE') {
-        await inventoryService.stockOut({
-          product_id: prodId,
-          quantity: finalQty,
-          unit: finalUnit,
-          price: finalPrice,
-          notes: `Voice: ${transcript}`,
-        });
-        const msg = language === 'te'
-          ? `సేల్ రికార్డ్ అయింది! ${finalQty} ${finalUnit} ${prodName} స్టాక్ నుండి తీసివేయబడ్డాయి.`
-          : language === 'hi'
-          ? `बिक्री दर्ज हुई! ${finalQty} ${finalUnit} ${prodName} स्टॉक से घटा दिया गया।`
-          : `Recorded! Removed ${finalQty} ${finalUnit} of ${prodName} from stock.`;
-        setResponseText(msg);
-        speakText(msg);
-      } else {
-        const msg = `Recorded action: ${intent.intent} for ${prodName}.`;
-        setResponseText(msg);
-        speakText(msg);
-      }
-
-      setVoiceState('completed');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update inventory in database');
+      setError("Microphone access blocked or not supported in browser. Please check microphone permissions.");
       setVoiceState('error');
     }
+  }, [language, chatMessages]);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setVoiceState('processing');
+    }
+  }, []);
+
+  // Helper for user-friendly action labels
+  const getIntentLabel = (intent: string) => {
+    switch (intent) {
+      case 'BORROW_OUT': return 'Record Loan / Udhar Given';
+      case 'BORROW_RETURN': return 'Record Udhar Repayment';
+      case 'BORROW_CLEAR': return 'Clear / Settle Full Loan';
+      case 'STOCK_IN': return 'Add Stock (Stock In)';
+      case 'STOCK_OUT': return 'Deduct Stock (Sale)';
+      case 'STOCK_ADJUST': return 'Adjust Stock Count';
+      case 'CUSTOMER_ADD': return 'Add New Customer Profile';
+      case 'PRODUCT_ADD': return 'Add New Product to Inventory';
+      default: return `Confirm ${intent.replace(/_/g, ' ')}`;
+    }
   };
 
-  // Sample Telugu / Hindi / English Questions
-  const questionSuggestions = [
-    { text: 'రైస్ స్టాక్ ఎంత ఉంది?', lang: 'te' },
-    { text: 'వచ్చే వారానికి సరిపోతుందా?', lang: 'te' },
-    { text: 'ఎవరెవరు అప్పు ఉన్నారు?', lang: 'te' },
-    { text: 'चावल का स्टॉक कितना है?', lang: 'hi' },
-    { text: 'How much Sugar is left?', lang: 'en' },
-    { text: 'Will oil stock last next week?', lang: 'en' },
-  ];
-
-  // Sample Stock Entry Commands
-  const entrySuggestions = [
-    { text: '5 basthalu biyyam add cheyyi 1450 rupees', intent: 'STOCK_IN' },
-    { text: '10 packets Parle-G sold', intent: 'STOCK_OUT' },
-    { text: 'Ramesh ki 200 udhar rasi pettu', intent: 'BORROW_OUT' },
-    { text: '10 kg Sugar add cheyyi', intent: 'STOCK_IN' },
+  // Quick Kirana query suggestions
+  const quickSuggestions = [
+    { label: 'one person Kiran has taken a loan of 500', query: 'one person Kiran has taken a loan of 500' },
+    { label: 'How much loan does Kiran have?', query: 'How much loan does Kiran have?' },
+    { label: 'Clear loan of Kiran', query: 'Clear loan of Kiran' },
+    { label: 'రైస్ స్టాక్ ఎంత ఉంది?', query: 'రైస్ స్టాక్ ఎంత ఉంది?' },
+    { label: 'Ramesh ki 500 udhar rasi pettu', query: 'Ramesh ki 500 udhar rasi pettu' },
+    { label: '5 bags biyyam add cheyyi', query: '5 bags biyyam add cheyyi 1450 rupees' },
+    { label: 'Ramesh 200 paid chesadu', query: 'Ramesh 200 paid chesadu' },
+    { label: 'Next week ki saripothunda?', query: 'Next week ki saripothunda?' },
   ];
 
   return (
-    <div className="page-container pt-4 space-y-4 animate-fade-in max-w-4xl mx-auto pb-16">
+    <div className="page-container pt-3 space-y-4 animate-fade-in max-w-4xl mx-auto pb-16">
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-surface-200">
         <div className="flex items-center gap-3">
@@ -520,50 +393,20 @@ export default function VoiceAssistantPage() {
           <div>
             <h2 className="text-xl font-bold text-surface-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary-600 animate-pulse" />
-              <span>{t('appName')}</span>
+              <span>{t('appName')} Assistant</span>
             </h2>
-            <p className="text-xs text-surface-500">Live Voice AI • Telugu, Hindi & English</p>
+            <p className="text-xs text-surface-500">
+              {products.length > 0 ? `${products.length} products • ${customers.length} customers • Live DB` : 'Unified Voice AI • Telugu, Hindi & English'}
+            </p>
           </div>
         </div>
-
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex rounded-xl bg-surface-100 p-1">
-        <button
-          onClick={() => { setActiveTab('question'); setVoiceState('ready'); }}
-          className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'question'
-              ? 'bg-white text-primary-700 shadow-xs'
-              : 'text-surface-600 hover:text-surface-900'
-          }`}
-        >
-          <HelpCircle className="w-4 h-4 text-primary-500" />
-          <span>Smart Assistant (Ask Anything)</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab('entry'); setVoiceState('ready'); }}
-          className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'entry'
-              ? 'bg-white text-primary-700 shadow-xs'
-              : 'text-surface-600 hover:text-surface-900'
-          }`}
-        >
-          <PlusCircle className="w-4 h-4 text-emerald-500" />
-          <span>Stock & Udhar Voice Entry</span>
-        </button>
-      </div>
-
-      {/* Voice Status State Visualizer Card */}
-      <div className="card p-5 text-center flex flex-col items-center justify-center space-y-3 bg-gradient-to-b from-white to-surface-50/50">
-        <p className="text-xs font-bold uppercase tracking-wider text-surface-400">
-          {voiceState === 'listening' ? 'Active Recording' : 'Microphone Status'}
-        </p>
-
-        {/* Microphone Button with States */}
+      {/* Primary Unified Microphone Controller */}
+      <div className="card p-5 text-center flex flex-col items-center justify-center space-y-3 bg-gradient-to-b from-white to-surface-50/50 shadow-xs border border-surface-200">
         <div className="relative">
           {voiceState === 'listening' && (
             <div className="absolute inset-0 rounded-full bg-red-400 animate-ping opacity-60 pointer-events-none scale-125" />
@@ -571,10 +414,11 @@ export default function VoiceAssistantPage() {
 
           <button
             onClick={voiceState === 'listening' ? stopRecording : startRecording}
-            className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-95 ${
+            disabled={voiceState === 'processing' || voiceState === 'understanding' || voiceState === 'executing'}
+            className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-95 disabled:opacity-60 ${
               voiceState === 'listening'
                 ? 'bg-red-500 text-white ring-4 ring-red-300 animate-pulse'
-                : voiceState === 'processing' || voiceState === 'understanding'
+                : voiceState === 'processing' || voiceState === 'understanding' || voiceState === 'executing'
                 ? 'bg-amber-500 text-white'
                 : voiceState === 'confirming'
                 ? 'bg-primary-600 text-white'
@@ -582,10 +426,11 @@ export default function VoiceAssistantPage() {
                 ? 'bg-emerald-500 text-white'
                 : 'gradient-primary text-white hover:opacity-95 ring-4 ring-primary-100'
             }`}
+            title="Tap to speak in Telugu, Hindi or English"
           >
             {voiceState === 'listening' ? (
               <MicOff className="w-9 h-9" />
-            ) : voiceState === 'processing' || voiceState === 'understanding' ? (
+            ) : voiceState === 'processing' || voiceState === 'understanding' || voiceState === 'executing' ? (
               <Loader2 className="w-9 h-9 animate-spin" />
             ) : voiceState === 'completed' ? (
               <Check className="w-9 h-9" />
@@ -595,24 +440,27 @@ export default function VoiceAssistantPage() {
           </button>
         </div>
 
-        {/* State Label & Guidance */}
+        {/* State Label */}
         <div className="space-y-0.5">
           <p className="text-sm font-bold text-surface-800">
-            {voiceState === 'listening' && 'Listening to you... Speak now'}
-            {voiceState === 'processing' && 'Processing speech...'}
-            {voiceState === 'understanding' && 'Understanding with Supabase reality...'}
-            {voiceState === 'confirming' && 'Review & Confirm Action'}
-            {voiceState === 'completed' && 'Completed successfully!'}
+            {voiceState === 'listening' && 'Listening... Speak in Telugu, Hindi, or English'}
+            {voiceState === 'processing' && 'Transcribing spoken audio with Gemini AI...'}
+            {voiceState === 'understanding' && 'Analyzing Kirana intent & database facts...'}
+            {voiceState === 'confirming' && 'Review & Confirm Action below'}
+            {voiceState === 'executing' && 'Executing update in Supabase PostgreSQL...'}
+            {voiceState === 'completed' && 'Action completed successfully!'}
             {voiceState === 'ready' && 'Tap mic to speak (Telugu / Hindi / English)'}
-            {voiceState === 'error' && 'Error occurred. Tap mic to retry'}
+            {voiceState === 'error' && 'Voice processing error. Tap mic to retry'}
           </p>
           <p className="text-xs text-surface-400">
-            {voiceState === 'listening' ? 'Click again or pause to finish recording' : 'Works with Kirana terms: biyyam, chakkera, nune, udhar, saripothunda'}
+            {voiceState === 'listening'
+              ? 'Click again when done speaking'
+              : 'Works with Kirana terms: biyyam, chakkera, nune, udhar, saripothunda'}
           </p>
         </div>
       </div>
 
-      {/* ERROR BANNER */}
+      {/* Error Banner */}
       {error && (
         <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 animate-shake">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -620,292 +468,264 @@ export default function VoiceAssistantPage() {
         </div>
       )}
 
-      {/* TAB 1: CONVERSATIONAL ASSISTANT STREAM (Modes 1, 2, 3) */}
-      {activeTab === 'question' && (
-        <div className="space-y-4">
-          {/* Chat Stream Window */}
-          <div className="card p-4 h-[380px] overflow-y-auto space-y-3 bg-surface-50/40 border-surface-200">
-            {chatMessages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} space-y-1 animate-fade-in`}
-              >
-                <div
-                  className={`max-w-[85%] sm:max-w-[75%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
-                    msg.role === 'user'
-                      ? 'bg-primary-600 text-white rounded-br-xs'
-                      : 'bg-white text-surface-900 border border-surface-200/90 rounded-bl-xs'
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
-
-                  {/* 1-Click Action Suggestion Card (Mode 1) */}
-                  {msg.suggested_action && (
-                    <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-surface-900 space-y-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-                        <ShoppingBag className="w-3.5 h-3.5 text-amber-700" />
-                        <span>Recommended Action: {msg.suggested_action.title}</span>
-                      </div>
-                      <p className="text-[11px] text-surface-600">
-                        Product: <b>{msg.suggested_action.product_name}</b> • Qty: <b>{msg.suggested_action.quantity} {msg.suggested_action.unit}</b>
-                      </p>
-
-                      {msg.actionExecuted ? (
-                        <div className="flex items-center gap-1 text-xs font-bold text-emerald-700 pt-1">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>Action Executed in Database!</span>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => handleExecuteAction(msg.id, msg.suggested_action)}
-                          disabled={actionLoadingId === msg.id}
-                          className="w-full py-2 rounded-lg gradient-primary text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 hover:opacity-95 disabled:opacity-50"
-                        >
-                          {actionLoadingId === msg.id ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <>
-                              <span>Confirm & Place Order</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <span className="text-[10px] text-surface-400 px-1">{msg.timestamp}</span>
-              </div>
-            ))}
-
-            {questionLoading && (
-              <div className="flex items-center gap-2 p-3 bg-white rounded-2xl border border-surface-200 max-w-[200px] animate-pulse">
-                <Loader2 className="w-4 h-4 animate-spin text-primary-600" />
-                <span className="text-xs text-surface-500 font-medium">Analyzing database...</span>
-              </div>
-            )}
-            <div ref={chatBottomRef} />
-          </div>
-
-          {/* Question Input Field */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={manualText}
-              onChange={(e) => setManualText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && manualText.trim()) {
-                  handleAskQuestion(manualText);
-                  setManualText('');
-                }
-              }}
-              placeholder="Ask anything (e.g. 'Rice stock entha undi?', 'Next week ki saripothunda?')..."
-              className="input-field text-sm flex-1"
-            />
-            <button
-              onClick={() => {
-                if (manualText.trim()) {
-                  handleAskQuestion(manualText);
-                  setManualText('');
-                }
-              }}
-              disabled={questionLoading}
-              className="px-4 py-2.5 rounded-xl gradient-primary text-white text-sm font-semibold shadow-sm flex items-center gap-1.5"
+      {/* Interactive Unified Conversation Stream */}
+      <div className="card p-4 min-h-[380px] max-h-[500px] overflow-y-auto space-y-4 bg-surface-50/40 border-surface-200 shadow-xs">
+        {chatMessages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} space-y-1 animate-fade-in`}
+          >
+            <div
+              className={`max-w-[90%] sm:max-w-[80%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
+                msg.role === 'user'
+                  ? 'bg-primary-600 text-white rounded-br-xs'
+                  : 'bg-white text-surface-900 border border-surface-200 rounded-bl-xs'
+              }`}
             >
-              <Send className="w-4 h-4" />
-              <span>Ask</span>
-            </button>
-          </div>
-
-          {/* Question Suggestions */}
-          <div className="space-y-2 pt-1">
-            <p className="text-xs font-bold uppercase text-surface-400 tracking-wider">
-              Quick Suggestions (Tap to ask live):
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {questionSuggestions.map((q, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAskQuestion(q.text)}
-                  className="px-3 py-2 rounded-xl bg-white border border-surface-200 hover:border-primary-400 hover:bg-primary-50/50 text-xs font-semibold text-surface-700 transition-all text-left flex items-center gap-2 shadow-2xs"
-                >
-                  <HelpCircle className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
-                  <span>{q.text}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 2: STOCK & UDHAR VOICE ENTRY (Pillar 2 & 4) */}
-      {activeTab === 'entry' && (
-        <div className="space-y-4">
-          {/* CONFIRMATION CARD (Pillar 2: Mandatory Human Verification) */}
-          {voiceState === 'confirming' && intent && (
-            <div className="card p-5 border-2 border-primary-400 shadow-md space-y-4 animate-scale-up bg-white">
-              <div className="flex items-center justify-between pb-2 border-b border-surface-100">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary-600" />
-                  <h3 className="font-bold text-base text-surface-900">Verify & Confirm Entry</h3>
-                </div>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="text-xs font-semibold text-primary-600 hover:underline flex items-center gap-1"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  <span>{isEditing ? 'Cancel Edit' : 'Edit Values'}</span>
-                </button>
+              <div className="flex items-start justify-between gap-2">
+                <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
+                {msg.role === 'assistant' && (
+                  <button
+                    onClick={() => speakText(msg.content)}
+                    className="text-surface-400 hover:text-primary-600 p-1 flex-shrink-0"
+                    title="Read aloud"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
-              {/* Spoken Transcript Preview */}
-              <div className="p-2.5 rounded-lg bg-surface-50 text-xs text-surface-600">
-                Spoken: <i>"{transcript}"</i>
-              </div>
-
-              {/* Action Form Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 rounded-xl bg-surface-50">
-                  <span className="text-[10px] text-surface-400 uppercase font-bold">Action</span>
-                  <p className="font-bold text-sm text-surface-900 mt-0.5">{intent.intent}</p>
-                </div>
-                <div className="p-3 rounded-xl bg-surface-50">
-                  <span className="text-[10px] text-surface-400 uppercase font-bold">Product</span>
-                  <p className="font-bold text-sm text-surface-900 mt-0.5 truncate">{intent.product}</p>
-                </div>
-                <div className="p-3 rounded-xl bg-surface-50">
-                  <span className="text-[10px] text-surface-400 uppercase font-bold">Quantity</span>
-                  {isEditing ? (
-                    <input
-                      type="number"
-                      value={editQty}
-                      onChange={(e) => setEditQty(e.target.value)}
-                      className="w-full mt-1 px-2 py-1 text-sm border rounded"
-                    />
-                  ) : (
-                    <p className="font-bold text-sm text-surface-900 mt-0.5">{editQty || intent.quantity} {editUnit || intent.unit}</p>
-                  )}
-                </div>
-                <div className="p-3 rounded-xl bg-surface-50">
-                  <span className="text-[10px] text-surface-400 uppercase font-bold">Unit Price</span>
-                  {isEditing ? (
-                    <input
-                      type="number"
-                      value={editPrice}
-                      onChange={(e) => setEditPrice(e.target.value)}
-                      className="w-full mt-1 px-2 py-1 text-sm border rounded"
-                    />
-                  ) : (
-                    <p className="font-bold text-sm text-surface-900 mt-0.5">₹{editPrice || intent.price}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Customer / Supplier info if detected */}
-              {intent.customer && (
-                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-blue-50 text-xs text-blue-800">
-                  <UserCheck className="w-4 h-4" />
-                  <span>Customer Udhar recorded for: <b>{intent.customer}</b></span>
+              {/* Clarification / Disambiguation Options (Pillar 5) */}
+              {msg.clarificationCandidates && msg.clarificationCandidates.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-surface-100 space-y-2">
+                  <p className="text-xs font-semibold text-amber-800">Select the intended option:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {msg.clarificationCandidates.map((cand, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => processTranscript(cand)}
+                        className="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 text-xs font-semibold text-amber-900 transition-all flex items-center gap-1.5"
+                      >
+                        <span>{cand}</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={handleConfirm}
-                  className="flex-1 py-3 rounded-xl gradient-primary text-white font-bold text-sm shadow-md hover:opacity-95 flex items-center justify-center gap-2"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>Confirm & Save to Supabase</span>
-                </button>
-                <button
-                  onClick={() => setVoiceState('ready')}
-                  className="px-4 py-3 rounded-xl border border-surface-200 text-surface-600 font-semibold text-sm hover:bg-surface-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Success Response State */}
-          {voiceState === 'completed' && (
-            <div className="card p-5 bg-emerald-50 border border-emerald-200 text-center space-y-3 animate-fade-in">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-              <h3 className="font-bold text-base text-emerald-900">Database Updated!</h3>
-              <p className="text-sm text-emerald-800">{responseText}</p>
-              <button
-                onClick={() => setVoiceState('ready')}
-                className="px-6 py-2 rounded-xl gradient-primary text-white font-semibold text-xs shadow-xs"
-              >
-                Record Another Command
-              </button>
-            </div>
-          )}
-
-          {/* Manual Input Fallback */}
-          {voiceState === 'ready' && (
-            <div className="space-y-3 pt-1">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={manualText}
-                  onChange={(e) => setManualText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && manualText.trim()) {
-                      processStockTranscript(manualText);
-                      setManualText('');
-                    }
-                  }}
-                  placeholder="Or type voice command (e.g. '5 bags biyyam vachayi 1450 rupees')..."
-                  className="input-field text-sm flex-1"
-                />
-                <button
-                  onClick={() => {
-                    if (manualText.trim()) {
-                      processStockTranscript(manualText);
-                      setManualText('');
-                    }
-                  }}
-                  className="px-4 py-2.5 rounded-xl gradient-primary text-white text-sm font-semibold shadow-sm"
-                >
-                  Parse
-                </button>
-              </div>
-
-              {/* Sample Commands */}
-              <div className="space-y-2 pt-1">
-                <p className="text-xs font-bold uppercase text-surface-400 tracking-wider">
-                  Sample Commands (Tap to execute):
-                </p>
-                <div className="space-y-2">
-                  {entrySuggestions.map((cmd, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => processStockTranscript(cmd.text)}
-                      className="w-full p-3 rounded-xl bg-white border border-surface-200 hover:border-primary-400 hover:bg-primary-50/40 text-xs sm:text-sm font-semibold text-surface-800 transition-all text-left flex items-center justify-between group shadow-2xs"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        {cmd.intent === 'STOCK_IN' ? (
-                          <PlusCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                        ) : cmd.intent === 'STOCK_OUT' ? (
-                          <MinusCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                        ) : (
-                          <ShoppingBag className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                        )}
-                        <span>"{cmd.text}"</span>
-                      </div>
-                      <span className="text-[11px] text-primary-600 group-hover:translate-x-1 transition-transform">
-                        Tap to run &gt;
+              {/* In-Stream Confirmation Card (Pillar 2 & 11) */}
+              {msg.intent && !msg.actionExecuted && activeIntent && (
+                <div className="mt-3.5 p-4 rounded-xl bg-amber-50/90 border-2 border-amber-300 text-surface-900 space-y-3 animate-scale-up">
+                  <div className="flex items-center justify-between pb-2 border-b border-amber-200/80 gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <ShoppingBag className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                      <span className="font-bold text-xs uppercase tracking-wide text-amber-900">
+                        {getIntentLabel(activeIntent.intent)}
                       </span>
+                      {activeIntent.is_new_customer && (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-bold flex items-center gap-1 shadow-2xs">
+                          <Sparkles className="w-3 h-3 text-emerald-600" />
+                          <span>✨ New Udhar Account (Auto-Create)</span>
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="text-xs font-semibold text-primary-700 hover:underline flex items-center gap-1"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>{isEditing ? 'Done Editing' : 'Edit Values'}</span>
                     </button>
-                  ))}
+                  </div>
+
+                  {/* Editable Details Form */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {activeIntent.product_name && (
+                      <div className="p-2.5 rounded-lg bg-white border border-amber-200">
+                        <span className="text-[10px] text-surface-500 uppercase font-bold flex items-center gap-1">
+                          <Package className="w-3 h-3" /> Product
+                        </span>
+                        <p className="font-bold text-surface-900 mt-0.5 truncate">{activeIntent.product_name}</p>
+                      </div>
+                    )}
+
+                    {(activeIntent.customer_name || activeIntent.intent.includes('BORROW') || activeIntent.intent === 'CUSTOMER_ADD') && (
+                      <div className="p-2.5 rounded-lg bg-white border border-amber-200">
+                        <span className="text-[10px] text-surface-500 uppercase font-bold flex items-center gap-1">
+                          <User className="w-3 h-3" /> Customer {activeIntent.is_new_customer ? '(New)' : ''}
+                        </span>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editCustomer}
+                            onChange={(e) => setEditCustomer(e.target.value)}
+                            className="w-full mt-1 px-2 py-1 text-xs border rounded bg-white"
+                          />
+                        ) : (
+                          <div>
+                            <p className="font-bold text-surface-900 mt-0.5">{editCustomer || activeIntent.customer_name || 'Customer'}</p>
+                            {activeIntent.phone && (
+                              <p className="text-[10px] text-surface-500 mt-0.5">Phone: {activeIntent.phone}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {activeIntent.intent === 'BORROW_CLEAR' ? (
+                      <div className="col-span-2 p-2.5 rounded-lg bg-white border border-emerald-200">
+                        <span className="text-[10px] text-emerald-700 uppercase font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Action Summary
+                        </span>
+                        <p className="font-bold text-emerald-800 mt-0.5">Settle all active borrowings & reset loan balance to ₹0</p>
+                      </div>
+                    ) : (
+                      <>
+                        {(activeIntent.quantity || activeIntent.intent === 'STOCK_ADJUST') && (
+                          <div className="p-2.5 rounded-lg bg-white border border-amber-200">
+                            <span className="text-[10px] text-surface-500 uppercase font-bold flex items-center gap-1">
+                              <Layers className="w-3 h-3" /> {activeIntent.intent === 'STOCK_ADJUST' ? 'Set Stock To' : 'Quantity'}
+                            </span>
+                            {isEditing ? (
+                              <div className="flex gap-1 mt-1">
+                                <input
+                                  type="number"
+                                  value={editQty}
+                                  onChange={(e) => setEditQty(e.target.value)}
+                                  className="w-16 px-2 py-1 text-xs border rounded bg-white"
+                                />
+                                <input
+                                  type="text"
+                                  value={editUnit}
+                                  onChange={(e) => setEditUnit(e.target.value)}
+                                  className="w-16 px-2 py-1 text-xs border rounded bg-white"
+                                />
+                              </div>
+                            ) : (
+                              <p className="font-bold text-surface-900 mt-0.5">{editQty} {editUnit}</p>
+                            )}
+                          </div>
+                        )}
+
+                        {(activeIntent.amount || activeIntent.price || activeIntent.intent.includes('BORROW')) && (
+                          <div className="p-2.5 rounded-lg bg-white border border-amber-200">
+                            <span className="text-[10px] text-surface-500 uppercase font-bold flex items-center gap-1">
+                              <CreditCard className="w-3 h-3" /> Amount / Loan
+                            </span>
+                            {isEditing ? (
+                              <input
+                                type="number"
+                                value={editPrice}
+                                onChange={(e) => setEditPrice(e.target.value)}
+                                className="w-full mt-1 px-2 py-1 text-xs border rounded bg-white"
+                              />
+                            ) : (
+                              <p className="font-bold text-surface-900 mt-0.5">₹{editPrice || activeIntent.amount || activeIntent.price || 0}</p>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Confirmation Action Buttons */}
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={() => handleConfirmAction(activeIntent)}
+                      disabled={executingAction}
+                      className="flex-1 py-2.5 rounded-lg gradient-primary text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 hover:opacity-95 disabled:opacity-50"
+                    >
+                      {executingAction ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Confirm & Record in Database</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={handleCancelAction}
+                      disabled={executingAction}
+                      className="px-4 py-2.5 rounded-lg bg-white border border-surface-300 text-surface-700 text-xs font-semibold hover:bg-surface-100 flex items-center gap-1"
+                    >
+                      <XCircle className="w-3.5 h-3.5 text-surface-500" />
+                      <span>Cancel</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Action Executed Banner */}
+              {msg.actionExecuted && (
+                <div className="mt-2.5 p-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-xs font-bold text-emerald-800">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{msg.actionResult || 'Database updated successfully!'}</span>
+                </div>
+              )}
             </div>
-          )}
+            <span className="text-[10px] text-surface-400 px-1">{msg.timestamp}</span>
+          </div>
+        ))}
+
+        {voiceState === 'understanding' && (
+          <div className="flex items-center gap-2 p-3 bg-white rounded-2xl border border-surface-200 max-w-[220px] animate-pulse">
+            <Loader2 className="w-4 h-4 animate-spin text-primary-600" />
+            <span className="text-xs text-surface-500 font-medium">Checking live Kirana DB...</span>
+          </div>
+        )}
+        <div ref={chatBottomRef} />
+      </div>
+
+      {/* Input Query Bar */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={manualText}
+          onChange={(e) => setManualText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && manualText.trim()) {
+              processTranscript(manualText);
+              setManualText('');
+            }
+          }}
+          placeholder="Ask or type command (e.g. 'Rice stock entha?', 'Ramesh ki 500 udhar rasi pettu')..."
+          className="input-field text-sm flex-1 bg-white"
+        />
+        <button
+          onClick={() => {
+            if (manualText.trim()) {
+              processTranscript(manualText);
+              setManualText('');
+            }
+          }}
+          disabled={voiceState === 'processing' || voiceState === 'understanding'}
+          className="px-4 py-2.5 rounded-xl gradient-primary text-white text-sm font-semibold shadow-sm flex items-center gap-1.5 hover:opacity-95 disabled:opacity-50"
+        >
+          <Send className="w-4 h-4" />
+          <span>Send</span>
+        </button>
+      </div>
+
+      {/* Quick Suggestions Chips */}
+      <div className="space-y-1.5 pt-1">
+        <p className="text-xs font-bold uppercase text-surface-400 tracking-wider">
+          Suggested Commands (Tap to test):
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {quickSuggestions.map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => processTranscript(item.query)}
+              className="px-3 py-2 rounded-xl bg-white border border-surface-200 hover:border-primary-400 hover:bg-primary-50/50 text-xs font-semibold text-surface-700 transition-all text-left flex items-center gap-1.5 shadow-2xs"
+            >
+              <HelpCircle className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+              <span>{item.label}</span>
+            </button>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

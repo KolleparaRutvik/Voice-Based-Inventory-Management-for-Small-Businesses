@@ -31,18 +31,28 @@ def create_borrowing():
     
     if not data or not data.get('customer_name'):
         return error_response("Customer name is required", "VALIDATION_ERROR")
-    if not data.get('items') or len(data['items']) == 0:
-        return error_response("At least one item is required", "VALIDATION_ERROR")
+    
+    items = data.get('items') or []
+    direct_amount = float(data.get('amount') or data.get('total_value') or 0)
+    
+    if not items and direct_amount <= 0:
+        return error_response("Either borrowing items or a borrowing amount is required", "VALIDATION_ERROR")
     
     try:
         supabase = get_supabase()
         
         # Create or find customer
         customer_name = data['customer_name']
-        cust = supabase.table('customers').select('*').eq('shop_id', shop_id).ilike('name', customer_name).limit(1).execute()
+        customer_id = data.get('customer_id')
+        cust = None
+        if customer_id:
+            cust = supabase.table('customers').select('*').eq('shop_id', shop_id).eq('id', customer_id).limit(1).execute()
+        if not cust or not cust.data:
+            cust = supabase.table('customers').select('*').eq('shop_id', shop_id).ilike('name', customer_name).limit(1).execute()
         
         if cust.data and len(cust.data) > 0:
             customer_id = cust.data[0]['id']
+            cust_record = cust.data[0]
         else:
             new_cust = supabase.table('customers').insert({
                 'shop_id': shop_id,
@@ -50,72 +60,93 @@ def create_borrowing():
                 'phone': data.get('customer_phone', ''),
             }).execute()
             customer_id = new_cust.data[0]['id']
+            cust_record = new_cust.data[0]
         
         # Create borrowing
-        total_value = 0
+        total_value = direct_amount if not items else 0
         borrowing = supabase.table('borrowings').insert({
             'shop_id': shop_id,
             'customer_id': customer_id,
             'customer_name': customer_name,
             'status': 'ACTIVE',
+            'total_value': total_value,
+            'remaining_balance': total_value,
             'due_date': data.get('due_date'),
-            'notes': data.get('notes', ''),
+            'notes': data.get('notes', 'Udhar credit entry'),
             'created_by': user_id,
         }).execute()
         
         borrowing_id = borrowing.data[0]['id']
         
-        # Process items
-        for item in data['items']:
-            prod = supabase.table('products').select('*').eq('id', item['product_id']).eq('shop_id', shop_id).single().execute()
-            if not prod.data:
-                continue
-            
-            product = prod.data
-            quantity = float(item['quantity'])
-            unit = item.get('unit', product['selling_unit'])
-            price = float(item.get('price', product.get('selling_price', 0)))
-            item_total = quantity * price
-            total_value += item_total
-            
-            # Create borrowing item
-            supabase.table('borrowing_items').insert({
-                'borrowing_id': borrowing_id,
-                'shop_id': shop_id,
-                'product_id': item['product_id'],
-                'quantity': quantity,
-                'unit': unit,
-                'price': price,
-                'total_amount': item_total,
-            }).execute()
-            
-            # Convert to base units and update inventory
-            if unit == product['base_unit']:
-                quantity_base = quantity
-            elif unit == product['purchase_unit']:
-                quantity_base = quantity * product.get('conversion_factor', 1)
-            else:
-                quantity_base = quantity
-            
-            # Reduce inventory
-            inv = supabase.table('inventory').select('*').eq('product_id', item['product_id']).eq('shop_id', shop_id).execute()
-            if inv.data:
-                new_stock = max(0, inv.data[0]['current_stock'] - quantity_base)
-                supabase.table('inventory').update({'current_stock': new_stock}).eq('id', inv.data[0]['id']).execute()
-            
-            # Create BORROW_OUT transaction
+        # Process items if present
+        if items:
+            total_value = 0
+            for item in items:
+                prod = supabase.table('products').select('*').eq('id', item['product_id']).eq('shop_id', shop_id).single().execute()
+                if not prod.data:
+                    continue
+                
+                product = prod.data
+                quantity = float(item['quantity'])
+                unit = item.get('unit', product['selling_unit'])
+                price = float(item.get('price', product.get('selling_price', 0)))
+                item_total = quantity * price
+                total_value += item_total
+                
+                # Create borrowing item
+                supabase.table('borrowing_items').insert({
+                    'borrowing_id': borrowing_id,
+                    'shop_id': shop_id,
+                    'product_id': item['product_id'],
+                    'quantity': quantity,
+                    'unit': unit,
+                    'price': price,
+                    'total_amount': item_total,
+                }).execute()
+                
+                # Convert to base units and update inventory
+                if unit == product['base_unit']:
+                    quantity_base = quantity
+                elif unit == product['purchase_unit']:
+                    quantity_base = quantity * product.get('conversion_factor', 1)
+                else:
+                    quantity_base = quantity
+                
+                inv = supabase.table('inventory').select('*').eq('product_id', item['product_id']).eq('shop_id', shop_id).execute()
+                if inv.data:
+                    new_stock = max(0, inv.data[0]['current_stock'] - quantity_base)
+                    supabase.table('inventory').update({'current_stock': new_stock}).eq('id', inv.data[0]['id']).execute()
+                
+                # Create BORROW_OUT transaction
+                supabase.table('transactions').insert({
+                    'shop_id': shop_id,
+                    'product_id': item['product_id'],
+                    'transaction_type': 'BORROW_OUT',
+                    'quantity': quantity,
+                    'unit': unit,
+                    'quantity_in_base_unit': quantity_base,
+                    'price': price,
+                    'total_amount': item_total,
+                    'customer_id': customer_id,
+                    'borrowing_id': borrowing_id,
+                    'voice_conversation_id': data.get('voice_conversation_id'),
+                    'source': data.get('source', 'manual'),
+                    'created_by': user_id,
+                }).execute()
+        else:
+            # Create a general BORROW_OUT monetary transaction entry
             supabase.table('transactions').insert({
                 'shop_id': shop_id,
-                'product_id': item['product_id'],
                 'transaction_type': 'BORROW_OUT',
-                'quantity': quantity,
-                'unit': unit,
-                'quantity_in_base_unit': quantity_base,
-                'price': price,
-                'total_amount': item_total,
+                'quantity': 1,
+                'unit': 'credit',
+                'price': total_value,
+                'total_amount': total_value,
                 'customer_id': customer_id,
                 'borrowing_id': borrowing_id,
-                'source': data.get('source', 'manual'),
+                'voice_conversation_id': data.get('voice_conversation_id'),
+                'source': data.get('source', 'voice'),
+                'notes': data.get('notes', f'Direct udhar for {customer_name}'),
                 'created_by': user_id,
             }).execute()
         
@@ -125,15 +156,35 @@ def create_borrowing():
             'remaining_balance': total_value,
         }).eq('id', borrowing_id).execute()
         
-        # Update customer credit
+        # Update customer credit balance
+        old_credit = float(cust_record.get('total_credit') or 0)
+        new_credit = old_credit + total_value
         supabase.table('customers').update({
-            'total_credit': cust.data[0].get('total_credit', 0) + total_value if cust.data else total_value,
+            'total_credit': new_credit,
         }).eq('id', customer_id).execute()
+
+        # Insert customer credit ledger entry
+        try:
+            supabase.table('customer_credit').insert({
+                'shop_id': shop_id,
+                'customer_id': customer_id,
+                'credit_type': 'BORROW',
+                'amount': total_value,
+                'running_balance': new_credit,
+                'reference_id': borrowing_id,
+                'notes': data.get('notes', 'Udhar credit'),
+                'created_by': user_id,
+            }).execute()
+        except Exception:
+            pass
         
         return success_response({
             'borrowing_id': borrowing_id,
-            'message': f'Borrowing created for {customer_name}',
+            'customer_id': customer_id,
+            'customer_name': customer_name,
             'total_value': total_value,
+            'remaining_balance': total_value,
+            'message': f'Udhar of ₹{total_value} recorded for {customer_name}',
         }, 201)
         
     except Exception as e:

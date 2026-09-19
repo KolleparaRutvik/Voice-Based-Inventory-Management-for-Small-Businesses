@@ -52,6 +52,7 @@ class PostgresTableQuery:
         self.params = []
         self.order_by_clause = None
         self.limit_val = None
+        self.offset_val = None
         self.is_single = False
         self.pending_action = None # ('insert', data), ('update', data), ('delete', None)
 
@@ -100,6 +101,15 @@ class PostgresTableQuery:
 
     def limit(self, count):
         self.limit_val = count
+        return self
+
+    def offset(self, count):
+        self.offset_val = count
+        return self
+
+    def range(self, start, end):
+        self.offset_val = start
+        self.limit_val = max(0, end - start + 1)
         return self
 
     def single(self):
@@ -179,9 +189,10 @@ class PostgresTableQuery:
                 # SELECT
                 where_str = f"WHERE {' AND '.join(self.conditions)}" if self.conditions else ""
                 order_str = f"ORDER BY {self.order_by_clause}" if self.order_by_clause else ""
-                limit_str = f"LIMIT {self.limit_val}" if self.limit_val else ""
+                limit_str = f"LIMIT {self.limit_val}" if self.limit_val is not None else ""
+                offset_str = f"OFFSET {self.offset_val}" if self.offset_val is not None else ""
 
-                sql = f'SELECT {self.selected_cols} FROM "{self.table_name}" {where_str} {order_str} {limit_str};'
+                sql = f'SELECT {self.selected_cols} FROM "{self.table_name}" {where_str} {order_str} {limit_str} {offset_str};'
                 cur.execute(sql, self.params)
                 records = cur.fetchall()
                 serialized = [serialize_row(dict(r)) for r in records]

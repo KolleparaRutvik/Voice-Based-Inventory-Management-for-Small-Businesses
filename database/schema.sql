@@ -169,10 +169,10 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
-    product_id UUID NOT NULL REFERENCES products(id),
+    product_id UUID REFERENCES products(id), -- Nullable for pure monetary udhar / payment transactions
     transaction_type TEXT NOT NULL, -- STOCK_IN, STOCK_OUT, SALE, PURCHASE, BORROW_OUT, BORROW_RETURN, ADJUSTMENT, RETURN, DAMAGE, TRANSFER
     quantity DECIMAL(12,3) NOT NULL,
-    unit TEXT NOT NULL,
+    unit TEXT, -- Nullable for pure monetary transactions
     quantity_in_base_unit DECIMAL(12,3), -- Converted to base unit
     price DECIMAL(12,2) DEFAULT 0,
     total_amount DECIMAL(12,2) DEFAULT 0,
@@ -313,15 +313,21 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS voice_conversations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    conversation_id UUID DEFAULT uuid_generate_v4(), -- Groups multi-turn dialogue thread
     shop_id UUID NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id),
+    speaker TEXT DEFAULT 'user', -- user or assistant
     audio_url TEXT,
     transcript TEXT,
+    response_text TEXT,
+    voice_text TEXT,
     language TEXT,
     duration DECIMAL(8,2), -- seconds
     intent TEXT,
     extracted_entities JSONB DEFAULT '{}',
+    confidence DECIMAL(5,2) DEFAULT 0.95,
     confirmation_status TEXT DEFAULT 'PENDING', -- PENDING, CONFIRMED, REJECTED, EDITED
+    action_performed TEXT,
     transaction_id UUID REFERENCES transactions(id),
     error_message TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()

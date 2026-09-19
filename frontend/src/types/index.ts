@@ -321,36 +321,57 @@ export type VoiceState =
   | 'processing'
   | 'understanding'
   | 'confirming'
+  | 'executing'
   | 'completed'
   | 'error';
 
 export interface VoiceIntent {
-  intent: TransactionType | 'STOCK_CHECK' | 'QUERY' | 'UNKNOWN';
+  intent: TransactionType | 'STOCK_CHECK' | 'CREDIT_CHECK' | 'BUSINESS_INSIGHT' | 'PURCHASE' | 'REORDER' | 'BORROW_CLEAR' | 'STOCK_ADJUST' | 'CUSTOMER_ADD' | 'PRODUCT_ADD' | 'GENERAL' | 'CLARIFICATION' | 'UNKNOWN';
   product?: string;
+  product_name?: string;
   product_id?: UUID;
   quantity?: number;
   unit?: string;
   price?: number;
+  amount?: number;
   supplier?: string;
+  supplier_name?: string;
   supplier_id?: UUID;
   customer?: string;
+  customer_name?: string;
   customer_id?: UUID;
+  is_new_customer?: boolean;
+  phone?: string;
   action?: string;
   notes?: string;
   confidence?: number;
+  clarification_needed?: boolean;
+  ambiguous_candidates?: string[];
+  confirmation_required?: boolean;
+  confirmation_prompt?: string;
+  answer?: string;
+  voice_text?: string;
+  language?: string;
+  transcript?: string;
 }
 
 export interface VoiceConversation {
   id: UUID;
+  conversation_id?: UUID;
   shop_id: UUID;
   user_id: UUID;
+  speaker?: 'user' | 'assistant';
   audio_url?: string;
   transcript?: string;
+  response_text?: string;
+  voice_text?: string;
   language?: string;
   duration?: number;
   intent?: string;
-  extracted_entities: VoiceIntent;
+  extracted_entities?: Record<string, unknown>;
+  confidence?: number;
   confirmation_status: 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'EDITED';
+  action_performed?: string;
   transaction_id?: UUID;
   error_message?: string;
   created_at: string;

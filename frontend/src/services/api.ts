@@ -177,20 +177,28 @@ export const voiceService = {
     const res = await api.post<ApiResponse>('/api/voice/transcribe', data);
     return res.data;
   },
-  async interpret(data: { transcript: string; language?: string }) {
+  async interpret(data: { transcript: string; conversation_history?: unknown[]; language?: string; conversation_id?: string }) {
     const res = await api.post<ApiResponse>('/api/voice/interpret', data);
     return res.data;
   },
+  async execute(data: Record<string, unknown>) {
+    const res = await api.post<ApiResponse>('/api/voice/execute', data);
+    return res.data;
+  },
+  async getConversations(params?: { limit?: number }) {
+    const res = await api.get<ApiResponse>('/api/voice/conversations', { params });
+    return res.data;
+  },
   async getHistory(params?: { page?: number; per_page?: number }) {
-    const res = await api.get<ApiResponse>('/api/voice', { params });
+    const res = await api.get<ApiResponse>('/api/voice/conversations', { params });
     return res.data;
   },
   async delete(id: string) {
     const res = await api.delete<ApiResponse>(`/api/voice/${id}`);
     return res.data;
   },
-  async saveConversation(data: { user_message: string; language?: string; intent?: string; entities?: Record<string, unknown>; confirmation_status?: string }) {
-    const res = await api.post<ApiResponse>('/api/voice/save', data);
+  async saveConversation(data: Record<string, unknown>) {
+    const res = await api.post<ApiResponse>('/api/voice/conversations', data);
     return res.data;
   },
 };
