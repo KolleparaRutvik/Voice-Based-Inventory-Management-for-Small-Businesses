@@ -1,6 +1,6 @@
-"""Vyapari Voice — Embedded Local / Fallback Database Client.
+"""DukaanSetu — Embedded Local / Fallback Database Client.
 Provides 100% compatibility with Supabase's Python query interface (.table().select().eq().execute()).
-Pre-seeded with realistic Indian Kirana store data for immediate testing and offline reliability.
+Provides realistic Indian Kirana store data for immediate testing and offline reliability.
 """
 import uuid
 import re
@@ -177,7 +177,7 @@ class TableQuery:
 
 
 class MockAuthUser:
-    def __init__(self, user_id=DEMO_USER_ID, email="demo@vyapari.com"):
+    def __init__(self, user_id=DEMO_USER_ID, email="demo@dukaansetu.com"):
         self.id = user_id
         self.email = email
 
@@ -196,7 +196,7 @@ class MockAuth:
         users = self.store.get('users', [])
         user = users[0] if users else None
         user_id = user['auth_id'] if user else DEMO_AUTH_ID
-        email = user['email'] if user else "demo@vyapari.com"
+        email = user['email'] if user else "demo@dukaansetu.com"
         return MockAuthResponse(MockAuthUser(user_id=user_id, email=email))
 
     def sign_in_with_password(self, credentials):
@@ -207,15 +207,15 @@ class MockAuth:
                 user_obj = MockAuthUser(user_id=u['auth_id'], email=u['email'])
                 res = MockAuthResponse(user_obj)
                 res.session = type('Session', (), {
-                    'access_token': 'demo-token-vyapari',
+                    'access_token': 'demo-token-dukaansetu',
                     'refresh_token': 'demo-refresh-token'
                 })()
                 return res
         # Default demo fallback
-        user_obj = MockAuthUser(user_id=DEMO_AUTH_ID, email=email or "demo@vyapari.com")
+        user_obj = MockAuthUser(user_id=DEMO_AUTH_ID, email=email or "demo@dukaansetu.com")
         res = MockAuthResponse(user_obj)
         res.session = type('Session', (), {
-            'access_token': 'demo-token-vyapari',
+            'access_token': 'demo-token-dukaansetu',
             'refresh_token': 'demo-refresh-token'
         })()
         return res
@@ -245,7 +245,7 @@ class LocalDbClient:
         self.store['users'] = [{
             'id': DEMO_USER_ID,
             'auth_id': DEMO_AUTH_ID,
-            'email': 'srinivas@vyapari.com',
+            'email': 'srinivas@dukaansetu.com',
             'full_name': 'Srinivas Kumar',
             'phone': '+91 9876543210',
             'language': 'te',

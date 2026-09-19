@@ -1,5 +1,5 @@
 -- ============================================================
--- VYAPARI VOICE — Complete Database Schema
+-- DUKAANSETU — Complete Database Schema
 -- Supabase PostgreSQL
 -- ============================================================
 

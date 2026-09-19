@@ -19,7 +19,7 @@ def require_auth(f):
         token = auth_header.split('Bearer ')[1]
 
         # Immediate handling for demo token
-        if token in ('demo-token-vyapari', 'demo-token'):
+        if token in ('demo-token-dukaansetu', 'demo-token-vyapari', 'demo-token'):
             g.auth_id = 'demo-auth-id'
             g.token = token
             supabase = get_supabase()

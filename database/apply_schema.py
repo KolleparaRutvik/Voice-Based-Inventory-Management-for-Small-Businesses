@@ -1,4 +1,4 @@
-"""Vyapari Voice — Database Schema Migration Script.
+"""DukaanSetu — Database Schema Migration Script.
 Connects directly to Supabase PostgreSQL in ap-northeast-1 and executes database/schema.sql.
 """
 import os

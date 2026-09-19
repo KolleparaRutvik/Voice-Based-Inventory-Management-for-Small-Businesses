@@ -1,4 +1,4 @@
-"""Vyapari Voice — Kirana Entity Resolution & Terminology Normalization Engine.
+"""DukaanSetu — Kirana Entity Resolution & Terminology Normalization Engine.
 Provides robust multilingual resolution for products, customers, suppliers, units, and trade terms
 across Telugu, Hindi, English, and colloquial Indian retail phrasing.
 Zero random fallbacks: ambiguous or missing entities explicitly trigger clarification.

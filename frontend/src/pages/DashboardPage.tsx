@@ -190,7 +190,7 @@ export default function DashboardPage() {
 
           {quickAnswer && (
             <div className="mt-2.5 p-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 text-xs sm:text-sm font-medium animate-slide-down">
-              <span className="font-bold">Vyapari AI: </span>
+              <span className="font-bold">DukaanSetu AI: </span>
               {quickAnswer}
             </div>
           )}

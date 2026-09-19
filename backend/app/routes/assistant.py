@@ -1,4 +1,4 @@
-"""Vyapari Voice — AI Business & Conversational Assistant (Modes 1, 2, 3).
+"""DukaanSetu — AI Business & Conversational Assistant (Modes 1, 2, 3).
 Handles conversational multi-turn context, demand forecasting, stock inquiries, and 1-click action cards.
 Includes multi-model fallback and deterministic database calculation engine.
 """
@@ -91,7 +91,7 @@ def ask_assistant():
         suppliers_summary = supp_res.data or []
 
         # 5. Build prompt
-        prompt = f"""You are 'Vyapari Voice', an expert Kirana & retail business AI assistant in India.
+        prompt = f"""You are 'DukaanSetu', an expert Kirana & retail business AI assistant in India.
 
 The shopkeeper asked:
 "{question}"

@@ -1,4 +1,4 @@
-"""Vyapari Voice — Live PostgreSQL Client for Supabase.
+"""DukaanSetu — Live PostgreSQL Client for Supabase.
 Directly executes queries against the user's Supabase PostgreSQL cluster.
 Provides 100% Supabase Table query builder compatibility (.table().select().eq().execute()).
 """
@@ -217,7 +217,7 @@ class PostgresAuth:
         res = self.db.table('users').select('*').limit(1).execute()
         user = res.data[0] if res.data else None
         auth_id = user['auth_id'] if user else "11111111-1111-1111-1111-111111111111"
-        email = user['email'] if user else "srinivas@vyapari.com"
+        email = user['email'] if user else "srinivas@dukaansetu.com"
 
         user_obj = type('MockUser', (), {
             'id': auth_id,
@@ -237,7 +237,7 @@ class PostgresAuth:
         res_obj = type('AuthResponse', (), {
             'user': user_obj,
             'session': type('Session', (), {
-                'access_token': 'demo-token-vyapari',
+                'access_token': 'demo-token-dukaansetu',
                 'refresh_token': 'demo-refresh-token'
             })()
         })()

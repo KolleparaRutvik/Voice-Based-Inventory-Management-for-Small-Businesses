@@ -45,10 +45,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check initial session
     const initAuth = async () => {
-      if (localStorage.getItem('vyapari_demo_mode') === 'true') {
+      if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
         setState(prev => ({
           ...prev,
-          token: 'demo-token-vyapari',
+          token: 'demo-token-dukaansetu',
           isAuthenticated: true,
         }));
         await refreshProfile();
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (localStorage.getItem('vyapari_demo_mode') === 'true') {
+      if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
         return;
       }
       if (event === 'SIGNED_IN' && session) {
@@ -101,10 +101,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refreshProfile]);
 
   const loginAsDemo = async () => {
+    localStorage.setItem('dukaansetu_demo_mode', 'true');
     localStorage.setItem('vyapari_demo_mode', 'true');
     setState(prev => ({
       ...prev,
-      token: 'demo-token-vyapari',
+      token: 'demo-token-dukaansetu',
       isAuthenticated: true,
       isLoading: true,
     }));
@@ -112,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (credentials: LoginCredentials) => {
+    localStorage.removeItem('dukaansetu_demo_mode');
     localStorage.removeItem('vyapari_demo_mode');
     const { data, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
@@ -129,6 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (registerData: RegisterData) => {
+    localStorage.removeItem('dukaansetu_demo_mode');
     localStorage.removeItem('vyapari_demo_mode');
     // First create Supabase Auth user
     const { data, error } = await supabase.auth.signUp({
@@ -164,6 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    localStorage.removeItem('dukaansetu_demo_mode');
     localStorage.removeItem('vyapari_demo_mode');
     try {
       await supabase.auth.signOut();

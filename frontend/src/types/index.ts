@@ -1,5 +1,5 @@
 // ============================================================
-// VYAPARI VOICE — TypeScript Type Definitions
+// DUKAANSETU — TypeScript Type Definitions
 // ============================================================
 
 // ---- Base Types ----

@@ -91,7 +91,7 @@ export interface Translations {
 
 const translations: Record<Language, Translations> = {
   en: {
-    appName: 'Vyapari Voice',
+    appName: 'DukaanSetu',
     tagline: 'Voice-First Kirana Inventory & Business Assistant',
     loading: 'Loading...',
     save: 'Save',
@@ -125,7 +125,7 @@ const translations: Record<Language, Translations> = {
     lowStockItems: 'Low Stock Items',
     activeBorrowings: 'Pending Udhar',
     quickActions: 'Quick Actions',
-    askAssistant: 'Ask Vyapari AI',
+    askAssistant: 'Ask DukaanSetu AI',
     askPlaceholder: 'Ask in Telugu, Hindi or English (e.g. "Rice stock entha undi?")...',
     voiceCommandTitle: 'Voice Command',
     recentTransactions: 'Recent Transactions',
@@ -172,7 +172,7 @@ const translations: Record<Language, Translations> = {
   },
 
   te: {
-    appName: 'వ్యాపారి వాయిస్',
+    appName: 'దుకాణసేతు (DukaanSetu)',
     tagline: 'వాయిస్-ఆధారిత కిరాణా ఇన్వెంటరీ & బిజినెస్ అసిస్టెంట్',
     loading: 'లోడ్ అవుతోంది...',
     save: 'సేవ్ చేయండి',
@@ -206,7 +206,7 @@ const translations: Record<Language, Translations> = {
     lowStockItems: 'తక్కువ స్టాక్ ఉన్నవి',
     activeBorrowings: 'కస్టమర్ బాకీలు (ఉధార్)',
     quickActions: 'త్వరిత చర్యలు',
-    askAssistant: 'వ్యాపారి AI ని అడగండి',
+    askAssistant: 'దుకాణసేతు AI ని అడగండి',
     askPlaceholder: 'తెలుగు లేదా ఇంగ్లీషులో అడగండి (ఉదా: "రైస్ స్టాక్ ఎంత ఉంది?")...',
     voiceCommandTitle: 'వాయిస్ కమాండ్',
     recentTransactions: 'ఇటీవలి లావాదేవీలు',
@@ -253,7 +253,7 @@ const translations: Record<Language, Translations> = {
   },
 
   hi: {
-    appName: 'व्यापारी वॉइस',
+    appName: 'दुकानसेतु (DukaanSetu)',
     tagline: 'वॉइस-आधारित किराना इन्वेंटरी व बिजनेस सहायक',
     loading: 'लोड हो रहा है...',
     save: 'सुरक्षित करें',
@@ -287,7 +287,7 @@ const translations: Record<Language, Translations> = {
     lowStockItems: 'कम स्टॉक वाले आइटम',
     activeBorrowings: 'कुल बकाया उधार',
     quickActions: 'त्वरित कार्य',
-    askAssistant: 'व्यापारी AI से पूछें',
+    askAssistant: 'दुकानसेतु AI से पूछें',
     askPlaceholder: 'हिंदी या अंग्रेजी में पूछें (जैसे "चावल का स्टॉक कितना है?")...',
     voiceCommandTitle: 'वॉइस कमांड',
     recentTransactions: 'हाल के लेन-देन',
@@ -345,12 +345,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('vyapari_lang');
+    const saved = localStorage.getItem('dukaansetu_lang') || localStorage.getItem('vyapari_lang');
     return (saved === 'te' || saved === 'hi' || saved === 'en') ? saved : 'en';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
+    localStorage.setItem('dukaansetu_lang', lang);
     localStorage.setItem('vyapari_lang', lang);
   };
 

@@ -1,4 +1,4 @@
-"""Vyapari Voice — Flask Application Entry Point"""
+"""DukaanSetu — Flask Application Entry Point"""
 from app import create_app
 
 app = create_app()

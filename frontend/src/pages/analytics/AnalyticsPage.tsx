@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
           <div className="card p-5 bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent border-l-4 border-l-purple-500 space-y-3">
             <div className="flex items-center gap-2 text-purple-900">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              <h3 className="font-bold text-sm">Vyapari Voice Smart Reorder Suggestions</h3>
+              <h3 className="font-bold text-sm">DukaanSetu Smart Reorder Suggestions</h3>
             </div>
             <div className="space-y-2 text-xs text-purple-950">
               {(analytics?.low_stock_products || []).length > 0 ? (

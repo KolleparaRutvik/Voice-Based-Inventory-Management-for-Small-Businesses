@@ -1,4 +1,4 @@
-"""Vyapari Voice — Festival Inventory Demand & 15-Day Prior Recommendation Engine.
+"""DukaanSetu — Festival Inventory Demand & 15-Day Prior Recommendation Engine.
 
 Analyzes the festival_inventory_demand_dataset.xlsx dataset, tracks the annual festival calendar,
 identifies festivals within the active 15-day prior notice window, evaluates live shop inventory against

@@ -14,8 +14,8 @@ const api = axios.create({
 
 // Request interceptor — attach auth token
 api.interceptors.request.use(async (config) => {
-  if (localStorage.getItem('vyapari_demo_mode') === 'true') {
-    config.headers.Authorization = 'Bearer demo-token-vyapari';
+  if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
+    config.headers.Authorization = 'Bearer demo-token-dukaansetu';
     return config;
   }
   try {

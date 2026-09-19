@@ -1,5 +1,5 @@
 -- ============================================================
--- VYAPARI VOICE — Seed Data
+-- DUKAANSETU — Seed Data
 -- Run AFTER schema.sql
 -- ============================================================
 
@@ -13,7 +13,7 @@
 -- DEMO USER (placeholder — will be created via auth flow)
 -- ============================================================
 -- INSERT INTO users (id, auth_id, email, full_name, phone, language) VALUES
--- ('11111111-1111-1111-1111-111111111111', 'DEMO_AUTH_ID', 'demo@vyapari.com', 'Srinivas Kumar', '+91 9876543210', 'te');
+-- ('11111111-1111-1111-1111-111111111111', 'DEMO_AUTH_ID', 'demo@dukaansetu.com', 'Srinivas Kumar', '+91 9876543210', 'te');
 
 -- ============================================================
 -- DEMO SHOP (placeholder — will be created via registration)

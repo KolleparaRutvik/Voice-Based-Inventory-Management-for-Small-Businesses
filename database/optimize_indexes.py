@@ -1,4 +1,4 @@
-"""Database Performance & Indexing Migration for Vyapari Voice.
+"""Database Performance & Indexing Migration for DukaanSetu.
 Creates production B-Tree indexes and product_aliases table in Supabase PostgreSQL.
 """
 import os

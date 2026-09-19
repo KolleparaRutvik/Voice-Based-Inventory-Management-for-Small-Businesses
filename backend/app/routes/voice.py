@@ -1,4 +1,4 @@
-"""Vyapari Voice — Unified Multilingual Voice Assistant & Kirana Business Engine.
+"""DukaanSetu — Unified Multilingual Voice Assistant & Kirana Business Engine.
 Handles:
 1. Multimodal audio STT (Gemini 2.5 / 3.6 Flash) with Telugu, Hindi, English, & mixed Tanglish/Hinglish speech.
 2. Multilingual Kirana entity resolution & normalization without hardcoded fake fallbacks.
@@ -205,7 +205,7 @@ def interpret_voice():
         catalog_names = [f"{p['name']} (Local: {p.get('local_name', '')}, Stock: {p['current_stock']} {p['stock_unit']})" for p in products]
         customer_names = [f"{c['name']} (Debt: ₹{customer_debt_map.get(c['id'], 0)})" for c in customers]
 
-        prompt = f"""You are 'Vyapari Voice', the intelligent business assistant for an Indian Kirana store.
+        prompt = f"""You are 'DukaanSetu', the intelligent business assistant for an Indian Kirana store.
 Analyze this voice transcript spoken by the shopkeeper. The speech may be in English, Telugu, Hindi, or mixed.
 
 Voice Command: "{transcript}"

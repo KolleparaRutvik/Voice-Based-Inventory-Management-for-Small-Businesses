@@ -1,4 +1,4 @@
-"""Vyapari Voice — Populate Supabase PostgreSQL with rich seed data."""
+"""DukaanSetu — Populate Supabase PostgreSQL with rich seed data."""
 import psycopg2
 from datetime import datetime, timezone
 
@@ -30,7 +30,7 @@ def seed_database():
         INSERT INTO users (id, auth_id, email, full_name, phone, language, is_active, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name;
-    """, (user_id, auth_id, 'srinivas@vyapari.com', 'Srinivas Kumar', '+91 9876543210', 'te', True, now, now))
+    """, (user_id, auth_id, 'srinivas@dukaansetu.com', 'Srinivas Kumar', '+91 9876543210', 'te', True, now, now))
 
     print("2. Inserting Shop...")
     cur.execute("""

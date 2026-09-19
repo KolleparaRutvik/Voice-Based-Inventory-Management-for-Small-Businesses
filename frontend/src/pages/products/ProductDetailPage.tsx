@@ -580,7 +580,7 @@ export default function ProductDetailPage() {
                   className="input-field text-sm"
                 />
                 <p className="text-[11px] text-surface-400 mt-1">
-                  Vyapari Voice alerts you when stock dips below this limit.
+                  DukaanSetu alerts you when stock dips below this limit.
                 </p>
               </div>
 

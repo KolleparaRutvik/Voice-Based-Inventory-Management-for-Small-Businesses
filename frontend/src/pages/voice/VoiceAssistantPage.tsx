@@ -66,10 +66,10 @@ export default function VoiceAssistantPage() {
       id: 'welcome-msg',
       role: 'assistant',
       content: language === 'te'
-        ? 'నమస్కారం! నేను మీ వ్యాపారి వాయిస్ అసిస్టెంట్. బియ్యం స్టాక్, అమ్మకాలు, వచ్చే వారానికి సరిపోతుందా లేదా అప్పుల వివరాలు ఏదైనా అడగవచ్చు లేదా వాయిస్ తో స్టాక్, ఉధార్ రికార్డ్ చేయవచ్చు.'
+        ? 'నమస్కారం! నేను మీ దుకాణసేతు వాయిస్ అసిస్టెంట్. బియ్యం స్టాక్, అమ్మకాలు, వచ్చే వారానికి సరిపోతుందా లేదా అప్పుల వివరాలు ఏదైనా అడగవచ్చు లేదా వాయిస్ తో స్టాక్, ఉధార్ రికార్డ్ చేయవచ్చు.'
         : language === 'hi'
-        ? 'नमस्ते! मैं आपका व्यापारी वॉयस सहायक हूँ। आप स्टॉक, उधारी, बिक्री या किसी भी Kirana कार्य के लिए बोल सकते हैं।'
-        : 'Welcome to Vyapari Voice! Speak naturally in Telugu, Hindi, or English to check stock, projection, customer udhar, or record sales and inventory.',
+        ? 'नमस्ते! मैं आपका दुकानसेतु वॉयस सहायक हूँ। आप स्टॉक, उधारी, बिक्री या किसी भी Kirana कार्य के लिए बोल सकते हैं।'
+        : 'Welcome to DukaanSetu! Speak naturally in Telugu, Hindi, or English to check stock, projection, customer udhar, or record sales and inventory.',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);

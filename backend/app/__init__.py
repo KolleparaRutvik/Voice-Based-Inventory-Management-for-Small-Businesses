@@ -1,4 +1,4 @@
-"""Vyapari Voice — Flask Application Factory"""
+"""DukaanSetu — Flask Application Factory"""
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS

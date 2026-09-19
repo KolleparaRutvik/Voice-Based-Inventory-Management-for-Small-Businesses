@@ -1,6 +1,6 @@
-# 🎙️ Vyapari Voice — Voice-Based Inventory Management for Small Businesses
+# 🎙️ DukaanSetu — Voice-Based Inventory Management for Small Businesses
 
-> **"Shopkeeper speaks. Vyapari Voice understands. The business gets updated."**
+> **"Shopkeeper speaks. DukaanSetu understands. The business gets updated."**
 
 A voice-first smart inventory and business assistant designed for small Indian retailers, Kirana stores, grocery shops, and wholesalers. The system understands English, Telugu (`తెలుగు`), Hindi (`हिंदी`), and mixed-language speech (Tenglish / Hinglish) to manage stock, answer questions, and track customer credit with minimal typing.
 
@@ -171,7 +171,7 @@ Open `http://localhost:5173` in your browser.
 1. **Explore Demo Store**: Click the "Explore Demo Store" button on the login screen.
 2. **Multi-Language Toggle**: Switch between **English**, **తెలుగు**, and **हिंदी** via the globe selector in the header or sidebar.
 3. **Voice Stock Entry**: Head to `/voice`, speak *"5 బస్తాల బియ్యం కొన్నాం"* or click a quick command chip, inspect the confirmation card, and click Confirm.
-4. **Stock Queries**: Switch to the **Stock Questions & AI** tab, tap *"రైస్ స్టాక్ ఎంత ఉంది?"*, and hear Vyapari Voice reply with the real-time stock balance.
+4. **Stock Queries**: Switch to the **Stock Questions & AI** tab, tap *"రైస్ స్టాక్ ఎంత ఉంది?"*, and hear DukaanSetu reply with the real-time stock balance.
 5. **Customer Udhar**: Visit `/borrowings` to view pending customer credit, record payments, and click **WhatsApp Reminder** to generate prefilled payment reminder links.
 
 ---

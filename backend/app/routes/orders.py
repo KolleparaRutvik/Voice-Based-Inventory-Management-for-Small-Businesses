@@ -230,8 +230,8 @@ def export_purchase_order_pdf(order_id):
             return error_response("Purchase order not found", "NOT_FOUND", 404)
 
         order = order_res.data
-        shop_res = supabase.table('shops').select('*').eq('id', shop_id).single().execute()
-        shop = shop_res.data or {'name': 'Vyapari Store', 'phone': '', 'address': ''}
+        shop_res = supabase.table('shop_details').select('*').limit(1).maybe_single().execute()
+        shop = shop_res.data or {'name': 'DukaanSetu Store', 'phone': '', 'address': ''}
 
         supp_res = supabase.table('suppliers').select('*').eq('id', order['supplier_id']).single().execute()
         supplier = supp_res.data or {'name': 'Supplier', 'phone': '', 'address': ''}
@@ -294,12 +294,12 @@ def export_purchase_order_pdf(order_id):
         )
 
         # Header Title
-        elements.append(Paragraph("VYAPARI VOICE", title_style))
+        elements.append(Paragraph("DUKAANSETU", title_style))
         elements.append(Paragraph("Purchase Order & Goods Requisition", subtitle_style))
         elements.append(Spacer(1, 10))
 
         # Metadata grid: Shop Details vs Order & Supplier Details
-        shop_info = f"<b>{shop.get('name', 'Vyapari Store')}</b><br/>"
+        shop_info = f"<b>{shop.get('name', 'DukaanSetu Store')}</b><br/>"
         if shop.get('address'):
             shop_info += f"{shop.get('address')}<br/>"
         if shop.get('phone'):
@@ -400,7 +400,7 @@ def export_purchase_order_pdf(order_id):
             elements.append(Paragraph(f"<b>Notes:</b> {order.get('notes')}", normal_style))
 
         elements.append(Spacer(1, 30))
-        elements.append(Paragraph("<i>This is an electronically generated purchase order from Vyapari Voice.</i>", normal_style))
+        elements.append(Paragraph("<i>This is an electronically generated purchase order from DukaanSetu.</i>", normal_style))
 
         doc.build(elements)
         buffer.seek(0)

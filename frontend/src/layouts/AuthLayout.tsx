@@ -15,7 +15,7 @@ export default function AuthLayout() {
         <div className="w-16 h-16 rounded-2xl gradient-accent flex items-center justify-center mb-4 shadow-glow-accent">
           <Mic className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-white">Vyapari Voice</h1>
+        <h1 className="text-3xl font-bold text-white">DukaanSetu</h1>
         <p className="text-surface-400 text-sm mt-1">Voice-first inventory assistant</p>
       </div>
 
@@ -28,7 +28,7 @@ export default function AuthLayout() {
 
       {/* Footer */}
       <p className="relative z-10 text-surface-500 text-xs mt-8">
-        Shopkeeper speaks. Vyapari Voice understands.
+        Shopkeeper speaks. DukaanSetu understands.
       </p>
     </div>
   );

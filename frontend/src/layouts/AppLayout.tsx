@@ -160,7 +160,7 @@ export default function AppLayout() {
                 <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
                   <Mic className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-surface-900">Vyapari Voice</span>
+                <span className="font-bold text-surface-900">{t('appName')}</span>
               </div>
               <button onClick={() => setSidebarOpen(false)} className="p-2 rounded-xl hover:bg-surface-100">
                 <X className="w-5 h-5" />
