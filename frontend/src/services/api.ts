@@ -2,7 +2,11 @@ import axios from 'axios';
 import { supabase } from '../lib/supabase';
 import type { ApiResponse } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || (
+  typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+    ? 'https://dukaansetu-x0ru.onrender.com'
+    : 'http://localhost:5000'
+);
 
 const api = axios.create({
   baseURL: API_BASE,
