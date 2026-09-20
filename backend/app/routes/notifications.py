@@ -15,10 +15,54 @@ def list_notifications():
         # Proactively sync festival demand recommendations if within 15-day prior alert window
         try:
             sync_festival_notifications(shop_id=shop_id)
-        except Exception as sync_err:
+        except Exception:
             pass
 
         supabase = get_supabase()
+
+        # Proactively ensure shop-specific inventory & udhar alerts exist
+        try:
+            existing = supabase.table('notifications').select('id').eq('shop_id', shop_id).limit(2).execute()
+            if not existing.data or len(existing.data) < 2:
+                # 1. Check for low stock products
+                prods_res = supabase.table('products').select('*').eq('shop_id', shop_id).limit(10).execute()
+                inv_res = supabase.table('inventory').select('*').eq('shop_id', shop_id).limit(10).execute()
+                inv_map = {i['product_id']: float(i.get('current_stock', 0)) for i in (inv_res.data or [])}
+
+                from datetime import datetime, timezone
+                now = datetime.now(timezone.utc).isoformat()
+
+                for p in (prods_res.data or []):
+                    c_st = inv_map.get(p['id'], 0)
+                    min_st = float(p.get('minimum_stock', 10))
+                    if c_st <= min_st * 1.5:
+                        supabase.table('notifications').insert({
+                            'shop_id': shop_id,
+                            'type': 'LOW_STOCK',
+                            'title': f"Stock Alert: {p['name']}",
+                            'message': f"Current stock ({c_st} {p.get('base_unit', '')}) is near minimum threshold ({min_st} {p.get('base_unit', '')}). Restock recommended!",
+                            'data': {'product_name': p['name'], 'current_stock': c_st},
+                            'is_read': False,
+                            'created_at': now
+                        }).execute()
+                        break
+
+                # 2. Check for customer udhar
+                custs_res = supabase.table('customers').select('*').eq('shop_id', shop_id).gt('total_credit', 0).limit(1).execute()
+                if custs_res.data and len(custs_res.data) > 0:
+                    cust = custs_res.data[0]
+                    supabase.table('notifications').insert({
+                        'shop_id': shop_id,
+                        'type': 'PAYMENT_REMINDER',
+                        'title': f"Udhar Balance: {cust['name']}",
+                        'message': f"Customer has a pending credit balance of ₹{cust['total_credit']:,.2f}.",
+                        'data': {'customer_name': cust['name'], 'balance': cust['total_credit']},
+                        'is_read': False,
+                        'created_at': now
+                    }).execute()
+        except Exception:
+            pass
+
         result = supabase.table('notifications').select('*').eq('shop_id', shop_id).order('created_at', desc=True).limit(50).execute()
         return success_response({"items": result.data or []})
     except Exception as e:

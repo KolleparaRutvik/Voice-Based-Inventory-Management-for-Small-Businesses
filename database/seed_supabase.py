@@ -307,9 +307,322 @@ def seed_database():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, (flower_shop_id, 'aaaaaaaa-0000-0000-0000-000000000001', 'Ravi Wedding Decorators (Event Booking)', 'ACTIVE', 8500.0, 0.0, 8500.0, 'Mandapam flower garland booking advance', flower_user_id, now, now))
 
+    # ============================================================
+    # 9 ADDITIONAL RETAIL VERTICALS
+    # ============================================================
+    extra_verticals = [
+        {
+            'user_id': '55555555-5555-5555-5555-555555555555',
+            'auth_id': '55555555-5555-5555-5555-555555555555',
+            'email': 'clothing@dukaansetu.com',
+            'full_name': 'Venkata Ramana',
+            'phone': '+91 9848055555',
+            'shop_id': '55555555-5555-5555-5555-555555555555',
+            'shop_name': 'Sri Raghavendra Cloth Emporium',
+            'shop_type': 'clothing',
+            'address': 'Main Cloth Bazaar, Hanamkonda',
+            'gst': '36CCCP5555E1Z1',
+            'categories': ["Men's Wear", "Women's Sarees & Dresses", "Kids Wear", "Handloom & Silk", "Fabrics & Tailoring"],
+            'suppliers': [
+                ('55555555-0000-0000-0000-000000000001', 'Surat Silk Mills Wholesalers', '+91 9848055001', 'surat@silkmills.com', 'Textile Hub, Surat'),
+            ],
+            'customers': [
+                ('55555555-1111-0000-0000-000000000001', 'Ravi Teja (Wedding Shopping Udhar)', '+91 9848055111', 14500.0, 'Pattu sarees and suit fabrics balance'),
+            ],
+            'products': [
+                ('55555555-2222-0000-0000-000000000001', 'Kanchi Pattu Saree (కంచి పట్టు చీర)', 'Pattu Cheera', 'Handloom & Silk', 'piece', 'piece', 'piece', 1.0, 4800.0, 6500.0, 5.0, 40.0, 15.0, 28.0),
+                ('55555555-2222-0000-0000-000000000002', "Cotton Men's Formal Shirt (కాటన్ షర్టు)", 'Cotton Shirt', "Men's Wear", 'piece', 'box', 'piece', 10.0, 5200.0, 750.0, 20.0, 120.0, 40.0, 85.0),
+                ('55555555-2222-0000-0000-000000000003', "Levi's Denim Jeans 32/34 (జీన్స్ ప్యాంట్)", 'Jeans Pant', "Men's Wear", 'piece', 'piece', 'piece', 1.0, 1050.0, 1450.0, 10.0, 60.0, 20.0, 45.0),
+                ('55555555-2222-0000-0000-000000000004', "Women's Cotton Kurti / Dupatta Set (కుర్తీ సెట్)", 'Kurti Set', "Women's Sarees & Dresses", 'set', 'set', 'set', 1.0, 620.0, 890.0, 15.0, 80.0, 25.0, 60.0),
+                ('55555555-2222-0000-0000-000000000005', 'Pure Cotton Dhoti & Kanduva (ధోవతి & కండువా)', 'Dhovati Kanduva', "Men's Wear", 'set', 'set', 'set', 1.0, 310.0, 450.0, 10.0, 70.0, 20.0, 50.0),
+                ('55555555-2222-0000-0000-000000000006', 'School Uniform Fabric Set (స్కూల్ యూనిఫామ్)', 'Uniform Fabric', 'Fabrics & Tailoring', 'meter', 'roll', 'meter', 50.0, 11000.0, 320.0, 30.0, 250.0, 100.0, 150.0),
+            ]
+        },
+        {
+            'user_id': '66666666-6666-6666-6666-666666666666',
+            'auth_id': '66666666-6666-6666-6666-666666666666',
+            'email': 'pharmacy@dukaansetu.com',
+            'full_name': 'Dr. Suresh Reddy',
+            'phone': '+91 9848066666',
+            'shop_id': '66666666-6666-6666-6666-666666666666',
+            'shop_name': 'Sri Durga Medical & General Stores',
+            'shop_type': 'pharmacy',
+            'address': 'Hospital Road, Subedari',
+            'gst': '36DDDP6666F1Z2',
+            'categories': ['Tablets & Capsules', 'Syrups & Suspensions', 'Injections & Insulins', 'First Aid & Ointments', 'Health & Wellness Devices'],
+            'suppliers': [
+                ('66666666-0000-0000-0000-000000000001', 'Apollo Pharma Wholesale Dist', '+91 9848066001', 'orders@apollodist.com', 'Pharma City, Hyderabad'),
+            ],
+            'customers': [
+                ('66666666-1111-0000-0000-000000000001', 'Krishna Murthy (Senior Citizen BP/Sugar Udhar)', '+91 9848066111', 3250.0, 'Monthly regular prescription tab'),
+            ],
+            'products': [
+                ('66666666-2222-0000-0000-000000000001', 'Dolo 650mg Tablets (డోలో 650)', 'Dolo 650', 'Tablets & Capsules', 'strip', 'box', 'strip', 15.0, 360.0, 32.0, 30.0, 200.0, 60.0, 150.0),
+                ('66666666-2222-0000-0000-000000000002', 'Crocin Advance 500mg (క్రోసిన్)', 'Crocin', 'Tablets & Capsules', 'strip', 'box', 'strip', 20.0, 380.0, 25.0, 25.0, 150.0, 50.0, 120.0),
+                ('66666666-2222-0000-0000-000000000003', 'Benadryl Cough Syrup 100ml (దగ్గు మందు)', 'Daggu Mandhu', 'Syrups & Suspensions', 'bottle', 'box', 'bottle', 12.0, 1050.0, 115.0, 10.0, 60.0, 24.0, 40.0),
+                ('66666666-2222-0000-0000-000000000004', 'Human Mixtard 30/70 Insulin (ఇన్సులిన్)', 'Insulin Vial', 'Injections & Insulins', 'vial', 'pack', 'vial', 5.0, 780.0, 185.0, 5.0, 30.0, 10.0, 18.0),
+                ('66666666-2222-0000-0000-000000000005', 'ORS Electral Powder 21.8g (ఓఆర్ఎస్)', 'ORS Sachet', 'First Aid & Ointments', 'sachet', 'box', 'sachet', 25.0, 420.0, 22.0, 40.0, 300.0, 100.0, 200.0),
+                ('66666666-2222-0000-0000-000000000006', 'Digital BP Monitor (బీపీ మిషన్)', 'BP Monitor', 'Health & Wellness Devices', 'piece', 'piece', 'piece', 1.0, 1150.0, 1450.0, 2.0, 15.0, 5.0, 8.0),
+            ]
+        },
+        {
+            'user_id': '77777777-7777-7777-7777-777777777777',
+            'auth_id': '77777777-7777-7777-7777-777777777777',
+            'email': 'bakery@dukaansetu.com',
+            'full_name': 'Raju Mithaiwala',
+            'phone': '+91 9848077777',
+            'shop_id': '77777777-7777-7777-7777-777777777777',
+            'shop_name': 'Sri Sai Sweet Home & Bakery',
+            'shop_type': 'bakery',
+            'address': 'Nakkalagutta Junction',
+            'gst': '36EEEP7777G1Z3',
+            'categories': ['Fresh Cakes & Pastries', 'Traditional Sweets', 'Savory Puffs & Samosas', 'Daily Breads & Buns', 'Cookies & Biscuits'],
+            'suppliers': [
+                ('77777777-0000-0000-0000-000000000001', 'Vijaya Dairy Milk Supply', '+91 9848077001', 'vijaya@dairy.gov.in', 'Dairy Farm, Warangal'),
+            ],
+            'customers': [
+                ('77777777-1111-0000-0000-000000000001', 'Modern High School (Party Order Udhar)', '+91 9848077111', 5200.0, 'Annual day samosa & cake boxes'),
+            ],
+            'products': [
+                ('77777777-2222-0000-0000-000000000001', 'Black Forest Cake 1kg (బ్లాక్ ఫారెస్ట్ కేక్)', 'Black Forest Cake', 'Fresh Cakes & Pastries', 'kg', 'kg', 'kg', 1.0, 380.0, 550.0, 3.0, 20.0, 8.0, 12.0),
+                ('77777777-2222-0000-0000-000000000002', 'Fresh Milk Bread 400g (పాల బ్రెడ్)', 'Milk Bread', 'Daily Breads & Buns', 'packet', 'crate', 'packet', 20.0, 600.0, 40.0, 15.0, 100.0, 40.0, 60.0),
+                ('77777777-2222-0000-0000-000000000003', 'Ghee Mysore Pak (నెయ్యి మైసూర్ పాక్)', 'Mysore Pak', 'Traditional Sweets', 'kg', 'tray', 'kg', 5.0, 1750.0, 480.0, 5.0, 40.0, 15.0, 25.0),
+                ('77777777-2222-0000-0000-000000000004', 'Kaju Katli (కాజు కట్లి)', 'Kaju Katli', 'Traditional Sweets', 'kg', 'tray', 'kg', 5.0, 3200.0, 850.0, 4.0, 25.0, 10.0, 15.0),
+                ('77777777-2222-0000-0000-000000000005', 'Egg & Veg Puff (పఫ్స్)', 'Puff', 'Savory Puffs & Samosas', 'piece', 'tray', 'piece', 30.0, 480.0, 25.0, 20.0, 150.0, 60.0, 90.0),
+                ('77777777-2222-0000-0000-000000000006', 'Osmania Tea Biscuits (ఉస్మానియా బిస్కెట్లు)', 'Osmania Biscuits', 'Cookies & Biscuits', 'box', 'carton', 'box', 12.0, 1080.0, 120.0, 10.0, 60.0, 24.0, 45.0),
+            ]
+        },
+        {
+            'user_id': '88888888-8888-8888-8888-888888888888',
+            'auth_id': '88888888-8888-8888-8888-888888888888',
+            'email': 'restaurant@dukaansetu.com',
+            'full_name': 'Lakshmi Devi',
+            'phone': '+91 9848088888',
+            'shop_id': '88888888-8888-8888-8888-888888888888',
+            'shop_name': 'Sri Annapurna Tiffin & Meals',
+            'shop_type': 'restaurant',
+            'address': 'Bus Stand Road',
+            'gst': '36FFFP8888H1Z4',
+            'categories': ['Breakfast Tiffins', 'Meals & Biryani', 'Kitchen Raw Materials', 'Curries & Starters', 'Beverages'],
+            'suppliers': [
+                ('88888888-0000-0000-0000-000000000001', 'Rythu Bazar Vegetable Wholesalers', '+91 9848088001', 'rythu@mandi.gov.in', 'Wholesale Mandi, Warangal'),
+            ],
+            'customers': [
+                ('88888888-1111-0000-0000-000000000001', 'Subba Rao (Monthly Mess Account)', '+91 9848088111', 3200.0, 'Monthly lunch thali subscription'),
+            ],
+            'products': [
+                ('88888888-2222-0000-0000-000000000001', 'Special Chicken Dum Biryani (చికెన్ దమ్ బిర్యానీ)', 'Chicken Biryani', 'Meals & Biryani', 'plate', 'plate', 'plate', 1.0, 130.0, 220.0, 10.0, 80.0, 25.0, 50.0),
+                ('88888888-2222-0000-0000-000000000002', 'Ghee Masala Dosa (నెయ్యి మసాలా దోశ)', 'Masala Dosa', 'Breakfast Tiffins', 'plate', 'plate', 'plate', 1.0, 30.0, 60.0, 20.0, 150.0, 50.0, 120.0),
+                ('88888888-2222-0000-0000-000000000003', 'Steamed Idli Sambar (ఇడ్లీ సాంబార్)', 'Idli Sambar', 'Breakfast Tiffins', 'plate', 'plate', 'plate', 1.0, 18.0, 40.0, 25.0, 200.0, 60.0, 150.0),
+                ('88888888-2222-0000-0000-000000000004', 'South Indian Thali Meals (పూర్తి భోజనం)', 'Bhojanam', 'Meals & Biryani', 'plate', 'plate', 'plate', 1.0, 65.0, 110.0, 15.0, 100.0, 30.0, 80.0),
+                ('88888888-2222-0000-0000-000000000005', 'Raw Basmati Rice Bulk 25kg (బిర్యానీ బియ్యం)', 'Basmati Rice Bag', 'Kitchen Raw Materials', 'bag', 'bag', 'bag', 1.0, 2100.0, 2400.0, 3.0, 20.0, 10.0, 15.0),
+                ('88888888-2222-0000-0000-000000000006', 'Cooking Sunflower Oil Tin 15L (వంట నూనె)', 'Oil Tin', 'Kitchen Raw Materials', 'can', 'can', 'can', 1.0, 1650.0, 1850.0, 2.0, 12.0, 5.0, 8.0),
+            ]
+        },
+        {
+            'user_id': '99999999-9999-9999-9999-999999999999',
+            'auth_id': '99999999-9999-9999-9999-999999999999',
+            'email': 'teacoffee@dukaansetu.com',
+            'full_name': 'Ramu Chaiwala',
+            'phone': '+91 9848099999',
+            'shop_id': '99999999-9999-9999-9999-999999999999',
+            'shop_name': 'Sri Balaji Irani Tea & Coffee Point',
+            'shop_type': 'teacoffee',
+            'address': 'Station Road',
+            'gst': '36GGGP9999I1Z5',
+            'categories': ['Hot Beverages', 'Tea Stall Snacks', 'Raw Ingredients', 'Bottled Drinks', 'Biscuits & Mints'],
+            'suppliers': [
+                ('99999999-0000-0000-0000-000000000001', 'Sangam Dairy Whole Buffalo Milk', '+91 9848099001', 'sangam@dairy.com', 'Milk Chilling Hub, Warangal'),
+            ],
+            'customers': [
+                ('99999999-1111-0000-0000-000000000001', 'Court Auto Drivers Union (Weekly Tea Tab)', '+91 9848099111', 1850.0, 'Daily morning and evening tea tab'),
+            ],
+            'products': [
+                ('99999999-2222-0000-0000-000000000001', 'Special Irani Dum Chai (ఇరానీ దమ్ చాయ్)', 'Irani Chai', 'Hot Beverages', 'cup', 'cup', 'cup', 1.0, 6.0, 15.0, 50.0, 500.0, 200.0, 350.0),
+                ('99999999-2222-0000-0000-000000000002', 'South Indian Filter Coffee (ఫిల్టర్ కాఫీ)', 'Filter Coffee', 'Hot Beverages', 'cup', 'cup', 'cup', 1.0, 9.0, 20.0, 30.0, 250.0, 100.0, 180.0),
+                ('99999999-2222-0000-0000-000000000003', 'Hot Onion Samosa (ఉల్లి సమోసా)', 'Samosa', 'Tea Stall Snacks', 'piece', 'piece', 'piece', 1.0, 4.5, 10.0, 20.0, 180.0, 60.0, 120.0),
+                ('99999999-2222-0000-0000-000000000004', 'Mirchi Bajji (మిర్చి బజ్జీ)', 'Mirchi Bajji', 'Tea Stall Snacks', 'plate', 'plate', 'plate', 1.0, 14.0, 30.0, 15.0, 100.0, 35.0, 80.0),
+                ('99999999-2222-0000-0000-000000000005', 'Buffalo Milk 1 Litre (గేదె పాలు)', 'Paalu', 'Raw Ingredients', 'litre', 'can', 'litre', 20.0, 1200.0, 70.0, 10.0, 60.0, 30.0, 40.0),
+                ('99999999-2222-0000-0000-000000000006', 'Sugar Commercial 50kg (చక్కెర బస్తా)', 'Chakkera Bag', 'Raw Ingredients', 'bag', 'bag', 'bag', 1.0, 1950.0, 2050.0, 2.0, 8.0, 4.0, 5.0),
+            ]
+        },
+        {
+            'user_id': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            'auth_id': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            'email': 'hardware@dukaansetu.com',
+            'full_name': 'Mahesh Kumar',
+            'phone': '+91 98480aaaaa',
+            'shop_id': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            'shop_name': 'Sri Hanuman Hardware & Electricals',
+            'shop_type': 'hardware',
+            'address': 'Industrial Estate',
+            'gst': '36HHHP0000J1Z6',
+            'categories': ['Plumbing & Pipes', 'Electrical Wires & Switches', 'Cement & Construction', 'Paints & Chemicals', 'Hand Tools & Fasteners'],
+            'suppliers': [
+                ('aaaaaaaa-0000-0000-0000-000000000001', 'Supreme Pipes & Sanitary Wholesalers', '+91 98480aa001', 'supreme@pipesdist.com', 'Industrial Area, Hyderabad'),
+            ],
+            'customers': [
+                ('aaaaaaaa-1111-0000-0000-000000000001', 'Koti Plumber (Contractor Udhar)', '+91 98480aa111', 18500.0, 'Apartment plumbing project materials'),
+            ],
+            'products': [
+                ('aaaaaaaa-2222-0000-0000-000000000001', 'PVC Pipe 1 inch 10ft (పీవీసీ పైపు)', 'PVC Pipe', 'Plumbing & Pipes', 'length', 'bundle', 'length', 10.0, 1250.0, 160.0, 15.0, 100.0, 40.0, 75.0),
+                ('aaaaaaaa-2222-0000-0000-000000000002', 'Finolex Copper Wire 2.5 sq mm (రాగి వైరు 90మీ)', 'Copper Wire', 'Electrical Wires & Switches', 'roll', 'box', 'roll', 4.0, 9800.0, 2850.0, 5.0, 35.0, 12.0, 20.0),
+                ('aaaaaaaa-2222-0000-0000-000000000003', 'Anchor Roma Modular Switch 6A (యాంకర్ స్విచ్)', 'Anchor Switch', 'Electrical Wires & Switches', 'piece', 'box', 'piece', 20.0, 640.0, 42.0, 30.0, 200.0, 60.0, 150.0),
+                ('aaaaaaaa-2222-0000-0000-000000000004', 'UltraTech Cement 50kg (సిమెంట్ బస్తా)', 'Cement Bag', 'Cement & Construction', 'bag', 'bag', 'bag', 1.0, 345.0, 390.0, 25.0, 150.0, 50.0, 85.0),
+                ('aaaaaaaa-2222-0000-0000-000000000005', 'Asian Paints Apex White 20L (ఏషియన్ పెయింట్)', 'Asian Paint', 'Paints & Chemicals', 'bucket', 'bucket', 'bucket', 1.0, 3250.0, 3800.0, 4.0, 25.0, 10.0, 14.0),
+                ('aaaaaaaa-2222-0000-0000-000000000006', 'Steel Screws & Rawlplugs Box (స్క్రూలు బాక్స్)', 'Screws Box', 'Hand Tools & Fasteners', 'box', 'carton', 'box', 10.0, 1350.0, 180.0, 10.0, 50.0, 20.0, 35.0),
+            ]
+        },
+        {
+            'user_id': 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+            'auth_id': 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+            'email': 'autoparts@dukaansetu.com',
+            'full_name': 'Narasimha Rao',
+            'phone': '+91 98480bbbbb',
+            'shop_id': 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+            'shop_name': 'Sri Ganesh Auto Spares & Accessories',
+            'shop_type': 'autoparts',
+            'address': 'Auto Nagar',
+            'gst': '36IIIP1111K1Z7',
+            'categories': ['Engine Oils & Lubricants', 'Brake & Clutch Parts', 'Tyres & Tubes', 'Electrical & Bulbs', 'Cables & Filters'],
+            'suppliers': [
+                ('bbbbbbbb-0000-0000-0000-000000000001', 'Castrol India Lubricants Stockist', '+91 98480bb001', 'orders@castrolhub.com', 'Auto Market, Secunderabad'),
+            ],
+            'customers': [
+                ('bbbbbbbb-1111-0000-0000-000000000001', 'Prasad Mechanic (Auto Garage Tab)', '+91 98480bb111', 12500.0, 'Engine oil cartons & brake parts'),
+            ],
+            'products': [
+                ('bbbbbbbb-2222-0000-0000-000000000001', 'Castrol Activ 4T 20W-40 1L (ఇంజన్ ఆయిల్)', 'Engine Oil', 'Engine Oils & Lubricants', 'bottle', 'box', 'bottle', 12.0, 4200.0, 420.0, 12.0, 70.0, 24.0, 45.0),
+                ('bbbbbbbb-2222-0000-0000-000000000002', 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'Brake Shoes', 'Brake & Clutch Parts', 'set', 'box', 'set', 10.0, 1800.0, 240.0, 8.0, 50.0, 20.0, 30.0),
+                ('bbbbbbbb-2222-0000-0000-000000000003', 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'Bike Battery', 'Electrical & Bulbs', 'unit', 'unit', 'unit', 1.0, 1180.0, 1450.0, 3.0, 20.0, 6.0, 12.0),
+                ('bbbbbbbb-2222-0000-0000-000000000004', 'MRF Nylogrip Tyre 2.75-18 (ఎంఆర్ఎఫ్ టైరు)', 'MRF Tyre', 'Tyres & Tubes', 'piece', 'piece', 'piece', 1.0, 1380.0, 1650.0, 4.0, 25.0, 8.0, 16.0),
+                ('bbbbbbbb-2222-0000-0000-000000000005', 'Clutch Cable for Bajaj Pulsar (క్లచ్ కేబుల్)', 'Clutch Cable', 'Cables & Filters', 'piece', 'bundle', 'piece', 10.0, 850.0, 130.0, 6.0, 40.0, 15.0, 25.0),
+                ('bbbbbbbb-2222-0000-0000-000000000006', 'Spark Plug NGK 2-Wheeler (స్పార్క్ ప్లగ్)', 'Spark Plug', 'Electrical & Bulbs', 'piece', 'box', 'piece', 10.0, 650.0, 95.0, 15.0, 100.0, 30.0, 60.0),
+            ]
+        },
+        {
+            'user_id': 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+            'auth_id': 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+            'email': 'vegetables@dukaansetu.com',
+            'full_name': 'Yellamma',
+            'phone': '+91 98480ccccc',
+            'shop_id': 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+            'shop_name': 'Sri Lakshmi Fresh Veg & Fruits',
+            'shop_type': 'vegetables',
+            'address': 'Rythu Bazar',
+            'gst': '36JJJP2222L1Z8',
+            'categories': ['Fresh Vegetables', 'Leafy Greens', 'Onions & Potatoes', 'Fresh Fruits', 'Exotic & Salad Veg'],
+            'suppliers': [
+                ('cccccccc-0000-0000-0000-000000000001', 'Bowenpally Wholesale Mandi Guild', '+91 98480cc001', 'bowenpally@mandi.gov.in', 'Mandi Yard, Secunderabad'),
+            ],
+            'customers': [
+                ('cccccccc-1111-0000-0000-000000000001', 'Balaji Fast Food Center (Daily Veggies)', '+91 98480cc111', 3800.0, 'Daily onion, tomato, cabbage supply'),
+            ],
+            'products': [
+                ('cccccccc-2222-0000-0000-000000000001', 'Fresh Country Tomatoes / Tamata (నాటు టమాటా)', 'Tamata', 'Fresh Vegetables', 'kg', 'crate', 'kg', 25.0, 550.0, 35.0, 20.0, 120.0, 50.0, 80.0),
+                ('cccccccc-2222-0000-0000-000000000002', 'Onion / Ullipaya (ఉల్లిపాయలు)', 'Ullipaya', 'Onions & Potatoes', 'kg', 'bag', 'kg', 50.0, 1100.0, 30.0, 40.0, 250.0, 100.0, 150.0),
+                ('cccccccc-2222-0000-0000-000000000003', 'Potato / Bangala Dumpa (బంగాళాదుంపలు)', 'Bangala Dumpa', 'Onions & Potatoes', 'kg', 'bag', 'kg', 50.0, 1250.0, 32.0, 30.0, 200.0, 100.0, 120.0),
+                ('cccccccc-2222-0000-0000-000000000004', 'Green Chillies / Pachi Mirchi (పచ్చిమిర్చి)', 'Pachi Mirchi', 'Fresh Vegetables', 'kg', 'bag', 'kg', 10.0, 450.0, 60.0, 8.0, 40.0, 15.0, 25.0),
+                ('cccccccc-2222-0000-0000-000000000005', 'Fresh Palak / Spinach (పాలకూర కట్ట)', 'Palakoora', 'Leafy Greens', 'bunch', 'bundle', 'bunch', 25.0, 225.0, 15.0, 10.0, 80.0, 25.0, 50.0),
+                ('cccccccc-2222-0000-0000-000000000006', 'Yelakki Small Bananas (ఎలక్కి అరటిపండ్లు)', 'Arati Pandlu', 'Fresh Fruits', 'dozen', 'crate', 'dozen', 10.0, 420.0, 60.0, 8.0, 50.0, 20.0, 35.0),
+            ]
+        },
+        {
+            'user_id': 'dddddddd-dddd-dddd-dddd-dddddddddddd',
+            'auth_id': 'dddddddd-dddd-dddd-dddd-dddddddddddd',
+            'email': 'electronics@dukaansetu.com',
+            'full_name': 'Arun Kumar',
+            'phone': '+91 98480ddddd',
+            'shop_id': 'dddddddd-dddd-dddd-dddd-dddddddddddd',
+            'shop_name': 'Sri Tech Zone Mobiles & Electronics',
+            'shop_type': 'electronics',
+            'address': 'Complex Road',
+            'gst': '36KKKP3333M1Z9',
+            'categories': ['Smartphones', 'Fast Chargers & Adapters', 'Bluetooth Audio', 'Screen Guards & Covers', 'Powerbanks & Cables'],
+            'suppliers': [
+                ('dddddddd-0000-0000-0000-000000000001', 'Redington India Mobile Wholesale', '+91 98480dd001', 'redington@mobilehub.com', 'Electronics Plaza, Hyderabad'),
+            ],
+            'customers': [
+                ('dddddddd-1111-0000-0000-000000000001', 'Naresh (Phone EMI / Udhar Account)', '+91 98480dd111', 9500.0, 'Samsung Galaxy balance installment'),
+            ],
+            'products': [
+                ('dddddddd-2222-0000-0000-000000000001', 'Samsung Galaxy A15 5G 128GB (శాంసంగ్ మొబైల్)', 'Samsung Mobile', 'Smartphones', 'unit', 'unit', 'unit', 1.0, 13200.0, 14999.0, 2.0, 12.0, 4.0, 8.0),
+                ('dddddddd-2222-0000-0000-000000000002', 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'boAt Earbuds', 'Bluetooth Audio', 'unit', 'box', 'unit', 10.0, 8900.0, 1199.0, 5.0, 35.0, 10.0, 22.0),
+                ('dddddddd-2222-0000-0000-000000000003', 'Fast 20W Type-C Charger Adapter (టైప్-సి ఛార్జర్)', 'Fast Charger', 'Fast Chargers & Adapters', 'unit', 'box', 'unit', 10.0, 3200.0, 499.0, 10.0, 60.0, 20.0, 40.0),
+                ('dddddddd-2222-0000-0000-000000000004', '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'Power Bank', 'Powerbanks & Cables', 'unit', 'box', 'unit', 5.0, 3800.0, 999.0, 3.0, 25.0, 10.0, 15.0),
+                ('dddddddd-2222-0000-0000-000000000005', 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'Type-C Cable', 'Powerbanks & Cables', 'piece', 'bundle', 'piece', 20.0, 2200.0, 199.0, 15.0, 100.0, 30.0, 65.0),
+                ('dddddddd-2222-0000-0000-000000000006', '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'Screen Guard', 'Screen Guards & Covers', 'piece', 'box', 'piece', 25.0, 1250.0, 150.0, 20.0, 150.0, 50.0, 90.0),
+            ]
+        }
+    ]
+
+    for item in extra_verticals:
+        print(f"Inserting vertical: {item['shop_name']} ({item['shop_type']})...")
+        # User
+        cur.execute("""
+            INSERT INTO users (id, auth_id, email, full_name, phone, language, is_active, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name;
+        """, (item['user_id'], item['auth_id'], item['email'], item['full_name'], item['phone'], 'te', True, now, now))
+
+        # Shop
+        cur.execute("""
+            INSERT INTO shops (id, owner_id, name, type, phone, address, city, state, gst_number, currency, is_active, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+        """, (item['shop_id'], item['user_id'], item['shop_name'], item['shop_type'], item['phone'], item['address'], 'Warangal', 'Telangana', item['gst'], 'INR', True, now, now))
+
+        # Categories
+        for cat in item['categories']:
+            cur.execute("""
+                INSERT INTO categories (shop_id, name, is_active, created_at)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT DO NOTHING;
+            """, (item['shop_id'], cat, True, now))
+
+        # Suppliers
+        for sid, sname, sphone, semail, saddr in item['suppliers']:
+            cur.execute("""
+                INSERT INTO suppliers (id, shop_id, name, phone, email, address, is_active, created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING;
+            """, (sid, item['shop_id'], sname, sphone, semail, saddr, True, now, now))
+
+        # Customers
+        for cid, cname, cphone, ccred, cnote in item['customers']:
+            cur.execute("""
+                INSERT INTO customers (id, shop_id, name, phone, total_credit, is_active, created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING;
+            """, (cid, item['shop_id'], cname, cphone, ccred, True, now, now))
+
+            if ccred > 0:
+                cur.execute("""
+                    INSERT INTO borrowings (shop_id, customer_id, customer_name, status, total_value, paid_amount, remaining_balance, notes, created_by, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                """, (item['shop_id'], cid, cname, 'ACTIVE', ccred, 0.0, ccred, cnote, item['user_id'], now, now))
+
+        # Products & Inventory
+        for pid, name, loc, cat, base, pur, sel, conv, pur_pr, sel_pr, min_st, rec_st, reo_qty, cur_st in item['products']:
+            cur.execute("""
+                INSERT INTO products (
+                    id, shop_id, name, local_name, category, base_unit, purchase_unit, selling_unit,
+                    conversion_factor, purchase_price, selling_price, minimum_stock, recommended_stock,
+                    reorder_quantity, is_active, created_at, updated_at
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING;
+            """, (pid, item['shop_id'], name, loc, cat, base, pur, sel, conv, pur_pr, sel_pr, min_st, rec_st, reo_qty, True, now, now))
+
+            cur.execute("""
+                INSERT INTO inventory (shop_id, product_id, current_stock, stock_unit, last_stock_in, created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (shop_id, product_id) DO UPDATE SET current_stock = EXCLUDED.current_stock;
+            """, (item['shop_id'], pid, cur_st, base, now, now, now))
+
     cur.close()
     conn.close()
-    print("\nALL SEED DATA FOR KIRANA, JEWELLERY & FLOWER SHOPS INSERTED SUCCESSFULLY!")
+    print("\nALL 12 SHOP VERTICALS INSERTED AND SEEDED INTO SUPABASE POSTGRESQL SUCCESSFULLY!")
 
 if __name__ == '__main__':
     seed_database()
+

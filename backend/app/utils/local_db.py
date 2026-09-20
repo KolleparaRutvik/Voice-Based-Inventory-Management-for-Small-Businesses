@@ -18,6 +18,42 @@ DEMO_FLOWER_USER_ID = "44444444-4444-4444-4444-444444444444"
 DEMO_FLOWER_AUTH_ID = "44444444-4444-4444-4444-444444444444"
 DEMO_FLOWER_SHOP_ID = "44444444-4444-4444-4444-444444444444"
 
+DEMO_CLOTH_USER_ID = "55555555-5555-5555-5555-555555555555"
+DEMO_CLOTH_AUTH_ID = "55555555-5555-5555-5555-555555555555"
+DEMO_CLOTH_SHOP_ID = "55555555-5555-5555-5555-555555555555"
+
+DEMO_PHARMA_USER_ID = "66666666-6666-6666-6666-666666666666"
+DEMO_PHARMA_AUTH_ID = "66666666-6666-6666-6666-666666666666"
+DEMO_PHARMA_SHOP_ID = "66666666-6666-6666-6666-666666666666"
+
+DEMO_BAKERY_USER_ID = "77777777-7777-7777-7777-777777777777"
+DEMO_BAKERY_AUTH_ID = "77777777-7777-7777-7777-777777777777"
+DEMO_BAKERY_SHOP_ID = "77777777-7777-7777-7777-777777777777"
+
+DEMO_REST_USER_ID = "88888888-8888-8888-8888-888888888888"
+DEMO_REST_AUTH_ID = "88888888-8888-8888-8888-888888888888"
+DEMO_REST_SHOP_ID = "88888888-8888-8888-8888-888888888888"
+
+DEMO_TEA_USER_ID = "99999999-9999-9999-9999-999999999999"
+DEMO_TEA_AUTH_ID = "99999999-9999-9999-9999-999999999999"
+DEMO_TEA_SHOP_ID = "99999999-9999-9999-9999-999999999999"
+
+DEMO_HARDWARE_USER_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+DEMO_HARDWARE_AUTH_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+DEMO_HARDWARE_SHOP_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+DEMO_AUTO_USER_ID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+DEMO_AUTO_AUTH_ID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+DEMO_AUTO_SHOP_ID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+
+DEMO_VEG_USER_ID = "cccccccc-cccc-cccc-cccc-cccccccccccc"
+DEMO_VEG_AUTH_ID = "cccccccc-cccc-cccc-cccc-cccccccccccc"
+DEMO_VEG_SHOP_ID = "cccccccc-cccc-cccc-cccc-cccccccccccc"
+
+DEMO_ELEC_USER_ID = "dddddddd-dddd-dddd-dddd-dddddddddddd"
+DEMO_ELEC_AUTH_ID = "dddddddd-dddd-dddd-dddd-dddddddddddd"
+DEMO_ELEC_SHOP_ID = "dddddddd-dddd-dddd-dddd-dddddddddddd"
+
 class QueryResult:
     def __init__(self, data):
         self.data = data
@@ -186,15 +222,63 @@ class MockAuthResponse:
         self.user = user
 
 
+LOCAL_TOKEN_TO_EMAIL = {
+    'demo-token-kirana': 'srinivas@dukaansetu.com',
+    'demo-token-dukaansetu': 'srinivas@dukaansetu.com',
+    'demo-token-vyapari': 'srinivas@dukaansetu.com',
+    'demo-token': 'srinivas@dukaansetu.com',
+    'demo-token-jewellery': 'jewellery@dukaansetu.com',
+    'demo-token-gold': 'jewellery@dukaansetu.com',
+    'demo-token-flowers': 'flowers@dukaansetu.com',
+    'demo-token-pushpa': 'flowers@dukaansetu.com',
+    'demo-token-clothing': 'clothing@dukaansetu.com',
+    'demo-token-pharmacy': 'pharmacy@dukaansetu.com',
+    'demo-token-bakery': 'bakery@dukaansetu.com',
+    'demo-token-restaurant': 'restaurant@dukaansetu.com',
+    'demo-token-teacoffee': 'teacoffee@dukaansetu.com',
+    'demo-token-hardware': 'hardware@dukaansetu.com',
+    'demo-token-autoparts': 'autoparts@dukaansetu.com',
+    'demo-token-vegetables': 'vegetables@dukaansetu.com',
+    'demo-token-electronics': 'electronics@dukaansetu.com',
+}
+
+LOCAL_EMAIL_MAP = {
+    'jewel': ('demo-token-jewellery', DEMO_JEWEL_AUTH_ID, 'jewellery@dukaansetu.com'),
+    'swarna': ('demo-token-jewellery', DEMO_JEWEL_AUTH_ID, 'jewellery@dukaansetu.com'),
+    'flower': ('demo-token-flowers', DEMO_FLOWER_AUTH_ID, 'flowers@dukaansetu.com'),
+    'pushpa': ('demo-token-flowers', DEMO_FLOWER_AUTH_ID, 'flowers@dukaansetu.com'),
+    'clothing': ('demo-token-clothing', DEMO_CLOTH_AUTH_ID, 'clothing@dukaansetu.com'),
+    'cloth': ('demo-token-clothing', DEMO_CLOTH_AUTH_ID, 'clothing@dukaansetu.com'),
+    'pharmacy': ('demo-token-pharmacy', DEMO_PHARMA_AUTH_ID, 'pharmacy@dukaansetu.com'),
+    'medical': ('demo-token-pharmacy', DEMO_PHARMA_AUTH_ID, 'pharmacy@dukaansetu.com'),
+    'bakery': ('demo-token-bakery', DEMO_BAKERY_AUTH_ID, 'bakery@dukaansetu.com'),
+    'sweet': ('demo-token-bakery', DEMO_BAKERY_AUTH_ID, 'bakery@dukaansetu.com'),
+    'restaurant': ('demo-token-restaurant', DEMO_REST_AUTH_ID, 'restaurant@dukaansetu.com'),
+    'tiffin': ('demo-token-restaurant', DEMO_REST_AUTH_ID, 'restaurant@dukaansetu.com'),
+    'teacoffee': ('demo-token-teacoffee', DEMO_TEA_AUTH_ID, 'teacoffee@dukaansetu.com'),
+    'tea': ('demo-token-teacoffee', DEMO_TEA_AUTH_ID, 'teacoffee@dukaansetu.com'),
+    'chai': ('demo-token-teacoffee', DEMO_TEA_AUTH_ID, 'teacoffee@dukaansetu.com'),
+    'hardware': ('demo-token-hardware', DEMO_HARDWARE_AUTH_ID, 'hardware@dukaansetu.com'),
+    'autoparts': ('demo-token-autoparts', DEMO_AUTO_AUTH_ID, 'autoparts@dukaansetu.com'),
+    'spares': ('demo-token-autoparts', DEMO_AUTO_AUTH_ID, 'autoparts@dukaansetu.com'),
+    'auto': ('demo-token-autoparts', DEMO_AUTO_AUTH_ID, 'autoparts@dukaansetu.com'),
+    'vegetables': ('demo-token-vegetables', DEMO_VEG_AUTH_ID, 'vegetables@dukaansetu.com'),
+    'fruits': ('demo-token-vegetables', DEMO_VEG_AUTH_ID, 'vegetables@dukaansetu.com'),
+    'sabzi': ('demo-token-vegetables', DEMO_VEG_AUTH_ID, 'vegetables@dukaansetu.com'),
+    'electronics': ('demo-token-electronics', DEMO_ELEC_AUTH_ID, 'electronics@dukaansetu.com'),
+    'mobile': ('demo-token-electronics', DEMO_ELEC_AUTH_ID, 'electronics@dukaansetu.com'),
+    'kirana': ('demo-token-kirana', DEMO_AUTH_ID, 'srinivas@dukaansetu.com'),
+    'srinivas': ('demo-token-kirana', DEMO_AUTH_ID, 'srinivas@dukaansetu.com'),
+}
+
+
 class MockAuth:
     def __init__(self, store):
         self.store = store
 
     def get_user(self, token):
         users = self.store.get('users', [])
-        target_email = "jewellery@dukaansetu.com" if token in ('demo-token-jewellery', 'demo-token-gold') else (
-            "flowers@dukaansetu.com" if token in ('demo-token-flowers', 'demo-token-pushpa') else "srinivas@dukaansetu.com"
-        )
+        target_email = LOCAL_TOKEN_TO_EMAIL.get(token, "srinivas@dukaansetu.com")
         user = next((u for u in users if u.get('email') == target_email), None) or (users[0] if users else None)
         user_id = user['auth_id'] if user else DEMO_AUTH_ID
         email = user['email'] if user else target_email
@@ -203,9 +287,15 @@ class MockAuth:
     def sign_in_with_password(self, credentials):
         users = self.store.get('users', [])
         email = credentials.get('email', '').strip().lower()
-        token = 'demo-token-jewellery' if ('jewel' in email or 'swarna' in email) else (
-            'demo-token-flowers' if ('flower' in email or 'pushpa' in email) else 'demo-token-dukaansetu'
-        )
+
+        token = 'demo-token-kirana'
+        auth_id = DEMO_AUTH_ID
+        for kw, (t, aid, _) in LOCAL_EMAIL_MAP.items():
+            if kw in email:
+                token = t
+                auth_id = aid
+                break
+
         for u in users:
             if u.get('email', '').lower() == email:
                 user_obj = MockAuthUser(user_id=u['auth_id'], email=u['email'])
@@ -216,9 +306,6 @@ class MockAuth:
                 })()
                 return res
 
-        auth_id = DEMO_JEWEL_AUTH_ID if 'jewel' in email else (
-            DEMO_FLOWER_AUTH_ID if 'flower' in email else DEMO_AUTH_ID
-        )
         user_obj = MockAuthUser(user_id=auth_id, email=email or "demo@dukaansetu.com")
         res = MockAuthResponse(user_obj)
         res.session = type('Session', (), {
@@ -282,10 +369,109 @@ class LocalDbClient:
                 'is_active': True,
                 'created_at': now,
                 'updated_at': now
+            },
+            {
+                'id': DEMO_CLOTH_USER_ID,
+                'auth_id': DEMO_CLOTH_AUTH_ID,
+                'email': 'clothing@dukaansetu.com',
+                'full_name': 'Venkata Ramana (Textiles)',
+                'phone': '+91 9848055555',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_PHARMA_USER_ID,
+                'auth_id': DEMO_PHARMA_AUTH_ID,
+                'email': 'pharmacy@dukaansetu.com',
+                'full_name': 'Dr. Suresh Reddy (Pharmacist)',
+                'phone': '+91 9848066666',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_BAKERY_USER_ID,
+                'auth_id': DEMO_BAKERY_AUTH_ID,
+                'email': 'bakery@dukaansetu.com',
+                'full_name': 'Raju Mithaiwala (Baker & Confectioner)',
+                'phone': '+91 9848077777',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_REST_USER_ID,
+                'auth_id': DEMO_REST_AUTH_ID,
+                'email': 'restaurant@dukaansetu.com',
+                'full_name': 'Lakshmi Devi (Restaurateur)',
+                'phone': '+91 9848088888',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_TEA_USER_ID,
+                'auth_id': DEMO_TEA_AUTH_ID,
+                'email': 'teacoffee@dukaansetu.com',
+                'full_name': 'Ramu Chaiwala (Cafe Owner)',
+                'phone': '+91 9848099999',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_HARDWARE_USER_ID,
+                'auth_id': DEMO_HARDWARE_AUTH_ID,
+                'email': 'hardware@dukaansetu.com',
+                'full_name': 'Mahesh Kumar (Hardware Merchant)',
+                'phone': '+91 98480aaaaa',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_AUTO_USER_ID,
+                'auth_id': DEMO_AUTO_AUTH_ID,
+                'email': 'autoparts@dukaansetu.com',
+                'full_name': 'Narasimha Rao (Spares Specialist)',
+                'phone': '+91 98480bbbbb',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_VEG_USER_ID,
+                'auth_id': DEMO_VEG_AUTH_ID,
+                'email': 'vegetables@dukaansetu.com',
+                'full_name': 'Yellamma (Produce Merchant)',
+                'phone': '+91 98480ccccc',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_ELEC_USER_ID,
+                'auth_id': DEMO_ELEC_AUTH_ID,
+                'email': 'electronics@dukaansetu.com',
+                'full_name': 'Arun Kumar (Electronics & Mobile)',
+                'phone': '+91 98480ddddd',
+                'language': 'te',
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
             }
         ]
 
-        # Shops (Kirana, Jewellery, Flowers)
+        # Shops (12 Verticals)
         self.store['shops'] = [
             {
                 'id': DEMO_SHOP_ID,
@@ -333,6 +519,159 @@ class LocalDbClient:
                 'gst_number': '36BBMFP5678K1ZQ',
                 'currency': 'INR',
                 'tax_rate': 0,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_CLOTH_SHOP_ID,
+                'owner_id': DEMO_CLOTH_USER_ID,
+                'name': 'Sri Raghavendra Cloth Emporium',
+                'type': 'clothing',
+                'phone': '+91 9848055555',
+                'address': 'Main Cloth Bazaar, Hanamkonda',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36CCCP5555E1Z1',
+                'currency': 'INR',
+                'tax_rate': 5,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_PHARMA_SHOP_ID,
+                'owner_id': DEMO_PHARMA_USER_ID,
+                'name': 'Sri Durga Medical & General Stores',
+                'type': 'pharmacy',
+                'phone': '+91 9848066666',
+                'address': 'Hospital Road, Subedari',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36DDDP6666F1Z2',
+                'currency': 'INR',
+                'tax_rate': 12,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_BAKERY_SHOP_ID,
+                'owner_id': DEMO_BAKERY_USER_ID,
+                'name': 'Sri Sai Sweet Home & Bakery',
+                'type': 'bakery',
+                'phone': '+91 9848077777',
+                'address': 'Nakkalagutta Junction',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36EEEP7777G1Z3',
+                'currency': 'INR',
+                'tax_rate': 5,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_REST_SHOP_ID,
+                'owner_id': DEMO_REST_USER_ID,
+                'name': 'Sri Annapurna Tiffin & Meals',
+                'type': 'restaurant',
+                'phone': '+91 9848088888',
+                'address': 'Bus Stand Road',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36FFFP8888H1Z4',
+                'currency': 'INR',
+                'tax_rate': 5,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_TEA_SHOP_ID,
+                'owner_id': DEMO_TEA_USER_ID,
+                'name': 'Sri Balaji Irani Tea & Coffee Point',
+                'type': 'teacoffee',
+                'phone': '+91 9848099999',
+                'address': 'Station Road',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36GGGP9999I1Z5',
+                'currency': 'INR',
+                'tax_rate': 0,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_HARDWARE_SHOP_ID,
+                'owner_id': DEMO_HARDWARE_USER_ID,
+                'name': 'Sri Hanuman Hardware & Electricals',
+                'type': 'hardware',
+                'phone': '+91 98480aaaaa',
+                'address': 'Industrial Estate',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36HHHP0000J1Z6',
+                'currency': 'INR',
+                'tax_rate': 18,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_AUTO_SHOP_ID,
+                'owner_id': DEMO_AUTO_USER_ID,
+                'name': 'Sri Ganesh Auto Spares & Accessories',
+                'type': 'autoparts',
+                'phone': '+91 98480bbbbb',
+                'address': 'Auto Nagar',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36IIIP1111K1Z7',
+                'currency': 'INR',
+                'tax_rate': 18,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_VEG_SHOP_ID,
+                'owner_id': DEMO_VEG_USER_ID,
+                'name': 'Sri Lakshmi Fresh Veg & Fruits',
+                'type': 'vegetables',
+                'phone': '+91 98480ccccc',
+                'address': 'Rythu Bazar',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36JJJP2222L1Z8',
+                'currency': 'INR',
+                'tax_rate': 0,
+                'settings': {},
+                'is_active': True,
+                'created_at': now,
+                'updated_at': now
+            },
+            {
+                'id': DEMO_ELEC_SHOP_ID,
+                'owner_id': DEMO_ELEC_USER_ID,
+                'name': 'Sri Tech Zone Mobiles & Electronics',
+                'type': 'electronics',
+                'phone': '+91 98480ddddd',
+                'address': 'Complex Road',
+                'city': 'Warangal',
+                'state': 'Telangana',
+                'gst_number': '36KKKP3333M1Z9',
+                'currency': 'INR',
+                'tax_rate': 18,
                 'settings': {},
                 'is_active': True,
                 'created_at': now,
@@ -667,3 +1006,249 @@ class LocalDbClient:
             'paid_amount': 0.0, 'remaining_balance': 8500.0, 'notes': 'Mandapam flower garland booking advance',
             'created_by': DEMO_FLOWER_USER_ID, 'created_at': now, 'updated_at': now
         })
+
+        # ============================================================
+        # HELPER TO SEED REMAINING 9 SHOP VERTICALS
+        # ============================================================
+        additional_shops = [
+            {
+                'shop_id': DEMO_CLOTH_SHOP_ID,
+                'user_id': DEMO_CLOTH_USER_ID,
+                'categories': ["Men's Wear", "Women's Sarees & Dresses", "Kids Wear", "Handloom & Silk", "Fabrics & Tailoring"],
+                'suppliers': [
+                    {'name': 'Surat Silk Mills Wholesalers', 'phone': '+91 9848055001', 'email': 'surat@silkmills.com', 'address': 'Textile Hub, Surat'},
+                    {'name': 'Raymond & Arvind Fabrics Depot', 'phone': '+91 9848055002', 'email': 'raymond@fabrics.com', 'address': 'Secunderabad'}
+                ],
+                'customers': [
+                    {'name': 'Ravi Teja (Wedding Shopping Udhar)', 'phone': '+91 9848055111', 'credit': 14500.0, 'notes': 'Pattu sarees and suit fabrics balance'},
+                    {'name': 'Smt. Sujatha (Chit Saree Account)', 'phone': '+91 9848055222', 'credit': 4200.0, 'notes': 'Monthly saree installment'}
+                ],
+                'products': [
+                    {'id': 'p4444444-0000-0000-0000-000000000001', 'name': 'Kanchi Pattu Saree (కంచి పట్టు చీర)', 'local_name': 'Pattu Cheera', 'category': "Handloom & Silk", 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1.0, 'purchase_price': 4800.0, 'selling_price': 6500.0, 'minimum_stock': 5.0, 'recommended_stock': 40.0, 'reorder_quantity': 15.0, 'current_stock': 28.0},
+                    {'id': 'p4444444-0000-0000-0000-000000000002', 'name': "Cotton Men's Formal Shirt (కాటన్ షర్టు)", 'local_name': 'Cotton Shirt', 'category': "Men's Wear", 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 10.0, 'purchase_price': 5200.0, 'selling_price': 750.0, 'minimum_stock': 20.0, 'recommended_stock': 120.0, 'reorder_quantity': 40.0, 'current_stock': 85.0},
+                    {'id': 'p4444444-0000-0000-0000-000000000003', 'name': "Levi's Denim Jeans 32/34 (జీన్స్ ప్యాంట్)", 'local_name': 'Jeans Pant', 'category': "Men's Wear", 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1.0, 'purchase_price': 1050.0, 'selling_price': 1450.0, 'minimum_stock': 10.0, 'recommended_stock': 60.0, 'reorder_quantity': 20.0, 'current_stock': 45.0},
+                    {'id': 'p4444444-0000-0000-0000-000000000004', 'name': "Women's Cotton Kurti / Dupatta Set (కుర్తీ సెట్)", 'local_name': 'Kurti Set', 'category': "Women's Sarees & Dresses", 'base_unit': 'set', 'purchase_unit': 'set', 'selling_unit': 'set', 'conversion_factor': 1.0, 'purchase_price': 620.0, 'selling_price': 890.0, 'minimum_stock': 15.0, 'recommended_stock': 80.0, 'reorder_quantity': 25.0, 'current_stock': 60.0},
+                    {'id': 'p4444444-0000-0000-0000-000000000005', 'name': 'Pure Cotton Dhoti & Kanduva (ధోవతి & కండువా)', 'local_name': 'Dhovati Kanduva', 'category': "Men's Wear", 'base_unit': 'set', 'purchase_unit': 'set', 'selling_unit': 'set', 'conversion_factor': 1.0, 'purchase_price': 310.0, 'selling_price': 450.0, 'minimum_stock': 10.0, 'recommended_stock': 70.0, 'reorder_quantity': 20.0, 'current_stock': 50.0},
+                    {'id': 'p4444444-0000-0000-0000-000000000006', 'name': 'School Uniform Fabric Set (స్కూల్ యూనిఫామ్)', 'local_name': 'Uniform Fabric', 'category': "Fabrics & Tailoring", 'base_unit': 'meter', 'purchase_unit': 'roll', 'selling_unit': 'meter', 'conversion_factor': 50.0, 'purchase_price': 11000.0, 'selling_price': 320.0, 'minimum_stock': 30.0, 'recommended_stock': 250.0, 'reorder_quantity': 100.0, 'current_stock': 150.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_PHARMA_SHOP_ID,
+                'user_id': DEMO_PHARMA_USER_ID,
+                'categories': ['Tablets & Capsules', 'Syrups & Suspensions', 'Injections & Insulins', 'First Aid & Ointments', 'Health & Wellness Devices'],
+                'suppliers': [
+                    {'name': 'Apollo Pharma Wholesale Dist', 'phone': '+91 9848066001', 'email': 'orders@apollodist.com', 'address': 'Pharma City, Hyderabad'},
+                    {'name': "Reddy's Laboratories Stockist", 'phone': '+91 9848066002', 'email': 'stockist@drreddys.com', 'address': 'Warangal'}
+                ],
+                'customers': [
+                    {'name': 'Krishna Murthy (Senior Citizen BP/Sugar Udhar)', 'phone': '+91 9848066111', 'credit': 3250.0, 'notes': 'Monthly regular prescription tab'},
+                    {'name': 'Madhavi Latha (Pediatric Tab)', 'phone': '+91 9848066222', 'credit': 850.0, 'notes': 'Baby syrup and vitamins'}
+                ],
+                'products': [
+                    {'id': 'p5555555-0000-0000-0000-000000000001', 'name': 'Dolo 650mg Tablets (డోలో 650)', 'local_name': 'Dolo 650', 'category': 'Tablets & Capsules', 'base_unit': 'strip', 'purchase_unit': 'box', 'selling_unit': 'strip', 'conversion_factor': 15.0, 'purchase_price': 360.0, 'selling_price': 32.0, 'minimum_stock': 30.0, 'recommended_stock': 200.0, 'reorder_quantity': 60.0, 'current_stock': 150.0},
+                    {'id': 'p5555555-0000-0000-0000-000000000002', 'name': 'Crocin Advance 500mg (క్రోసిన్)', 'local_name': 'Crocin', 'category': 'Tablets & Capsules', 'base_unit': 'strip', 'purchase_unit': 'box', 'selling_unit': 'strip', 'conversion_factor': 20.0, 'purchase_price': 380.0, 'selling_price': 25.0, 'minimum_stock': 25.0, 'recommended_stock': 150.0, 'reorder_quantity': 50.0, 'current_stock': 120.0},
+                    {'id': 'p5555555-0000-0000-0000-000000000003', 'name': 'Benadryl Cough Syrup 100ml (దగ్గు మందు)', 'local_name': 'Daggu Mandhu', 'category': 'Syrups & Suspensions', 'base_unit': 'bottle', 'purchase_unit': 'box', 'selling_unit': 'bottle', 'conversion_factor': 12.0, 'purchase_price': 1050.0, 'selling_price': 115.0, 'minimum_stock': 10.0, 'recommended_stock': 60.0, 'reorder_quantity': 24.0, 'current_stock': 40.0},
+                    {'id': 'p5555555-0000-0000-0000-000000000004', 'name': 'Human Mixtard 30/70 Insulin (ఇన్సులిన్)', 'local_name': 'Insulin Vial', 'category': 'Injections & Insulins', 'base_unit': 'vial', 'purchase_unit': 'pack', 'selling_unit': 'vial', 'conversion_factor': 5.0, 'purchase_price': 780.0, 'selling_price': 185.0, 'minimum_stock': 5.0, 'recommended_stock': 30.0, 'reorder_quantity': 10.0, 'current_stock': 18.0},
+                    {'id': 'p5555555-0000-0000-0000-000000000005', 'name': 'ORS Electral Powder 21.8g (ఓఆర్ఎస్)', 'local_name': 'ORS Sachet', 'category': 'First Aid & Ointments', 'base_unit': 'sachet', 'purchase_unit': 'box', 'selling_unit': 'sachet', 'conversion_factor': 25.0, 'purchase_price': 420.0, 'selling_price': 22.0, 'minimum_stock': 40.0, 'recommended_stock': 300.0, 'reorder_quantity': 100.0, 'current_stock': 200.0},
+                    {'id': 'p5555555-0000-0000-0000-000000000006', 'name': 'Digital BP Monitor (బీపీ మిషన్)', 'local_name': 'BP Monitor', 'category': 'Health & Wellness Devices', 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1.0, 'purchase_price': 1150.0, 'selling_price': 1450.0, 'minimum_stock': 2.0, 'recommended_stock': 15.0, 'reorder_quantity': 5.0, 'current_stock': 8.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_BAKERY_SHOP_ID,
+                'user_id': DEMO_BAKERY_USER_ID,
+                'categories': ['Fresh Cakes & Pastries', 'Traditional Sweets', 'Savory Puffs & Samosas', 'Daily Breads & Buns', 'Cookies & Biscuits'],
+                'suppliers': [
+                    {'name': 'Vijaya Dairy Milk Supply', 'phone': '+91 9848077001', 'email': 'vijaya@dairy.gov.in', 'address': 'Dairy Farm, Warangal'},
+                    {'name': 'Royal Bakers Flour Wholesale', 'phone': '+91 9848077002', 'email': 'royalflour@bakers.com', 'address': 'Mill Area, Hyderabad'}
+                ],
+                'customers': [
+                    {'name': 'Modern High School (Party Order Udhar)', 'phone': '+91 9848077111', 'credit': 5200.0, 'notes': 'Annual day samosa & cake boxes'},
+                    {'name': 'Srinivasa Caterers (Sweet Boxes)', 'phone': '+91 9848077222', 'credit': 8400.0, 'notes': 'Mysore pak and kaju katli boxes for wedding'}
+                ],
+                'products': [
+                    {'id': 'p6666666-0000-0000-0000-000000000001', 'name': 'Black Forest Cake 1kg (బ్లాక్ ఫారెస్ట్ కేక్)', 'local_name': 'Black Forest Cake', 'category': 'Fresh Cakes & Pastries', 'base_unit': 'kg', 'purchase_unit': 'kg', 'selling_unit': 'kg', 'conversion_factor': 1.0, 'purchase_price': 380.0, 'selling_price': 550.0, 'minimum_stock': 3.0, 'recommended_stock': 20.0, 'reorder_quantity': 8.0, 'current_stock': 12.0},
+                    {'id': 'p6666666-0000-0000-0000-000000000002', 'name': 'Fresh Milk Bread 400g (పాల బ్రెడ్)', 'local_name': 'Milk Bread', 'category': 'Daily Breads & Buns', 'base_unit': 'packet', 'purchase_unit': 'crate', 'selling_unit': 'packet', 'conversion_factor': 20.0, 'purchase_price': 600.0, 'selling_price': 40.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 40.0, 'current_stock': 60.0},
+                    {'id': 'p6666666-0000-0000-0000-000000000003', 'name': 'Ghee Mysore Pak (నెయ్యి మైసూర్ పాక్)', 'local_name': 'Mysore Pak', 'category': 'Traditional Sweets', 'base_unit': 'kg', 'purchase_unit': 'tray', 'selling_unit': 'kg', 'conversion_factor': 5.0, 'purchase_price': 1750.0, 'selling_price': 480.0, 'minimum_stock': 5.0, 'recommended_stock': 40.0, 'reorder_quantity': 15.0, 'current_stock': 25.0},
+                    {'id': 'p6666666-0000-0000-0000-000000000004', 'name': 'Kaju Katli (కాజు కట్లి)', 'local_name': 'Kaju Katli', 'category': 'Traditional Sweets', 'base_unit': 'kg', 'purchase_unit': 'tray', 'selling_unit': 'kg', 'conversion_factor': 5.0, 'purchase_price': 3200.0, 'selling_price': 850.0, 'minimum_stock': 4.0, 'recommended_stock': 25.0, 'reorder_quantity': 10.0, 'current_stock': 15.0},
+                    {'id': 'p6666666-0000-0000-0000-000000000005', 'name': 'Egg & Veg Puff (పఫ్స్)', 'local_name': 'Puff', 'category': 'Savory Puffs & Samosas', 'base_unit': 'piece', 'purchase_unit': 'tray', 'selling_unit': 'piece', 'conversion_factor': 30.0, 'purchase_price': 480.0, 'selling_price': 25.0, 'minimum_stock': 20.0, 'recommended_stock': 150.0, 'reorder_quantity': 60.0, 'current_stock': 90.0},
+                    {'id': 'p6666666-0000-0000-0000-000000000006', 'name': 'Osmania Tea Biscuits (ఉస్మానియా బిస్కెట్లు)', 'local_name': 'Osmania Biscuits', 'category': 'Cookies & Biscuits', 'base_unit': 'box', 'purchase_unit': 'carton', 'selling_unit': 'box', 'conversion_factor': 12.0, 'purchase_price': 1080.0, 'selling_price': 120.0, 'minimum_stock': 10.0, 'recommended_stock': 60.0, 'reorder_quantity': 24.0, 'current_stock': 45.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_REST_SHOP_ID,
+                'user_id': DEMO_REST_USER_ID,
+                'categories': ['Breakfast Tiffins', 'Meals & Biryani', 'Kitchen Raw Materials', 'Curries & Starters', 'Beverages'],
+                'suppliers': [
+                    {'name': 'Rythu Bazar Vegetable Wholesalers', 'phone': '+91 9848088001', 'email': 'rythu@mandi.gov.in', 'address': 'Wholesale Mandi, Warangal'},
+                    {'name': 'Modern Poultry & Meat Supply', 'phone': '+91 9848088002', 'email': 'poultry@meatdist.com', 'address': 'Subedari'}
+                ],
+                'customers': [
+                    {'name': 'Subba Rao (Monthly Mess Account)', 'phone': '+91 9848088111', 'credit': 3200.0, 'notes': 'Monthly lunch thali subscription'},
+                    {'name': 'Govt Polytechnic Staff Union', 'phone': '+91 9848088222', 'credit': 4600.0, 'notes': 'Tiffins and tea tab'}
+                ],
+                'products': [
+                    {'id': 'p7777777-0000-0000-0000-000000000001', 'name': 'Special Chicken Dum Biryani (చికెన్ దమ్ బిర్యానీ)', 'local_name': 'Chicken Biryani', 'category': 'Meals & Biryani', 'base_unit': 'plate', 'purchase_unit': 'plate', 'selling_unit': 'plate', 'conversion_factor': 1.0, 'purchase_price': 130.0, 'selling_price': 220.0, 'minimum_stock': 10.0, 'recommended_stock': 80.0, 'reorder_quantity': 25.0, 'current_stock': 50.0},
+                    {'id': 'p7777777-0000-0000-0000-000000000002', 'name': 'Ghee Masala Dosa (నెయ్యి మసాలా దోశ)', 'local_name': 'Masala Dosa', 'category': 'Breakfast Tiffins', 'base_unit': 'plate', 'purchase_unit': 'plate', 'selling_unit': 'plate', 'conversion_factor': 1.0, 'purchase_price': 30.0, 'selling_price': 60.0, 'minimum_stock': 20.0, 'recommended_stock': 150.0, 'reorder_quantity': 50.0, 'current_stock': 120.0},
+                    {'id': 'p7777777-0000-0000-0000-000000000003', 'name': 'Steamed Idli Sambar (ఇడ్లీ సాంబార్)', 'local_name': 'Idli Sambar', 'category': 'Breakfast Tiffins', 'base_unit': 'plate', 'purchase_unit': 'plate', 'selling_unit': 'plate', 'conversion_factor': 1.0, 'purchase_price': 18.0, 'selling_price': 40.0, 'minimum_stock': 25.0, 'recommended_stock': 200.0, 'reorder_quantity': 60.0, 'current_stock': 150.0},
+                    {'id': 'p7777777-0000-0000-0000-000000000004', 'name': 'South Indian Thali Meals (పూర్తి భోజనం)', 'local_name': 'Bhojanam', 'category': 'Meals & Biryani', 'base_unit': 'plate', 'purchase_unit': 'plate', 'selling_unit': 'plate', 'conversion_factor': 1.0, 'purchase_price': 65.0, 'selling_price': 110.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 30.0, 'current_stock': 80.0},
+                    {'id': 'p7777777-0000-0000-0000-000000000005', 'name': 'Raw Basmati Rice Bulk 25kg (బిర్యానీ బియ్యం)', 'local_name': 'Basmati Rice Bag', 'category': 'Kitchen Raw Materials', 'base_unit': 'bag', 'purchase_unit': 'bag', 'selling_unit': 'bag', 'conversion_factor': 1.0, 'purchase_price': 2100.0, 'selling_price': 2400.0, 'minimum_stock': 3.0, 'recommended_stock': 20.0, 'reorder_quantity': 10.0, 'current_stock': 15.0},
+                    {'id': 'p7777777-0000-0000-0000-000000000006', 'name': 'Cooking Sunflower Oil Tin 15L (వంట నూనె)', 'local_name': 'Oil Tin', 'category': 'Kitchen Raw Materials', 'base_unit': 'can', 'purchase_unit': 'can', 'selling_unit': 'can', 'conversion_factor': 1.0, 'purchase_price': 1650.0, 'selling_price': 1850.0, 'minimum_stock': 2.0, 'recommended_stock': 12.0, 'reorder_quantity': 5.0, 'current_stock': 8.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_TEA_SHOP_ID,
+                'user_id': DEMO_TEA_USER_ID,
+                'categories': ['Hot Beverages', 'Tea Stall Snacks', 'Raw Ingredients', 'Bottled Drinks', 'Biscuits & Mints'],
+                'suppliers': [
+                    {'name': 'Sangam Dairy Whole Buffalo Milk', 'phone': '+91 9848099001', 'email': 'sangam@dairy.com', 'address': 'Milk Chilling Hub, Warangal'},
+                    {'name': 'Brooke Bond & Nescafe Depot', 'phone': '+91 9848099002', 'email': 'tea@huldist.com', 'address': 'Hyderabad'}
+                ],
+                'customers': [
+                    {'name': 'Court Auto Drivers Union (Weekly Tea Tab)', 'phone': '+91 9848099111', 'credit': 1850.0, 'notes': 'Daily morning and evening tea tab'},
+                    {'name': 'LIC Office Staff (Daily Tea & Samosa)', 'phone': '+91 9848099222', 'credit': 1200.0, 'notes': 'Monthly office refreshment'}
+                ],
+                'products': [
+                    {'id': 'p8888888-0000-0000-0000-000000000001', 'name': 'Special Irani Dum Chai (ఇరానీ దమ్ చాయ్)', 'local_name': 'Irani Chai', 'category': 'Hot Beverages', 'base_unit': 'cup', 'purchase_unit': 'cup', 'selling_unit': 'cup', 'conversion_factor': 1.0, 'purchase_price': 6.0, 'selling_price': 15.0, 'minimum_stock': 50.0, 'recommended_stock': 500.0, 'reorder_quantity': 200.0, 'current_stock': 350.0},
+                    {'id': 'p8888888-0000-0000-0000-000000000002', 'name': 'South Indian Filter Coffee (ఫిల్టర్ కాఫీ)', 'local_name': 'Filter Coffee', 'category': 'Hot Beverages', 'base_unit': 'cup', 'purchase_unit': 'cup', 'selling_unit': 'cup', 'conversion_factor': 1.0, 'purchase_price': 9.0, 'selling_price': 20.0, 'minimum_stock': 30.0, 'recommended_stock': 250.0, 'reorder_quantity': 100.0, 'current_stock': 180.0},
+                    {'id': 'p8888888-0000-0000-0000-000000000003', 'name': 'Hot Onion Samosa (ఉల్లి సమోసా)', 'local_name': 'Samosa', 'category': 'Tea Stall Snacks', 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1.0, 'purchase_price': 4.5, 'selling_price': 10.0, 'minimum_stock': 20.0, 'recommended_stock': 180.0, 'reorder_quantity': 60.0, 'current_stock': 120.0},
+                    {'id': 'p8888888-0000-0000-0000-000000000004', 'name': 'Mirchi Bajji (మిర్చి బజ్జీ)', 'local_name': 'Mirchi Bajji', 'category': 'Tea Stall Snacks', 'base_unit': 'plate', 'purchase_unit': 'plate', 'selling_unit': 'plate', 'conversion_factor': 1.0, 'purchase_price': 14.0, 'selling_price': 30.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 35.0, 'current_stock': 80.0},
+                    {'id': 'p8888888-0000-0000-0000-000000000005', 'name': 'Buffalo Milk 1 Litre (గేదె పాలు)', 'local_name': 'Paalu', 'category': 'Raw Ingredients', 'base_unit': 'litre', 'purchase_unit': 'can', 'selling_unit': 'litre', 'conversion_factor': 20.0, 'purchase_price': 1200.0, 'selling_price': 70.0, 'minimum_stock': 10.0, 'recommended_stock': 60.0, 'reorder_quantity': 30.0, 'current_stock': 40.0},
+                    {'id': 'p8888888-0000-0000-0000-000000000006', 'name': 'Sugar Commercial 50kg (చక్కెర బస్తా)', 'local_name': 'Chakkera Bag', 'category': 'Raw Ingredients', 'base_unit': 'bag', 'purchase_unit': 'bag', 'selling_unit': 'bag', 'conversion_factor': 1.0, 'purchase_price': 1950.0, 'selling_price': 2050.0, 'minimum_stock': 2.0, 'recommended_stock': 8.0, 'reorder_quantity': 4.0, 'current_stock': 5.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_HARDWARE_SHOP_ID,
+                'user_id': DEMO_HARDWARE_USER_ID,
+                'categories': ['Plumbing & Pipes', 'Electrical Wires & Switches', 'Cement & Construction', 'Paints & Chemicals', 'Hand Tools & Fasteners'],
+                'suppliers': [
+                    {'name': 'Supreme Pipes & Sanitary Wholesalers', 'phone': '+91 98480aa001', 'email': 'supreme@pipesdist.com', 'address': 'Industrial Area, Hyderabad'},
+                    {'name': 'Finolex Wires & UltraTech Depot', 'phone': '+91 98480aa002', 'email': 'finolex@wiresstock.com', 'address': 'Warangal'}
+                ],
+                'customers': [
+                    {'name': 'Koti Plumber (Contractor Udhar)', 'phone': '+91 98480aa111', 'credit': 18500.0, 'notes': 'Apartment plumbing project materials'},
+                    {'name': 'Satyam Electrician (Running Credit)', 'phone': '+91 98480aa222', 'credit': 9200.0, 'notes': 'Wiring and switch boxes'}
+                ],
+                'products': [
+                    {'id': 'paaaaaa-0000-0000-0000-000000000001', 'name': 'PVC Pipe 1 inch 10ft (పీవీసీ పైపు)', 'local_name': 'PVC Pipe', 'category': 'Plumbing & Pipes', 'base_unit': 'length', 'purchase_unit': 'bundle', 'selling_unit': 'length', 'conversion_factor': 10.0, 'purchase_price': 1250.0, 'selling_price': 160.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 40.0, 'current_stock': 75.0},
+                    {'id': 'paaaaaa-0000-0000-0000-000000000002', 'name': 'Finolex Copper Wire 2.5 sq mm (రాగి వైరు 90మీ)', 'local_name': 'Copper Wire', 'category': 'Electrical Wires & Switches', 'base_unit': 'roll', 'purchase_unit': 'box', 'selling_unit': 'roll', 'conversion_factor': 4.0, 'purchase_price': 9800.0, 'selling_price': 2850.0, 'minimum_stock': 5.0, 'recommended_stock': 35.0, 'reorder_quantity': 12.0, 'current_stock': 20.0},
+                    {'id': 'paaaaaa-0000-0000-0000-000000000003', 'name': 'Anchor Roma Modular Switch 6A (యాంకర్ స్విచ్)', 'local_name': 'Anchor Switch', 'category': 'Electrical Wires & Switches', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 20.0, 'purchase_price': 640.0, 'selling_price': 42.0, 'minimum_stock': 30.0, 'recommended_stock': 200.0, 'reorder_quantity': 60.0, 'current_stock': 150.0},
+                    {'id': 'paaaaaa-0000-0000-0000-000000000004', 'name': 'UltraTech Cement 50kg (సిమెంట్ బస్తా)', 'local_name': 'Cement Bag', 'category': 'Cement & Construction', 'base_unit': 'bag', 'purchase_unit': 'bag', 'selling_unit': 'bag', 'conversion_factor': 1.0, 'purchase_price': 345.0, 'selling_price': 390.0, 'minimum_stock': 25.0, 'recommended_stock': 150.0, 'reorder_quantity': 50.0, 'current_stock': 85.0},
+                    {'id': 'paaaaaa-0000-0000-0000-000000000005', 'name': 'Asian Paints Apex White 20L (ఏషియన్ పెయింట్)', 'local_name': 'Asian Paint', 'category': 'Paints & Chemicals', 'base_unit': 'bucket', 'purchase_unit': 'bucket', 'selling_unit': 'bucket', 'conversion_factor': 1.0, 'purchase_price': 3250.0, 'selling_price': 3800.0, 'minimum_stock': 4.0, 'recommended_stock': 25.0, 'reorder_quantity': 10.0, 'current_stock': 14.0},
+                    {'id': 'paaaaaa-0000-0000-0000-000000000006', 'name': 'Steel Screws & Rawlplugs Box (స్క్రూలు బాక్స్)', 'local_name': 'Screws Box', 'category': 'Hand Tools & Fasteners', 'base_unit': 'box', 'purchase_unit': 'carton', 'selling_unit': 'box', 'conversion_factor': 10.0, 'purchase_price': 1350.0, 'selling_price': 180.0, 'minimum_stock': 10.0, 'recommended_stock': 50.0, 'reorder_quantity': 20.0, 'current_stock': 35.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_AUTO_SHOP_ID,
+                'user_id': DEMO_AUTO_USER_ID,
+                'categories': ['Engine Oils & Lubricants', 'Brake & Clutch Parts', 'Tyres & Tubes', 'Electrical & Bulbs', 'Cables & Filters'],
+                'suppliers': [
+                    {'name': 'Castrol India Lubricants Stockist', 'phone': '+91 98480bb001', 'email': 'orders@castrolhub.com', 'address': 'Auto Market, Secunderabad'},
+                    {'name': 'Hero & Bajaj Genuine Spares Wholesale', 'phone': '+91 98480bb002', 'email': 'spares@automarket.com', 'address': 'Warangal'}
+                ],
+                'customers': [
+                    {'name': 'Prasad Mechanic (Auto Garage Tab)', 'phone': '+91 98480bb111', 'credit': 12500.0, 'notes': 'Engine oil cartons & brake parts'},
+                    {'name': 'Venu Two-Wheeler Works', 'phone': '+91 98480bb222', 'credit': 7800.0, 'notes': 'Tyres and battery replacement balance'}
+                ],
+                'products': [
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000001', 'name': 'Castrol Activ 4T 20W-40 1L (ఇంజన్ ఆయిల్)', 'local_name': 'Engine Oil', 'category': 'Engine Oils & Lubricants', 'base_unit': 'bottle', 'purchase_unit': 'box', 'selling_unit': 'bottle', 'conversion_factor': 12.0, 'purchase_price': 4200.0, 'selling_price': 420.0, 'minimum_stock': 12.0, 'recommended_stock': 70.0, 'reorder_quantity': 24.0, 'current_stock': 45.0},
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000002', 'name': 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'local_name': 'Brake Shoes', 'category': 'Brake & Clutch Parts', 'base_unit': 'set', 'purchase_unit': 'box', 'selling_unit': 'set', 'conversion_factor': 10.0, 'purchase_price': 1800.0, 'selling_price': 240.0, 'minimum_stock': 8.0, 'recommended_stock': 50.0, 'reorder_quantity': 20.0, 'current_stock': 30.0},
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000003', 'name': 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'local_name': 'Bike Battery', 'category': 'Electrical & Bulbs', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1.0, 'purchase_price': 1180.0, 'selling_price': 1450.0, 'minimum_stock': 3.0, 'recommended_stock': 20.0, 'reorder_quantity': 6.0, 'current_stock': 12.0},
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000004', 'name': 'MRF Nylogrip Tyre 2.75-18 (ఎంఆర్ఎఫ్ టైరు)', 'local_name': 'MRF Tyre', 'category': 'Tyres & Tubes', 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1.0, 'purchase_price': 1380.0, 'selling_price': 1650.0, 'minimum_stock': 4.0, 'recommended_stock': 25.0, 'reorder_quantity': 8.0, 'current_stock': 16.0},
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000005', 'name': 'Clutch Cable for Bajaj Pulsar (క్లచ్ కేబుల్)', 'local_name': 'Clutch Cable', 'category': 'Cables & Filters', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 10.0, 'purchase_price': 850.0, 'selling_price': 130.0, 'minimum_stock': 6.0, 'recommended_stock': 40.0, 'reorder_quantity': 15.0, 'current_stock': 25.0},
+                    {'id': 'pbbbbbb-0000-0000-0000-000000000006', 'name': 'Spark Plug NGK 2-Wheeler (స్పార్క్ ప్లగ్)', 'local_name': 'Spark Plug', 'category': 'Electrical & Bulbs', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 10.0, 'purchase_price': 650.0, 'selling_price': 95.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 30.0, 'current_stock': 60.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_VEG_SHOP_ID,
+                'user_id': DEMO_VEG_USER_ID,
+                'categories': ['Fresh Vegetables', 'Leafy Greens', 'Onions & Potatoes', 'Fresh Fruits', 'Exotic & Salad Veg'],
+                'suppliers': [
+                    {'name': 'Bowenpally Wholesale Mandi Guild', 'phone': '+91 98480cc001', 'email': 'bowenpally@mandi.gov.in', 'address': 'Mandi Yard, Secunderabad'},
+                    {'name': 'Kothapet Fruit Commission Market', 'phone': '+91 98480cc002', 'email': 'kothapet@fruits.com', 'address': 'Fruit Market, Hyderabad'}
+                ],
+                'customers': [
+                    {'name': 'Balaji Fast Food Center (Daily Veggies)', 'phone': '+91 98480cc111', 'credit': 3800.0, 'notes': 'Daily onion, tomato, cabbage supply'},
+                    {'name': 'Raghavendra Mess (Vegetables)', 'phone': '+91 98480cc222', 'credit': 2400.0, 'notes': 'Weekly leafy greens and potatoes'}
+                ],
+                'products': [
+                    {'id': 'pcccccc-0000-0000-0000-000000000001', 'name': 'Fresh Country Tomatoes / Tamata (నాటు టమాటా)', 'local_name': 'Tamata', 'category': 'Fresh Vegetables', 'base_unit': 'kg', 'purchase_unit': 'crate', 'selling_unit': 'kg', 'conversion_factor': 25.0, 'purchase_price': 550.0, 'selling_price': 35.0, 'minimum_stock': 20.0, 'recommended_stock': 120.0, 'reorder_quantity': 50.0, 'current_stock': 80.0},
+                    {'id': 'pcccccc-0000-0000-0000-000000000002', 'name': 'Onion / Ullipaya (ఉల్లిపాయలు)', 'local_name': 'Ullipaya', 'category': 'Onions & Potatoes', 'base_unit': 'kg', 'purchase_unit': 'bag', 'selling_unit': 'kg', 'conversion_factor': 50.0, 'purchase_price': 1100.0, 'selling_price': 30.0, 'minimum_stock': 40.0, 'recommended_stock': 250.0, 'reorder_quantity': 100.0, 'current_stock': 150.0},
+                    {'id': 'pcccccc-0000-0000-0000-000000000003', 'name': 'Potato / Bangala Dumpa (బంగాళాదుంపలు)', 'local_name': 'Bangala Dumpa', 'category': 'Onions & Potatoes', 'base_unit': 'kg', 'purchase_unit': 'bag', 'selling_unit': 'kg', 'conversion_factor': 50.0, 'purchase_price': 1250.0, 'selling_price': 32.0, 'minimum_stock': 30.0, 'recommended_stock': 200.0, 'reorder_quantity': 100.0, 'current_stock': 120.0},
+                    {'id': 'pcccccc-0000-0000-0000-000000000004', 'name': 'Green Chillies / Pachi Mirchi (పచ్చిమిర్చి)', 'local_name': 'Pachi Mirchi', 'category': 'Fresh Vegetables', 'base_unit': 'kg', 'purchase_unit': 'bag', 'selling_unit': 'kg', 'conversion_factor': 10.0, 'purchase_price': 450.0, 'selling_price': 60.0, 'minimum_stock': 8.0, 'recommended_stock': 40.0, 'reorder_quantity': 15.0, 'current_stock': 25.0},
+                    {'id': 'pcccccc-0000-0000-0000-000000000005', 'name': 'Fresh Palak / Spinach (పాలకూర కట్ట)', 'local_name': 'Palakoora', 'category': 'Leafy Greens', 'base_unit': 'bunch', 'purchase_unit': 'bundle', 'selling_unit': 'bunch', 'conversion_factor': 25.0, 'purchase_price': 225.0, 'selling_price': 15.0, 'minimum_stock': 10.0, 'recommended_stock': 80.0, 'reorder_quantity': 25.0, 'current_stock': 50.0},
+                    {'id': 'pcccccc-0000-0000-0000-000000000006', 'name': 'Yelakki Small Bananas (ఎలక్కి అరటిపండ్లు)', 'local_name': 'Arati Pandlu', 'category': 'Fresh Fruits', 'base_unit': 'dozen', 'purchase_unit': 'crate', 'selling_unit': 'dozen', 'conversion_factor': 10.0, 'purchase_price': 420.0, 'selling_price': 60.0, 'minimum_stock': 8.0, 'recommended_stock': 50.0, 'reorder_quantity': 20.0, 'current_stock': 35.0},
+                ]
+            },
+            {
+                'shop_id': DEMO_ELEC_SHOP_ID,
+                'user_id': DEMO_ELEC_USER_ID,
+                'categories': ['Smartphones', 'Fast Chargers & Adapters', 'Bluetooth Audio', 'Screen Guards & Covers', 'Powerbanks & Cables'],
+                'suppliers': [
+                    {'name': 'Redington India Mobile Wholesale', 'phone': '+91 98480dd001', 'email': 'redington@mobilehub.com', 'address': 'Electronics Plaza, Hyderabad'},
+                    {'name': 'boAt Audio Official Distributorship', 'phone': '+91 98480dd002', 'email': 'boatdist@audio.in', 'address': 'Warangal'}
+                ],
+                'customers': [
+                    {'name': 'Naresh (Phone EMI / Udhar Account)', 'phone': '+91 98480dd111', 'credit': 9500.0, 'notes': 'Samsung Galaxy balance installment'},
+                    {'name': 'Sandeep (College Student Audio Tab)', 'phone': '+91 98480dd222', 'credit': 1199.0, 'notes': 'boAt earbuds pending balance'}
+                ],
+                'products': [
+                    {'id': 'pdddddd-0000-0000-0000-000000000001', 'name': 'Samsung Galaxy A15 5G 128GB (శాంసంగ్ మొబైల్)', 'local_name': 'Samsung Mobile', 'category': 'Smartphones', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1.0, 'purchase_price': 13200.0, 'selling_price': 14999.0, 'minimum_stock': 2.0, 'recommended_stock': 12.0, 'reorder_quantity': 4.0, 'current_stock': 8.0},
+                    {'id': 'pdddddd-0000-0000-0000-000000000002', 'name': 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'local_name': 'boAt Earbuds', 'category': 'Bluetooth Audio', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10.0, 'purchase_price': 8900.0, 'selling_price': 1199.0, 'minimum_stock': 5.0, 'recommended_stock': 35.0, 'reorder_quantity': 10.0, 'current_stock': 22.0},
+                    {'id': 'pdddddd-0000-0000-0000-000000000003', 'name': 'Fast 20W Type-C Charger Adapter (టైప్-సి ఛార్జర్)', 'local_name': 'Fast Charger', 'category': 'Fast Chargers & Adapters', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10.0, 'purchase_price': 3200.0, 'selling_price': 499.0, 'minimum_stock': 10.0, 'recommended_stock': 60.0, 'reorder_quantity': 20.0, 'current_stock': 40.0},
+                    {'id': 'pdddddd-0000-0000-0000-000000000004', 'name': '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'local_name': 'Power Bank', 'category': 'Powerbanks & Cables', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 5.0, 'purchase_price': 3800.0, 'selling_price': 999.0, 'minimum_stock': 3.0, 'recommended_stock': 25.0, 'reorder_quantity': 10.0, 'current_stock': 15.0},
+                    {'id': 'pdddddd-0000-0000-0000-000000000005', 'name': 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'local_name': 'Type-C Cable', 'category': 'Powerbanks & Cables', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 20.0, 'purchase_price': 2200.0, 'selling_price': 199.0, 'minimum_stock': 15.0, 'recommended_stock': 100.0, 'reorder_quantity': 30.0, 'current_stock': 65.0},
+                    {'id': 'pdddddd-0000-0000-0000-000000000006', 'name': '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'local_name': 'Screen Guard', 'category': 'Screen Guards & Covers', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 25.0, 'purchase_price': 1250.0, 'selling_price': 150.0, 'minimum_stock': 20.0, 'recommended_stock': 150.0, 'reorder_quantity': 50.0, 'current_stock': 90.0},
+                ]
+            }
+        ]
+
+        for s_info in additional_shops:
+            sid = s_info['shop_id']
+            uid = s_info['user_id']
+
+            # Categories
+            for cat_name in s_info['categories']:
+                self.store['categories'].append({
+                    'id': str(uuid.uuid4()), 'shop_id': sid, 'name': cat_name, 'is_active': True, 'created_at': now
+                })
+
+            # Suppliers
+            s_map = []
+            for supp in s_info['suppliers']:
+                s_id = str(uuid.uuid4())
+                s_map.append(s_id)
+                self.store['suppliers'].append({
+                    'id': s_id, 'shop_id': sid, 'name': supp['name'], 'phone': supp['phone'],
+                    'email': supp['email'], 'address': supp['address'], 'is_active': True,
+                    'created_at': now, 'updated_at': now
+                })
+
+            # Customers & Borrowings
+            for cust in s_info['customers']:
+                c_id = str(uuid.uuid4())
+                self.store['customers'].append({
+                    'id': c_id, 'shop_id': sid, 'name': cust['name'], 'phone': cust['phone'],
+                    'total_credit': cust['credit'], 'is_active': True, 'created_at': now, 'updated_at': now
+                })
+                if cust['credit'] > 0:
+                    self.store['borrowings'].append({
+                        'id': str(uuid.uuid4()), 'shop_id': sid, 'customer_id': c_id,
+                        'customer_name': cust['name'], 'status': 'ACTIVE', 'total_value': cust['credit'],
+                        'paid_amount': 0.0, 'remaining_balance': cust['credit'], 'notes': cust.get('notes', 'Credit account'),
+                        'created_by': uid, 'created_at': now, 'updated_at': now
+                    })
+
+            # Products & Inventory
+            for prod in s_info['products']:
+                st = prod.pop('current_stock')
+                prod['shop_id'] = sid
+                prod['is_active'] = True
+                prod['supplier_id'] = s_map[0] if s_map else None
+                prod['created_at'] = now
+                prod['updated_at'] = now
+                self.store['products'].append(prod)
+                self.store['inventory'].append({
+                    'id': str(uuid.uuid4()), 'shop_id': sid, 'product_id': prod['id'],
+                    'current_stock': st, 'stock_unit': prod['base_unit'],
+                    'last_stock_in': now, 'last_stock_out': now, 'created_at': now, 'updated_at': now
+                })

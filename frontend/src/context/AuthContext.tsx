@@ -3,15 +3,59 @@ import { supabase } from '../lib/supabase';
 import { authService } from '../services/api';
 import type { User, Shop, AuthState, LoginCredentials, RegisterData } from '../types';
 
+export type StoreTypeSlug =
+  | 'kirana'
+  | 'jewellery'
+  | 'flowers'
+  | 'clothing'
+  | 'pharmacy'
+  | 'bakery'
+  | 'restaurant'
+  | 'teacoffee'
+  | 'hardware'
+  | 'autoparts'
+  | 'vegetables'
+  | 'electronics';
+
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
-  loginAsDemo: (storeType?: 'kirana' | 'jewellery' | 'flowers') => Promise<void>;
+  loginAsDemo: (storeType?: StoreTypeSlug) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const DEMO_STORE_TOKENS: Record<StoreTypeSlug, string> = {
+  kirana: 'demo-token-kirana',
+  jewellery: 'demo-token-jewellery',
+  flowers: 'demo-token-flowers',
+  clothing: 'demo-token-clothing',
+  pharmacy: 'demo-token-pharmacy',
+  bakery: 'demo-token-bakery',
+  restaurant: 'demo-token-restaurant',
+  teacoffee: 'demo-token-teacoffee',
+  hardware: 'demo-token-hardware',
+  autoparts: 'demo-token-autoparts',
+  vegetables: 'demo-token-vegetables',
+  electronics: 'demo-token-electronics',
+};
+
+const EMAIL_TO_STORE_TYPE: Record<string, StoreTypeSlug> = {
+  'srinivas@dukaansetu.com': 'kirana',
+  'jewellery@dukaansetu.com': 'jewellery',
+  'flowers@dukaansetu.com': 'flowers',
+  'clothing@dukaansetu.com': 'clothing',
+  'pharmacy@dukaansetu.com': 'pharmacy',
+  'bakery@dukaansetu.com': 'bakery',
+  'restaurant@dukaansetu.com': 'restaurant',
+  'teacoffee@dukaansetu.com': 'teacoffee',
+  'hardware@dukaansetu.com': 'hardware',
+  'autoparts@dukaansetu.com': 'autoparts',
+  'vegetables@dukaansetu.com': 'vegetables',
+  'electronics@dukaansetu.com': 'electronics',
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({
@@ -101,12 +145,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, [refreshProfile]);
 
-  const loginAsDemo = async (storeType: 'kirana' | 'jewellery' | 'flowers' = 'kirana') => {
+  const loginAsDemo = async (storeType: StoreTypeSlug = 'kirana') => {
     localStorage.setItem('dukaansetu_demo_mode', 'true');
     localStorage.setItem('dukaansetu_store_type', storeType);
-    const token = storeType === 'jewellery' ? 'demo-token-jewellery' : (
-      storeType === 'flowers' ? 'demo-token-flowers' : 'demo-token-dukaansetu'
-    );
+    const token = DEMO_STORE_TOKENS[storeType] || 'demo-token-kirana';
     localStorage.setItem('dukaansetu_demo_token', token);
     setState(prev => ({
       ...prev,
@@ -119,18 +161,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: LoginCredentials) => {
     const email = credentials.email.trim().toLowerCase();
-    // Support quick login for the specialized stores
-    if (email === 'jewellery@dukaansetu.com' || email.includes('jewel') || email.includes('swarna')) {
-      await loginAsDemo('jewellery');
+    // Support quick login for any of the 12 specialized demo stores
+    if (EMAIL_TO_STORE_TYPE[email]) {
+      await loginAsDemo(EMAIL_TO_STORE_TYPE[email]);
       return;
     }
-    if (email === 'flowers@dukaansetu.com' || email.includes('flower') || email.includes('pushpa')) {
-      await loginAsDemo('flowers');
-      return;
-    }
-    if (email === 'srinivas@dukaansetu.com' || email.includes('kirana')) {
-      await loginAsDemo('kirana');
-      return;
+    for (const [demoEmail, storeType] of Object.entries(EMAIL_TO_STORE_TYPE)) {
+      const keyword = demoEmail.split('@')[0];
+      if (email.includes(keyword)) {
+        await loginAsDemo(storeType);
+        return;
+      }
     }
 
     localStorage.removeItem('dukaansetu_demo_mode');

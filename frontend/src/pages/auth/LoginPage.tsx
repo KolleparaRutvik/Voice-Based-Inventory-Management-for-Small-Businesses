@@ -1,7 +1,155 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import type { StoreTypeSlug } from '../../context/AuthContext';
+
+interface DemoStoreInfo {
+  type: StoreTypeSlug;
+  name: string;
+  badge: string;
+  emoji: string;
+  desc: string;
+  email: string;
+  borderAccent: string;
+  bgAccent: string;
+  textAccent: string;
+}
+
+const ALL_DEMO_STORES: DemoStoreInfo[] = [
+  {
+    type: 'kirana',
+    name: 'Sri Lakshmi Kirana Store',
+    badge: 'Kirana',
+    emoji: '🛒',
+    desc: 'Rice, Dal, Oil, FMCG & Customer Udhar',
+    email: 'srinivas@dukaansetu.com',
+    borderAccent: 'border-emerald-500/30',
+    bgAccent: 'bg-emerald-500/10 hover:bg-emerald-500/20',
+    textAccent: 'text-emerald-300',
+  },
+  {
+    type: 'jewellery',
+    name: 'Sri Swarna Mahal Jewellers',
+    badge: 'Jewellery',
+    emoji: '💎',
+    desc: '22K Gold 916, Silver, Diamonds, Grams & Gold Loans',
+    email: 'jewellery@dukaansetu.com',
+    borderAccent: 'border-amber-500/30',
+    bgAccent: 'bg-amber-500/10 hover:bg-amber-500/20',
+    textAccent: 'text-amber-300',
+  },
+  {
+    type: 'flowers',
+    name: 'Sri Venkateswara Flower Mart',
+    badge: 'Flowers',
+    emoji: '🌸',
+    desc: 'Jasmine, Marigold, Garlands, Mora & Temple Decor',
+    email: 'flowers@dukaansetu.com',
+    borderAccent: 'border-rose-500/30',
+    bgAccent: 'bg-rose-500/10 hover:bg-rose-500/20',
+    textAccent: 'text-rose-300',
+  },
+  {
+    type: 'clothing',
+    name: 'Sri Raghavendra Cloth Emporium',
+    badge: 'Clothing',
+    emoji: '👕',
+    desc: 'Kanchi Sarees, Kurtas, Denim, Fabrics & Alterations',
+    email: 'clothing@dukaansetu.com',
+    borderAccent: 'border-indigo-500/30',
+    bgAccent: 'bg-indigo-500/10 hover:bg-indigo-500/20',
+    textAccent: 'text-indigo-300',
+  },
+  {
+    type: 'pharmacy',
+    name: 'Sri Durga Medical & General Stores',
+    badge: 'Pharmacy',
+    emoji: '💊',
+    desc: 'Dolo 650, Insulins, Syrups, Expiry Alerts & Batch Numbers',
+    email: 'pharmacy@dukaansetu.com',
+    borderAccent: 'border-cyan-500/30',
+    bgAccent: 'bg-cyan-500/10 hover:bg-cyan-500/20',
+    textAccent: 'text-cyan-300',
+  },
+  {
+    type: 'bakery',
+    name: 'Sri Sai Sweet Home & Bakery',
+    badge: 'Bakery',
+    emoji: '🍞',
+    desc: 'Fresh Cakes, Milk Bread, Mysore Pak, Puffs & Biscuits',
+    email: 'bakery@dukaansetu.com',
+    borderAccent: 'border-orange-500/30',
+    bgAccent: 'bg-orange-500/10 hover:bg-orange-500/20',
+    textAccent: 'text-orange-300',
+  },
+  {
+    type: 'restaurant',
+    name: 'Sri Annapurna Tiffin & Meals',
+    badge: 'Restaurant',
+    emoji: '🍽️',
+    desc: 'Dum Biryani, Dosa, Idli Sambar, Raw Spices & Thali',
+    email: 'restaurant@dukaansetu.com',
+    borderAccent: 'border-red-500/30',
+    bgAccent: 'bg-red-500/10 hover:bg-red-500/20',
+    textAccent: 'text-red-300',
+  },
+  {
+    type: 'teacoffee',
+    name: 'Sri Balaji Irani Tea & Coffee Point',
+    badge: 'Tea & Coffee',
+    emoji: '☕',
+    desc: 'Irani Dum Chai, Filter Coffee, Samosa & Daily Milk',
+    email: 'teacoffee@dukaansetu.com',
+    borderAccent: 'border-yellow-500/30',
+    bgAccent: 'bg-yellow-500/10 hover:bg-yellow-500/20',
+    textAccent: 'text-yellow-300',
+  },
+  {
+    type: 'hardware',
+    name: 'Sri Hanuman Hardware & Electricals',
+    badge: 'Hardware',
+    emoji: '🔧',
+    desc: 'PVC Pipes, Copper Wire, Switches, Cement & Asian Paints',
+    email: 'hardware@dukaansetu.com',
+    borderAccent: 'border-slate-400/30',
+    bgAccent: 'bg-slate-500/10 hover:bg-slate-500/20',
+    textAccent: 'text-slate-300',
+  },
+  {
+    type: 'autoparts',
+    name: 'Sri Ganesh Auto Spares & Accessories',
+    badge: 'Auto Parts',
+    emoji: '🛠️',
+    desc: 'Castrol Engine Oil, Brake Shoes, Batteries & Tyres',
+    email: 'autoparts@dukaansetu.com',
+    borderAccent: 'border-blue-500/30',
+    bgAccent: 'bg-blue-500/10 hover:bg-blue-500/20',
+    textAccent: 'text-blue-300',
+  },
+  {
+    type: 'vegetables',
+    name: 'Sri Lakshmi Fresh Veg & Fruits',
+    badge: 'Vegetables',
+    emoji: '🥬',
+    desc: 'Tomatoes, Onions, Potatoes, Chillies, Palak & Fruits',
+    email: 'vegetables@dukaansetu.com',
+    borderAccent: 'border-lime-500/30',
+    bgAccent: 'bg-lime-500/10 hover:bg-lime-500/20',
+    textAccent: 'text-lime-300',
+  },
+  {
+    type: 'electronics',
+    name: 'Sri Tech Zone Mobiles & Electronics',
+    badge: 'Electronics',
+    emoji: '📱',
+    desc: '5G Smartphones, Chargers, Earbuds, Cables & Screen Guards',
+    email: 'electronics@dukaansetu.com',
+    borderAccent: 'border-purple-500/30',
+    bgAccent: 'bg-purple-500/10 hover:bg-purple-500/20',
+    textAccent: 'text-purple-300',
+  },
+];
 
 export default function LoginPage() {
   const { login, loginAsDemo } = useAuth();
@@ -11,6 +159,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showAllStores, setShowAllStores] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +174,22 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  const handleDemoClick = async (storeType: StoreTypeSlug) => {
+    setLoading(true);
+    setError('');
+    try {
+      await loginAsDemo(storeType);
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Demo store login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const featuredStores = ALL_DEMO_STORES.slice(0, 3);
+  const remainingStores = ALL_DEMO_STORES.slice(3);
 
   return (
     <div>
@@ -100,126 +265,115 @@ export default function LoginPage() {
           <div className="w-full border-t border-white/10"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[#0f172a] px-3 text-surface-400 font-medium">Or explore personalized demo stores</span>
+          <span className="bg-[#0f172a] px-3 text-surface-400 font-medium flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            1-Click Explore Demo Stores (12 Verticals)
+          </span>
         </div>
       </div>
 
-      <div className="space-y-2.5 mb-6">
-        {/* Kirana Store Demo */}
-        <button
-          type="button"
-          disabled={loading}
-          onClick={async () => {
-            setLoading(true);
-            try {
-              await loginAsDemo('kirana');
-              navigate('/');
-            } catch (err) {
-              setError(err instanceof Error ? err.message : 'Demo login failed');
-            } finally {
-              setLoading(false);
-            }
-          }}
-          className="w-full p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-left transition-all group flex items-center justify-between"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-2xl p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">🌾</span>
-            <div>
-              <div className="text-sm font-semibold text-emerald-300 group-hover:text-white flex items-center gap-2">
-                Sri Lakshmi Kirana Store
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-normal">Kirana</span>
+      {/* Featured 3 Demo Stores */}
+      <div className="space-y-2.5 mb-3">
+        {featuredStores.map((store) => (
+          <button
+            key={store.type}
+            type="button"
+            disabled={loading}
+            onClick={() => handleDemoClick(store.type)}
+            className={`w-full p-3 rounded-xl ${store.bgAccent} border ${store.borderAccent} text-left transition-all group flex items-center justify-between shadow-md`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl p-2 rounded-lg bg-black/20 border border-white/10">
+                {store.emoji}
+              </span>
+              <div>
+                <div className={`text-sm font-semibold ${store.textAccent} group-hover:text-white flex items-center gap-2`}>
+                  {store.name}
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 ${store.textAccent} font-normal border border-white/10`}>
+                    {store.badge}
+                  </span>
+                </div>
+                <div className="text-xs text-surface-400">{store.desc}</div>
               </div>
-              <div className="text-xs text-surface-400">Rice, Dal, Oil, FMCG & Customer Udhar</div>
             </div>
-          </div>
-          <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
-        </button>
-
-        {/* Jewellery Shop Demo */}
-        <button
-          type="button"
-          disabled={loading}
-          onClick={async () => {
-            setLoading(true);
-            try {
-              await loginAsDemo('jewellery');
-              navigate('/');
-            } catch (err) {
-              setError(err instanceof Error ? err.message : 'Jewellery demo login failed');
-            } finally {
-              setLoading(false);
-            }
-          }}
-          className="w-full p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-left transition-all group flex items-center justify-between shadow-lg shadow-amber-950/20"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-2xl p-2 rounded-lg bg-amber-500/20 border border-amber-500/30">💎</span>
-            <div>
-              <div className="text-sm font-semibold text-amber-300 group-hover:text-white flex items-center gap-2">
-                Sri Swarna Mahal Jewellers
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-normal">Jewellery</span>
-              </div>
-              <div className="text-xs text-surface-400">22K Gold 916, Silver, Diamonds, Grams & Loans</div>
-            </div>
-          </div>
-          <span className="text-xs font-semibold text-amber-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
-        </button>
-
-        {/* Flower Shop Demo */}
-        <button
-          type="button"
-          disabled={loading}
-          onClick={async () => {
-            setLoading(true);
-            try {
-              await loginAsDemo('flowers');
-              navigate('/');
-            } catch (err) {
-              setError(err instanceof Error ? err.message : 'Flower demo login failed');
-            } finally {
-              setLoading(false);
-            }
-          }}
-          className="w-full p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-left transition-all group flex items-center justify-between shadow-lg shadow-rose-950/20"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-2xl p-2 rounded-lg bg-rose-500/20 border border-rose-500/30">🌸</span>
-            <div>
-              <div className="text-sm font-semibold text-rose-300 group-hover:text-white flex items-center gap-2">
-                Sri Venkateswara Flower Mart
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-normal">Flowers</span>
-              </div>
-              <div className="text-xs text-surface-400">Jasmine, Marigold, Garlands, Mora & Temple Decor</div>
-            </div>
-          </div>
-          <span className="text-xs font-semibold text-rose-400 group-hover:translate-x-0.5 transition-transform">Enter →</span>
-        </button>
+            <span className={`text-xs font-semibold ${store.textAccent} group-hover:translate-x-0.5 transition-transform`}>
+              Enter →
+            </span>
+          </button>
+        ))}
       </div>
 
+      {/* Expandable Section for Remaining 9 Stores */}
+      <div className="mb-6">
+        <button
+          type="button"
+          onClick={() => setShowAllStores(!showAllStores)}
+          className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-surface-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+        >
+          {showAllStores ? (
+            <>
+              <span>Hide additional stores</span>
+              <ChevronUp className="w-4 h-4" />
+            </>
+          ) : (
+            <>
+              <span>View all 12 demo stores (Clothing, Pharmacy, Bakery, Restaurant, etc.)</span>
+              <ChevronDown className="w-4 h-4" />
+            </>
+          )}
+        </button>
+
+        {showAllStores && (
+          <div className="mt-2.5 space-y-2 max-h-[380px] overflow-y-auto pr-1 animate-fade-in">
+            {remainingStores.map((store) => (
+              <button
+                key={store.type}
+                type="button"
+                disabled={loading}
+                onClick={() => handleDemoClick(store.type)}
+                className={`w-full p-2.5 rounded-xl ${store.bgAccent} border ${store.borderAccent} text-left transition-all group flex items-center justify-between`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xl p-1.5 rounded-lg bg-black/20 border border-white/10">
+                    {store.emoji}
+                  </span>
+                  <div>
+                    <div className={`text-xs font-semibold ${store.textAccent} group-hover:text-white flex items-center gap-1.5`}>
+                      {store.name}
+                      <span className={`text-[9px] px-1 py-0.2 rounded-full bg-white/10 ${store.textAccent} font-normal border border-white/10`}>
+                        {store.badge}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-surface-400 line-clamp-1">{store.desc}</div>
+                  </div>
+                </div>
+                <span className={`text-xs font-semibold ${store.textAccent} group-hover:translate-x-0.5 transition-transform`}>
+                  Enter →
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Quick Auto-Fill Credentials */}
       <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-surface-400">
-        <div className="font-medium text-surface-300 mb-1.5">Quick Auto-Fill Credentials:</div>
+        <div className="font-medium text-surface-300 mb-1.5">Quick Auto-Fill Credentials (All 12):</div>
         <div className="flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            onClick={() => { setEmail('srinivas@dukaansetu.com'); setPassword('password123'); }}
-            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-surface-300 hover:text-white transition-colors"
-          >
-            🌾 Kirana Login
-          </button>
-          <button
-            type="button"
-            onClick={() => { setEmail('jewellery@dukaansetu.com'); setPassword('password123'); }}
-            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-amber-300 hover:text-white transition-colors"
-          >
-            💎 Jewellery Login
-          </button>
-          <button
-            type="button"
-            onClick={() => { setEmail('flowers@dukaansetu.com'); setPassword('password123'); }}
-            className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-rose-300 hover:text-white transition-colors"
-          >
-            🌸 Flower Login
-          </button>
+          {ALL_DEMO_STORES.map((store) => (
+            <button
+              key={store.type}
+              type="button"
+              onClick={() => {
+                setEmail(store.email);
+                setPassword('password123');
+              }}
+              className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-surface-300 hover:text-white transition-colors text-[11px] flex items-center gap-1"
+            >
+              <span>{store.emoji}</span>
+              <span>{store.badge}</span>
+            </button>
+          ))}
         </div>
       </div>
 

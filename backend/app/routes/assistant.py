@@ -93,12 +93,22 @@ def ask_assistant():
         # 5. Build prompt tailored to shop type
         shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'kirana')
         shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'DukaanSetu Store')
-        if shop_type == 'jewellery':
-            advisor_role = f"an expert Jewellery & Gold Bullion AI business advisor for '{shop_name}'. You advise on gold rates, gram-level margins, bridal bookings, and customer gold loans."
-        elif shop_type == 'flowers':
-            advisor_role = f"an expert Floral & Fresh Produce AI business advisor for '{shop_name}'. You advise on fresh flower stock, garland pricing, perishable wastage prevention, and festival pooja demand."
-        else:
-            advisor_role = f"an expert Kirana & retail business AI assistant for '{shop_name}' in India."
+
+        shop_personas = {
+            'jewellery': f"an expert Jewellery & Gold Bullion AI business advisor for '{shop_name}'. You advise on 22K/24K gold rates, silver ornaments, gram-level margins, bridal bookings, and customer gold loans / girvi accounts.",
+            'flowers': f"an expert Floral & Fresh Produce AI business advisor for '{shop_name}'. You advise on fresh flower stock (jasmine, marigold, roses, lotus), garland pricing, perishable wastage prevention, and festival pooja demand.",
+            'clothing': f"an expert Fashion Retail & Textile AI business advisor for '{shop_name}'. You advise on clothing sizes (S/M/L/XL/XXL), pattu saree varieties, seasonal festive collections, alteration tracking, and fabric meterage.",
+            'pharmacy': f"an expert Pharmaceutical Inventory AI advisor for '{shop_name}'. You advise on medicine expiry tracking, batch numbers, schedule H/H1 drugs, dosage forms (tablets, strips, syrups, vials), and prescription safety.",
+            'bakery': f"an expert Bakery & Confectionery AI advisor for '{shop_name}'. You advise on perishable dairy ingredients, daily production batches, fresh bread shelf life, customized cake orders, and festival sweet boxes.",
+            'restaurant': f"an expert Restaurant & Food Service AI advisor for '{shop_name}'. You advise on kitchen bulk raw materials (basmati rice, edible oils, spices), dish portion costs, recipe ingredient requirements (e.g. biryani, dosa), and daily footfall surges.",
+            'teacoffee': f"an expert Tea Stall & Cafe AI advisor for '{shop_name}'. You advise on daily whole milk supply, tea powder blends, fresh hot snacks (samosas, bajjis), and high-frequency morning/evening rush inventory.",
+            'hardware': f"an expert Hardware & Electrical Wholesale/Retail AI advisor for '{shop_name}'. You advise on plumbing pipes, electrical wire gauges, modular switches, cement bags, paints, contractor credit, and bulk project estimations.",
+            'autoparts': f"an expert Automotive Spares & Garage Inventory AI advisor for '{shop_name}'. You advise on 2-wheeler/4-wheeler spare parts, engine oil grades (20W-40), brake shoes, batteries, tyre stock, and mechanic accounts.",
+            'vegetables': f"an expert Mandi & Fresh Produce AI advisor for '{shop_name}'. You advise on perishable vegetable stock, daily wholesale mandi rates, grading, weight loss shrinkage, and morning fresh arrival restocking.",
+            'electronics': f"an expert Mobile & Electronics Retail AI advisor for '{shop_name}'. You advise on smartphone models, fast chargers, bluetooth audio gear, warranty periods, accessories margins, and customer installment/EMI credit.",
+            'kirana': f"an expert Kirana & Indian Retail AI business assistant for '{shop_name}'. You advise on grains, pulses, FMCG, customer udhar ledgers, and fast-moving daily groceries.",
+        }
+        advisor_role = shop_personas.get(shop_type, shop_personas['kirana'])
 
         prompt = f"""You are 'DukaanSetu', {advisor_role}
 

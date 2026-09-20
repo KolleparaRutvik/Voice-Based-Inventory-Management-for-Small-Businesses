@@ -208,15 +208,63 @@ class PostgresTableQuery:
             self.db.return_connection(conn)
 
 
+DEMO_TOKEN_TO_EMAIL = {
+    'demo-token-kirana': 'srinivas@dukaansetu.com',
+    'demo-token-dukaansetu': 'srinivas@dukaansetu.com',
+    'demo-token-vyapari': 'srinivas@dukaansetu.com',
+    'demo-token': 'srinivas@dukaansetu.com',
+    'demo-token-jewellery': 'jewellery@dukaansetu.com',
+    'demo-token-gold': 'jewellery@dukaansetu.com',
+    'demo-token-flowers': 'flowers@dukaansetu.com',
+    'demo-token-pushpa': 'flowers@dukaansetu.com',
+    'demo-token-clothing': 'clothing@dukaansetu.com',
+    'demo-token-pharmacy': 'pharmacy@dukaansetu.com',
+    'demo-token-bakery': 'bakery@dukaansetu.com',
+    'demo-token-restaurant': 'restaurant@dukaansetu.com',
+    'demo-token-teacoffee': 'teacoffee@dukaansetu.com',
+    'demo-token-hardware': 'hardware@dukaansetu.com',
+    'demo-token-autoparts': 'autoparts@dukaansetu.com',
+    'demo-token-vegetables': 'vegetables@dukaansetu.com',
+    'demo-token-electronics': 'electronics@dukaansetu.com',
+}
+
+DEMO_EMAIL_ROUTING = {
+    'jewel': ('demo-token-jewellery', '33333333-3333-3333-3333-333333333333', 'jewellery@dukaansetu.com'),
+    'swarna': ('demo-token-jewellery', '33333333-3333-3333-3333-333333333333', 'jewellery@dukaansetu.com'),
+    'flower': ('demo-token-flowers', '44444444-4444-4444-4444-444444444444', 'flowers@dukaansetu.com'),
+    'pushpa': ('demo-token-flowers', '44444444-4444-4444-4444-444444444444', 'flowers@dukaansetu.com'),
+    'clothing': ('demo-token-clothing', '55555555-5555-5555-5555-555555555555', 'clothing@dukaansetu.com'),
+    'cloth': ('demo-token-clothing', '55555555-5555-5555-5555-555555555555', 'clothing@dukaansetu.com'),
+    'pharmacy': ('demo-token-pharmacy', '66666666-6666-6666-6666-666666666666', 'pharmacy@dukaansetu.com'),
+    'medical': ('demo-token-pharmacy', '66666666-6666-6666-6666-666666666666', 'pharmacy@dukaansetu.com'),
+    'bakery': ('demo-token-bakery', '77777777-7777-7777-7777-777777777777', 'bakery@dukaansetu.com'),
+    'sweet': ('demo-token-bakery', '77777777-7777-7777-7777-777777777777', 'bakery@dukaansetu.com'),
+    'restaurant': ('demo-token-restaurant', '88888888-8888-8888-8888-888888888888', 'restaurant@dukaansetu.com'),
+    'tiffin': ('demo-token-restaurant', '88888888-8888-8888-8888-888888888888', 'restaurant@dukaansetu.com'),
+    'teacoffee': ('demo-token-teacoffee', '99999999-9999-9999-9999-999999999999', 'teacoffee@dukaansetu.com'),
+    'tea': ('demo-token-teacoffee', '99999999-9999-9999-9999-999999999999', 'teacoffee@dukaansetu.com'),
+    'chai': ('demo-token-teacoffee', '99999999-9999-9999-9999-999999999999', 'teacoffee@dukaansetu.com'),
+    'hardware': ('demo-token-hardware', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'hardware@dukaansetu.com'),
+    'autoparts': ('demo-token-autoparts', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'autoparts@dukaansetu.com'),
+    'spares': ('demo-token-autoparts', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'autoparts@dukaansetu.com'),
+    'auto': ('demo-token-autoparts', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'autoparts@dukaansetu.com'),
+    'vegetables': ('demo-token-vegetables', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'vegetables@dukaansetu.com'),
+    'fruits': ('demo-token-vegetables', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'vegetables@dukaansetu.com'),
+    'sabzi': ('demo-token-vegetables', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'vegetables@dukaansetu.com'),
+    'electronics': ('demo-token-electronics', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'electronics@dukaansetu.com'),
+    'mobile': ('demo-token-electronics', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'electronics@dukaansetu.com'),
+    'kirana': ('demo-token-kirana', '11111111-1111-1111-1111-111111111111', 'srinivas@dukaansetu.com'),
+    'srinivas': ('demo-token-kirana', '11111111-1111-1111-1111-111111111111', 'srinivas@dukaansetu.com'),
+}
+
+
 class PostgresAuth:
     def __init__(self, db_client):
         self.db = db_client
 
     def get_user(self, token):
         # Look up user in live database based on token
-        target_email = "jewellery@dukaansetu.com" if token in ('demo-token-jewellery', 'demo-token-gold') else (
-            "flowers@dukaansetu.com" if token in ('demo-token-flowers', 'demo-token-pushpa') else "srinivas@dukaansetu.com"
-        )
+        target_email = DEMO_TOKEN_TO_EMAIL.get(token, "srinivas@dukaansetu.com")
         res = self.db.table('users').select('*').eq('email', target_email).limit(1).execute()
         user = res.data[0] if (res.data and len(res.data) > 0) else None
         if not user:
@@ -239,15 +287,16 @@ class PostgresAuth:
         res = self.db.table('users').select('*').eq('email', email).limit(1).execute()
         user = res.data[0] if (res.data and len(res.data) > 0) else None
 
-        token = 'demo-token-jewellery' if ('jewel' in email or 'swarna' in email) else (
-            'demo-token-flowers' if ('flower' in email or 'pushpa' in email) else 'demo-token-dukaansetu'
-        )
+        token = 'demo-token-kirana'
+        auth_id = '11111111-1111-1111-1111-111111111111'
+        for kw, (t, aid, _) in DEMO_EMAIL_ROUTING.items():
+            if kw in email:
+                token = t
+                auth_id = aid
+                break
 
-        auth_id = user['auth_id'] if user else (
-            "33333333-3333-3333-3333-333333333333" if 'jewel' in email else (
-                "44444444-4444-4444-4444-444444444444" if 'flower' in email else "11111111-1111-1111-1111-111111111111"
-            )
-        )
+        if user:
+            auth_id = user.get('auth_id', auth_id)
 
         user_obj = type('MockUser', (), {'id': auth_id, 'email': email})()
         res_obj = type('AuthResponse', (), {

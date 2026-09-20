@@ -204,12 +204,22 @@ def interpret_voice():
         # 6. Build prompt for Gemini interpretation tailored to shop type
         shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'kirana')
         shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'DukaanSetu Store')
-        if shop_type == 'jewellery':
-            business_role = f"the intelligent personal assistant for '{shop_name}' (Gold & Jewellery Showroom). You specialize in 22K 916 Gold, Silver, Diamonds, units (grams, tola, pavan, carats), making charges, wastage, and gold loan/girvi accounts."
-        elif shop_type == 'flowers':
-            business_role = f"the intelligent personal assistant for '{shop_name}' (Fresh Flower Mart & Garland Store). You specialize in fresh flowers (Jasmine/Mallepoolu, Marigold/Banthi, Roses/Gulabi, Lotus/Kamalam, Chamanthi), units (mora, kattu, bundle, garland/danda, basket, kg), pooja offerings, and wedding decor."
-        else:
-            business_role = f"the intelligent business assistant for '{shop_name}' (Kirana & Retail Store)."
+
+        voice_business_roles = {
+            'jewellery': f"the intelligent personal assistant for '{shop_name}' (Gold & Jewellery Showroom). You specialize in 22K 916 Gold, Silver, Diamonds, units (grams, tola, pavan, carats), making charges, wastage, and gold loan/girvi accounts.",
+            'flowers': f"the intelligent personal assistant for '{shop_name}' (Fresh Flower Mart & Garland Store). You specialize in fresh flowers (Jasmine/Mallepoolu, Marigold/Banthi, Roses/Gulabi, Lotus/Kamalam, Chamanthi), units (mora, kattu, bundle, garland/danda, basket, kg), pooja offerings, and wedding decor.",
+            'clothing': f"the intelligent personal assistant for '{shop_name}' (Cloth Emporium & Textiles). You specialize in sarees (Kanchi pattu, cotton), shirts, pants, dhotis, dress materials, units (pieces, meters, sets, rolls), sizes, and customer wedding shopping udhar.",
+            'pharmacy': f"the intelligent personal assistant for '{shop_name}' (Medical & Pharmacy Store). You specialize in medicines (tablets, syrups, injections, insulins, ointments), units (strips, bottles, vials, sachets, boxes), expiry dates, and patient medicine udhar.",
+            'bakery': f"the intelligent personal assistant for '{shop_name}' (Bakery & Sweet House). You specialize in cakes, fresh bread, traditional sweets (mysore pak, kaju katli), hot puffs, biscuits, units (kg, packets, pieces, boxes), and party bulk orders.",
+            'restaurant': f"the intelligent personal assistant for '{shop_name}' (Restaurant & Tiffin Center). You specialize in tiffins (dosa, idli), biryani, meals, bulk kitchen ingredients (basmati rice, oil tins, dal), units (plates, kg, tins, bags), and mess accounts.",
+            'teacoffee': f"the intelligent personal assistant for '{shop_name}' (Irani Tea & Coffee Point). You specialize in tea, filter coffee, milk, snacks (samosas, bajjis), sugar bags, units (cups, plates, litres, bags), and daily customer tabs.",
+            'hardware': f"the intelligent personal assistant for '{shop_name}' (Hardware & Electricals). You specialize in PVC pipes, copper wires, modular switches, cement, paints, units (lengths, rolls, pieces, bags, buckets), and contractor udhar.",
+            'autoparts': f"the intelligent personal assistant for '{shop_name}' (Auto Spares & Accessories). You specialize in engine oils, brake shoes, batteries, tyres, cables, spark plugs, units (bottles, sets, units, pieces), and mechanic credit.",
+            'vegetables': f"the intelligent personal assistant for '{shop_name}' (Fresh Vegetable & Fruit Market). You specialize in tomatoes, onions, potatoes, green chillies, leafy greens, bananas, apples, units (kg, bunches/kattalu, dozens, crates), and daily mandi credit.",
+            'electronics': f"the intelligent personal assistant for '{shop_name}' (Mobiles & Electronics). You specialize in smartphones, chargers, earbuds, cables, screen guards, units (units, pieces, boxes), and customer EMI/loans.",
+            'kirana': f"the intelligent business assistant for '{shop_name}' (Kirana & Retail Store). You specialize in rice, dal, oil, sugar, spices, FMCG, units (bags, kg, litres, packets), and customer udhar.",
+        }
+        business_role = voice_business_roles.get(shop_type, voice_business_roles['kirana'])
 
         prompt = f"""You are 'DukaanSetu', {business_role}
 Analyze this voice transcript spoken by the shopkeeper. The speech may be in English, Telugu, Hindi, or mixed.
