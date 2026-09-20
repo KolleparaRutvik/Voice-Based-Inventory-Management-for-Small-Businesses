@@ -133,6 +133,26 @@ def require_auth(f):
                     g.shop_id = fallback_s.data[0]['id']
             return f(*args, **kwargs)
 
+        if token.startswith('user-token-'):
+            user_id = token.replace('user-token-', '')
+            supabase = get_supabase()
+            profile = supabase.table('users').select('*').eq('id', user_id).limit(1).execute()
+            if not (profile.data and len(profile.data) > 0):
+                profile = supabase.table('users').select('*').eq('auth_id', user_id).limit(1).execute()
+            if profile.data and len(profile.data) > 0:
+                g.user = profile.data[0]
+                g.user_id = profile.data[0]['id']
+                g.auth_id = profile.data[0].get('auth_id', user_id)
+                g.token = token
+                shop = supabase.table('shops').select('*').eq('owner_id', g.user_id).limit(1).execute()
+                if shop.data and len(shop.data) > 0:
+                    g.shop = shop.data[0]
+                    g.shop_id = shop.data[0]['id']
+                else:
+                    g.shop = None
+                    g.shop_id = None
+                return f(*args, **kwargs)
+
         try:
             supabase = get_supabase()
             # Verify the JWT with Supabase

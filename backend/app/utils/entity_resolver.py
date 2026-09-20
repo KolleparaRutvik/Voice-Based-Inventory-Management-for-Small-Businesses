@@ -277,6 +277,14 @@ KIRANA_PRODUCT_SYNONYMS = {
     'osmania biscuits': 'Osmania Tea Biscuits',
     'ఉస్మానియా బిస్కెట్లు': 'Osmania Tea Biscuits',
 
+    'cream roll': 'Vanilla Fresh Cream Roll',
+    'fresh cream roll': 'Vanilla Fresh Cream Roll',
+    'క్రీమ్ రోల్': 'Vanilla Fresh Cream Roll',
+    'sweet': 'Ghee Mysore Pak',
+    'sweets': 'Ghee Mysore Pak',
+    'mithai': 'Ghee Mysore Pak',
+    'స్వీట్లు': 'Ghee Mysore Pak',
+
     # Restaurant & Tiffin
     'biryani': 'Special Chicken Dum Biryani',
     'chicken biryani': 'Special Chicken Dum Biryani',
@@ -293,11 +301,20 @@ KIRANA_PRODUCT_SYNONYMS = {
     'basmati rice': 'Raw Basmati Rice Bulk 25kg',
     'cooking oil': 'Cooking Sunflower Oil Tin 15L',
     'oil tin': 'Cooking Sunflower Oil Tin 15L',
+    'chapathi': 'Chapathi with Mixed Veg Kurma',
+    'chapati': 'Chapathi with Mixed Veg Kurma',
+    'chapatis': 'Chapathi with Mixed Veg Kurma',
+    'చపాతీ': 'Chapathi with Mixed Veg Kurma',
+    'parotta': 'Chapathi with Mixed Veg Kurma',
+    'roti': 'Chapathi with Mixed Veg Kurma',
+    'kurma': 'Chapathi with Mixed Veg Kurma',
 
     # Tea & Coffee
     'irani chai': 'Special Irani Dum Chai',
     'dum chai': 'Special Irani Dum Chai',
     'చాయ్': 'Special Irani Dum Chai',
+    'cutting': 'Special Irani Dum Chai',
+    'cutting chai': 'Special Irani Dum Chai',
     'filter coffee': 'South Indian Filter Coffee',
     'ఫిల్టర్ కాఫీ': 'South Indian Filter Coffee',
     'samosa': 'Hot Onion Samosa',
@@ -307,10 +324,15 @@ KIRANA_PRODUCT_SYNONYMS = {
     'మిర్చి బజ్జీ': 'Mirchi Bajji',
     'buffalo milk': 'Buffalo Milk 1 Litre',
     'గేదె పాలు': 'Buffalo Milk 1 Litre',
+    'bun maska': 'Bun Maska',
+    'maska bun': 'Bun Maska',
+    'bun': 'Bun Maska',
+    'బన్': 'Bun Maska',
+    'బన్ మస్కా': 'Bun Maska',
 
     # Hardware & Electrical
     'pvc pipe': 'PVC Pipe 1 inch 10ft',
-    'pipe': 'PVC Pipe 1 inch 10ft' ,
+    'pipe': 'PVC Pipe 1 inch 10ft',
     'పైపు': 'PVC Pipe 1 inch 10ft',
     'copper wire': 'Finolex Copper Wire 2.5 sq mm',
     'wire': 'Finolex Copper Wire 2.5 sq mm',
@@ -326,6 +348,12 @@ KIRANA_PRODUCT_SYNONYMS = {
     'పెయింట్': 'Asian Paints Apex White 20L',
     'screws': 'Steel Screws & Rawlplugs Box',
     'స్క్రూలు': 'Steel Screws & Rawlplugs Box',
+    'led bulb': '9W LED Bulbs Cool White',
+    'led': '9W LED Bulbs Cool White',
+    'bulb': '9W LED Bulbs Cool White',
+    'bulbs': '9W LED Bulbs Cool White',
+    'ఎల్ఈడీ బల్బు': '9W LED Bulbs Cool White',
+    'బల్బు': '9W LED Bulbs Cool White',
 
     # Auto Spares
     'engine oil': 'Castrol Activ 4T 20W-40 1L',
@@ -342,6 +370,11 @@ KIRANA_PRODUCT_SYNONYMS = {
     'clutch cable': 'Clutch Cable for Bajaj Pulsar',
     'spark plug': 'Spark Plug NGK 2-Wheeler',
     'ప్లగ్': 'Spark Plug NGK 2-Wheeler',
+    'chain sprocket': 'Rolon Chain Sprocket Kit',
+    'sprocket': 'Rolon Chain Sprocket Kit',
+    'chain kit': 'Rolon Chain Sprocket Kit',
+    'చైన్ కిట్': 'Rolon Chain Sprocket Kit',
+    'చైన్ స్ప్రాకెట్': 'Rolon Chain Sprocket Kit',
 
     # Vegetables & Fruits
     'tomato': 'Fresh Country Tomatoes / Tamata',
@@ -370,9 +403,10 @@ KIRANA_PRODUCT_SYNONYMS = {
     'bananas': 'Yelakki Small Bananas',
     'arati pandlu': 'Yelakki Small Bananas',
     'అరటిపండ్లు': 'Yelakki Small Bananas',
-    'apple': 'Royal Gala Apples',
-    'apples': 'Royal Gala Apples',
-    'యాపిల్స్': 'Royal Gala Apples',
+    'apple': 'Kashmir Red Apples',
+    'apples': 'Kashmir Red Apples',
+    'kashmir apples': 'Kashmir Red Apples',
+    'యాపిల్స్': 'Kashmir Red Apples',
 
     # Electronics & Mobile
     'samsung': 'Samsung Galaxy A15 5G 128GB',
@@ -392,6 +426,24 @@ KIRANA_PRODUCT_SYNONYMS = {
     'tempered glass': '9D Edge-to-Edge Tempered Glass',
     'screen guard': '9D Edge-to-Edge Tempered Glass',
     'స్క్రీన్ గార్డ్': '9D Edge-to-Edge Tempered Glass',
+    'smart watch': 'Noise ColorFit Pulse Smart Watch',
+    'smartwatch': 'Noise ColorFit Pulse Smart Watch',
+    'watch': 'Noise ColorFit Pulse Smart Watch',
+    'స్మార్ట్ వాచ్': 'Noise ColorFit Pulse Smart Watch',
+
+    # Clothing & Textiles Additions
+    'handloom saree': 'Handloom Cotton Saree',
+    'cotton saree': 'Handloom Cotton Saree',
+    'చేనేత చీర': 'Handloom Cotton Saree',
+
+    # Flowers & Pooja Additions
+    'pooja camphor': 'Pooja Camphor / Karpuram',
+    'camphor': 'Pooja Camphor / Karpuram',
+    'karpuram': 'Pooja Camphor / Karpuram',
+    'కర్పూరం': 'Pooja Camphor / Karpuram',
+    'pooja ghee': 'Cow Ghee for Deepam',
+    'deepam ghee': 'Cow Ghee for Deepam',
+    'దీపం నెయ్యి': 'Cow Ghee for Deepam',
 }
 
 # Unit Normalization Map
@@ -654,9 +706,10 @@ def resolve_product(product_query, catalog_products, alias_records=None):
     for p in catalog_products:
         pname = p['name'].lower()
         plocal = (p.get('local_name') or '').lower()
-        if query == pname or (plocal and query == plocal):
+        ptelugu = (p.get('telugu_name') or '').lower()
+        if query == pname or (plocal and query == plocal) or (ptelugu and query == ptelugu):
             return {'matched_product': p, 'confidence': 1.0, 'ambiguous_candidates': [], 'is_ambiguous': False}
-        if (len(query) >= 3 and query in pname) or (plocal and len(query) >= 3 and query in plocal):
+        if (len(query) >= 3 and query in pname) or (plocal and len(query) >= 3 and query in plocal) or (ptelugu and len(query) >= 3 and query in ptelugu):
             exact_matches.append(p)
 
     if len(exact_matches) == 1:
@@ -679,8 +732,12 @@ def resolve_product(product_query, catalog_products, alias_records=None):
 
     if synonym_target:
         syn_matches = []
+        synt = synonym_target.lower()
         for p in catalog_products:
-            if synonym_target.lower() in p['name'].lower() or (p.get('local_name') and synonym_target.lower() in p['local_name'].lower()):
+            pname = p['name'].lower()
+            plocal = (p.get('local_name') or '').lower()
+            ptelugu = (p.get('telugu_name') or '').lower()
+            if (synt in pname or pname in synt) or (plocal and (synt in plocal or plocal in synt)) or (ptelugu and (synt in ptelugu or ptelugu in synt)):
                 syn_matches.append(p)
         if len(syn_matches) == 1:
             return {'matched_product': syn_matches[0], 'confidence': 0.95, 'ambiguous_candidates': [], 'is_ambiguous': False}

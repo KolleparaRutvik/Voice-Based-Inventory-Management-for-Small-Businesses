@@ -3,8 +3,21 @@ from flask import Blueprint
 from app.utils import require_auth, success_response, error_response, get_current_shop_id
 from app.utils.supabase_client import get_supabase
 from app.services.festival_service import sync_festival_notifications
+from app.services.trend_alerts import generate_trend_alerts
 
 notifications_bp = Blueprint('notifications', __name__)
+
+
+@notifications_bp.route('/trends', methods=['GET'])
+@require_auth
+def get_shop_trend_alerts():
+    """Get active trend-based stock alerts and demand velocity insights for the current shop."""
+    shop_id = get_current_shop_id()
+    try:
+        alerts = generate_trend_alerts(shop_id)
+        return success_response({"alerts": alerts, "count": len(alerts)})
+    except Exception as e:
+        return error_response(str(e), "TREND_ALERTS_ERROR", 500)
 
 
 @notifications_bp.route('', methods=['GET'])
@@ -15,6 +28,29 @@ def list_notifications():
         # Proactively sync festival demand recommendations if within 15-day prior alert window
         try:
             sync_festival_notifications(shop_id=shop_id)
+        except Exception:
+            pass
+
+        # Proactively sync trend alerts into notifications
+        try:
+            supabase = get_supabase()
+            trend_alerts = generate_trend_alerts(shop_id)
+            for t_alert in trend_alerts[:4]:
+                t_type = t_alert.get('type', 'TREND_ALERT')
+                t_title = t_alert.get('title', 'Trend Alert')
+                # Check if this alert title exists recently
+                exist = supabase.table('notifications').select('id').eq('shop_id', shop_id).eq('title', t_title).limit(1).execute()
+                if not exist.data or len(exist.data) == 0:
+                    from datetime import datetime, timezone
+                    supabase.table('notifications').insert({
+                        'shop_id': shop_id,
+                        'type': t_type,
+                        'title': t_title,
+                        'message': t_alert.get('message', ''),
+                        'data': t_alert,
+                        'is_read': False,
+                        'created_at': datetime.now(timezone.utc).isoformat()
+                    }).execute()
         except Exception:
             pass
 

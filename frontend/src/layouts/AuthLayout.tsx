@@ -20,8 +20,8 @@ export default function AuthLayout() {
       </div>
 
       {/* Auth Card */}
-      <div className="relative z-10 w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl">
+      <div className="relative z-10 w-full max-w-xl md:max-w-2xl">
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/10 p-6 sm:p-8 shadow-2xl">
           <Outlet />
         </div>
       </div>

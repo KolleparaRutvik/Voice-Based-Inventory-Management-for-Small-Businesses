@@ -20,11 +20,13 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { analyticsService, assistantService } from '../services/api';
 import type { DashboardData } from '../types';
+import { getStorePersona } from '../utils/storePersonalization';
 
 export default function DashboardPage() {
   const { user, shop } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -147,13 +149,18 @@ export default function DashboardPage() {
               <Mic className="w-8 h-8 text-white" />
             </button>
             <div>
-              <p className="font-bold text-lg">{t('tapToSpeak')}</p>
+              <p className="font-bold text-lg flex items-center gap-2">
+                <span>{t('tapToSpeak')}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 font-normal">
+                  {storePersona.emoji} {storePersona.name}
+                </span>
+              </p>
               <p className="text-white/80 text-xs sm:text-sm mt-0.5">
                 {language === 'te'
-                  ? '"5 బస్తాల బియ్యం కొన్నాం 1450 రూపాయలు" లేదా "రైస్ స్టాక్ ఎంత ఉంది?"'
+                  ? storePersona.voiceExample.te
                   : language === 'hi'
-                  ? '"5 बोरी चावल आया 1450 रुपये" या "चावल का स्टॉक कितना है?"'
-                  : '"5 bags biyyam add cheyyi" or "How much rice stock left?"'}
+                  ? storePersona.voiceExample.hi
+                  : storePersona.voiceExample.en}
               </p>
             </div>
           </div>
@@ -174,7 +181,7 @@ export default function DashboardPage() {
                 type="text"
                 value={quickQuestion}
                 onChange={(e) => setQuickQuestion(e.target.value)}
-                placeholder={t('askPlaceholder')}
+                placeholder={storePersona.askPlaceholder}
                 className="w-full bg-white/15 placeholder-white/60 text-white text-xs sm:text-sm rounded-xl pl-9 pr-3 py-2 border border-white/20 focus:outline-none focus:bg-white/25 focus:border-white/40"
               />
             </div>

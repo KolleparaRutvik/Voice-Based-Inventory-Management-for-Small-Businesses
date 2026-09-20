@@ -18,9 +18,13 @@ const api = axios.create({
 
 // Request interceptor — attach auth token
 api.interceptors.request.use(async (config) => {
-  if (localStorage.getItem('dukaansetu_demo_mode') === 'true' || localStorage.getItem('vyapari_demo_mode') === 'true') {
-    const demoToken = localStorage.getItem('dukaansetu_demo_token') || 'demo-token-dukaansetu';
-    config.headers.Authorization = `Bearer ${demoToken}`;
+  const demoToken = localStorage.getItem('dukaansetu_demo_token');
+  if (
+    localStorage.getItem('dukaansetu_demo_mode') === 'true' ||
+    localStorage.getItem('vyapari_demo_mode') === 'true' ||
+    demoToken
+  ) {
+    config.headers.Authorization = `Bearer ${demoToken || 'demo-token-kirana'}`;
     return config;
   }
   try {
@@ -39,9 +43,22 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired, sign out
-      supabase.auth.signOut();
-      window.location.href = '/login';
+      // Clear all auth storage keys to avoid re-authentication loops
+      localStorage.removeItem('dukaansetu_demo_mode');
+      localStorage.removeItem('vyapari_demo_mode');
+      localStorage.removeItem('dukaansetu_demo_token');
+      localStorage.removeItem('dukaansetu_custom_user');
+      localStorage.removeItem('dukaansetu_store_type');
+      supabase.auth.signOut().catch(() => {});
+
+      // Only redirect if not already on /login or /register to prevent infinite reload loops
+      if (
+        typeof window !== 'undefined' &&
+        !window.location.pathname.startsWith('/login') &&
+        !window.location.pathname.startsWith('/register')
+      ) {
+        window.location.replace('/login');
+      }
     }
     const message = error.response?.data?.error?.message || error.message || 'Something went wrong';
     return Promise.reject(new Error(message));
@@ -248,6 +265,10 @@ export const analyticsService = {
 export const notificationsService = {
   async getAll() {
     const res = await api.get<ApiResponse>('/api/notifications');
+    return res.data;
+  },
+  async getTrends() {
+    const res = await api.get<ApiResponse>('/api/notifications/trends');
     return res.data;
   },
   async markRead(id: string) {

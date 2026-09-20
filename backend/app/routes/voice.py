@@ -79,16 +79,29 @@ def transcribe_audio():
 
         mime_type = audio_file.mimetype or 'audio/webm'
 
-        prompt = """You are a highly accurate speech transcriber for Indian Kirana/grocery shopkeepers.
+        shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'retail')
+        shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'Shop')
+
+        prompt = f"""You are a highly accurate speech transcriber for Indian small business shopkeepers ({shop_name}, type: {shop_type}).
 Accurately transcribe the spoken audio into text.
 The speech may be in:
-- Telugu (e.g. '5 basthalu biyyam add cheyyi', 'Ramesh ki 500 udhar rasi pettu', 'sugar entha undi?', 'Ramesh 200 paid chesadu', 'next week ki saripothunda?')
-- Hindi (e.g. '5 kilo chawal stock mein dalo', 'Ramesh ko 500 udhar likho', 'tel kitna hai?')
-- English / Indian English (e.g. 'How much rice is left?', 'Add 5 bags sugar', 'Ramesh paid 200')
+- Telugu (e.g. '5 basthalu biyyam add cheyyi', 'Ramesh ki 500 udhar rasi pettu', 'sugar entha undi?', '10 grams gold chain add cheyyi', '2 strips dolo sale cheyyi', 'tomato stock entha', 'ఏ వస్తువులు ఎక్కువగా అమ్ముడవుతున్నాయి?')
+- Hindi (e.g. '5 kilo chawal stock mein dalo', 'Ramesh ko 500 udhar likho', 'tel kitna hai?', 'dolo tablet becha')
+- English / Indian English (e.g. 'How much rice is left?', 'Add 5 bags sugar', 'Ramesh paid 200', 'What items are selling fast?')
 - Mixed Telugu-English, Hindi-English, Tanglish, Hinglish
 
+Store Terminology & Units:
+- Kirana / Grocery: biyyam, chakkera, nune, dal, aata, packets, bags, basthalu, kg, litres
+- Jewellery: gold, chain, bangles, ring, silver, anklets, coins, grams, tola, thulam, pavan, carats, hallmark
+- Pharmacy: dolo, crocin, azithromycin, insulin, cough syrup, bp monitor, strips, tablets, bottles, vials
+- Flowers: jasmine, mallepoolu, marigold, banthi, roses, gulabi, chamanthi, lotus, garland, mora, kattu, bundle
+- Clothing: saree, pattu, shirt, jeans, kurti, dhoti, meters, pieces, uniform
+- Restaurant & Bakery: biryani, dosa, idli, meals, bread, cake, mysore pak, puffs, plates, kg
+- Tea & Coffee: irani chai, filter coffee, samosa, bajji, bun maska, milk, cups
+- Hardware & Spares: pvc pipe, wire, switch, cement, paint, engine oil, brake pads, battery, tyre
+
 Instructions:
-1. Preserve exact numbers, units (bags, basthalu, kg, packets, litres), customer names, and Kirana terminology.
+1. Preserve exact numbers, units, customer names, product names, and retail terminology.
 2. Return ONLY the transcribed text. Do NOT add markdown fences, commentary, or punctuation explanations."""
 
         transcript = generate_with_gemini([
@@ -252,6 +265,7 @@ Kirana Trade Rules:
 - STOCK_CHECK: 'entha undi', 'kitna hai', 'stock entha', 'how much left'
 - CREDIT_CHECK: 'who owes money', 'appu evaru unnaru', 'balance entha', 'udhar kiska hai', 'how much loan does X have'
 - BUSINESS_INSIGHT / SARIPOTHUNDA: 'saripothunda', 'next week ki సరిపోతుందా', 'enough for next week'
+- TREND_CHECK: 'what items are selling fast', 'trending items', 'fast moving items', 'ఏ వస్తువులు ఎక్కువగా అమ్ముడవుతున్నాయి', 'stock trends', 'fast moving stock', 'demand trends', 'trend alert'
 - FESTIVAL_DEMAND_CHECK: 'what items do i need for the festival', 'festival demand', 'dussehra items', 'diwali stock', 'pandaga items', 'sarukulu kavali', 'tyohar ka saman', 'festival ki em kavali', 'festival recommendations'
 - PURCHASE: 'order cheyyi', 'mangwa lo', 'place purchase order'
 
@@ -261,7 +275,7 @@ Important Customer Rules:
 
 Return strictly a JSON object with this structure (no markdown fences, no extra text):
 {{
-    "intent": "STOCK_IN|STOCK_OUT|SALE|BORROW_OUT|BORROW_RETURN|BORROW_CLEAR|STOCK_CHECK|CREDIT_CHECK|BUSINESS_INSIGHT|PURCHASE|STOCK_ADJUST|CUSTOMER_ADD|PRODUCT_ADD|FESTIVAL_DEMAND_CHECK|FESTIVAL_PO_CREATE|GENERAL|UNKNOWN",
+    "intent": "STOCK_IN|STOCK_OUT|SALE|BORROW_OUT|BORROW_RETURN|BORROW_CLEAR|STOCK_CHECK|CREDIT_CHECK|BUSINESS_INSIGHT|TREND_CHECK|PURCHASE|STOCK_ADJUST|CUSTOMER_ADD|PRODUCT_ADD|FESTIVAL_DEMAND_CHECK|FESTIVAL_PO_CREATE|GENERAL|UNKNOWN",
     "raw_product": "Spoken product name or null",
     "raw_customer": "Spoken customer name or null",
     "raw_supplier": "Spoken supplier name or null",
@@ -453,6 +467,12 @@ Return strictly a JSON object with this structure (no markdown fences, no extra 
             else:
                 answer = "ప్రస్తుతానికి 15 రోజుల వ్యవధిలో పండుగలేవీ లేవు." if lang == 'te' else "No festivals currently in the 15-day prior alert window."
                 voice_text = answer
+
+        elif detected_intent == 'TREND_CHECK':
+            from app.services.trend_alerts import get_voice_trend_insights
+            trend_res = get_voice_trend_insights(shop_id, language=lang)
+            answer = trend_res.get('answer')
+            voice_text = trend_res.get('voice_text')
 
         # Mutating action confirmation prompt
         confirmation_prompt = ai_data.get('confirmation_prompt')
@@ -649,6 +669,23 @@ def execute_voice_action():
 
             transaction_id = tx_res.data[0]['id'] if tx_res.data else None
             action_summary = f"Recorded sale of {quantity} {unit} of {product['name']}. Remaining stock: {new_stock} {product.get('base_unit', 'unit')}."
+
+            # Proactive Alert Trigger: if stock dropped below or near minimum threshold
+            min_stk = float(product.get('minimum_stock') or 10)
+            if new_stock <= min_stk:
+                try:
+                    from datetime import datetime, timezone
+                    supabase.table('notifications').insert({
+                        'shop_id': shop_id,
+                        'type': 'LOW_STOCK',
+                        'title': f"🔴 Stock Depleted: {product['name']}",
+                        'message': f"Current stock ({new_stock} {product.get('base_unit', 'unit')}) is at or below minimum threshold ({min_stk}). Fast reorder suggested!",
+                        'data': {'product_id': product_id, 'current_stock': new_stock, 'threshold': min_stk},
+                        'is_read': False,
+                        'created_at': datetime.now(timezone.utc).isoformat()
+                    }).execute()
+                except Exception as n_err:
+                    logger.debug(f"Failed to record post-sale low stock alert: {n_err}")
 
         # ---- 3. BORROW OUT (Add Udhar / Loan Credit) ----
         elif intent == 'BORROW_OUT':
@@ -1134,10 +1171,14 @@ def build_local_interpretation(transcript, last_prod, last_cust, facts):
         intent = 'BORROW_RETURN'
     elif any(w in lower for w in ['saripothunda', 'enough', 'next week', 'సరిపోతుందా', 'సరిపోవు', 'సరిపోతాయా', 'काफी है', 'चलेगा']):
         intent = 'BUSINESS_INSIGHT'
+    elif any(w in lower for w in [
+        'selling fast', 'fast moving', 'fast sell', 'fast selling', 'trending', 'trend', 'trends', 'hot items',
+        'ఎక్కువగా అమ్ముడవుతున్నాయి', 'ఎక్కువగా అమ్ముడు', 'ట్రెండ్', 'డిమాండ్ ఉన్న',
+        'ज्यादा बिकने', 'तेजी से बिकने', 'ट्रेंड', 'bik rahe', 'tez bikne'
+    ]) or (('fast' in lower or 'trending' in lower) and ('sell' in lower or 'moving' in lower or 'item' in lower or 'product' in lower)):
+        intent = 'TREND_CHECK'
     elif any(w in lower for w in ['entha undi', 'kitna hai', 'stock entha', 'how much', 'stock', 'ఎంత ఉంది', 'స్టాక్ ఎంత', 'స్టాక్', 'ఎన్ని ఉన్నాయి', 'నిల్వ', 'कितना है', 'कितना बचा', 'स्टॉक']):
         intent = 'STOCK_CHECK'
-    elif any(w in lower for w in ['who owes', 'balance entha', 'udhar kiska', 'how much loan', 'loan entha', 'ఎంత బాకీ', 'ఎవరు బాకీ', 'బాకీ ఎంత', 'ఖాతా ఎంత', 'అప్పు ఎంత', 'किसका उधार', 'कितना बाकी', 'बकाया']):
-        intent = 'CREDIT_CHECK'
     elif any(w in lower for w in [
         'festival', 'pandaga', 'tyohar', 'tyoohar', 'dussehra', 'diwali', 'navratri', 'sankranti',
         'ugadi', 'onam', 'ramadan', 'eid', 'chaturthi', 'పండుగ', 'దసరా', 'దీపావళి', 'ఉగాది', 'त्योहार', 'दशहरा'

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Loader2, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import type { StoreTypeSlug } from '../../context/AuthContext';
 
@@ -159,7 +159,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showAllStores, setShowAllStores] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,8 +187,7 @@ export default function LoginPage() {
     }
   };
 
-  const featuredStores = ALL_DEMO_STORES.slice(0, 3);
-  const remainingStores = ALL_DEMO_STORES.slice(3);
+
 
   return (
     <div>
@@ -265,95 +263,44 @@ export default function LoginPage() {
           <div className="w-full border-t border-white/10"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[#0f172a] px-3 text-surface-400 font-medium flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            1-Click Explore Demo Stores (12 Verticals)
+          <span className="bg-[#0f172a] px-3 text-surface-300 font-bold flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            1-Click Demo Login (All 12 Retail Stores)
           </span>
         </div>
       </div>
 
-      {/* Featured 3 Demo Stores */}
-      <div className="space-y-2.5 mb-3">
-        {featuredStores.map((store) => (
+      {/* Direct 1-Click Login for ALL 12 Stores */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+        {ALL_DEMO_STORES.map((store) => (
           <button
             key={store.type}
             type="button"
             disabled={loading}
             onClick={() => handleDemoClick(store.type)}
-            className={`w-full p-3 rounded-xl ${store.bgAccent} border ${store.borderAccent} text-left transition-all group flex items-center justify-between shadow-md`}
+            className={`p-3 rounded-xl ${store.bgAccent} border ${store.borderAccent} text-left transition-all group flex items-center justify-between shadow-xs hover:scale-[1.01] active:scale-[0.99]`}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl p-2 rounded-lg bg-black/20 border border-white/10">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-xl p-1.5 rounded-lg bg-black/30 border border-white/10 flex-shrink-0">
                 {store.emoji}
               </span>
-              <div>
-                <div className={`text-sm font-semibold ${store.textAccent} group-hover:text-white flex items-center gap-2`}>
-                  {store.name}
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 ${store.textAccent} font-normal border border-white/10`}>
+              <div className="min-w-0">
+                <div className={`text-xs font-bold ${store.textAccent} group-hover:text-white flex items-center gap-1.5 truncate`}>
+                  <span className="truncate">{store.name}</span>
+                </div>
+                <div className="text-[10px] text-surface-400 flex items-center gap-1 mt-0.5">
+                  <span className={`px-1.5 py-0.2 rounded-full bg-white/10 ${store.textAccent} font-medium border border-white/10 text-[9px]`}>
                     {store.badge}
                   </span>
+                  <span className="truncate text-surface-400 text-[10px]">{store.desc.split(',')[0]}</span>
                 </div>
-                <div className="text-xs text-surface-400">{store.desc}</div>
               </div>
             </div>
-            <span className={`text-xs font-semibold ${store.textAccent} group-hover:translate-x-0.5 transition-transform`}>
-              Enter →
+            <span className={`text-xs font-bold ${store.textAccent} group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1`}>
+              Login →
             </span>
           </button>
         ))}
-      </div>
-
-      {/* Expandable Section for Remaining 9 Stores */}
-      <div className="mb-6">
-        <button
-          type="button"
-          onClick={() => setShowAllStores(!showAllStores)}
-          className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-surface-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
-        >
-          {showAllStores ? (
-            <>
-              <span>Hide additional stores</span>
-              <ChevronUp className="w-4 h-4" />
-            </>
-          ) : (
-            <>
-              <span>View all 12 demo stores (Clothing, Pharmacy, Bakery, Restaurant, etc.)</span>
-              <ChevronDown className="w-4 h-4" />
-            </>
-          )}
-        </button>
-
-        {showAllStores && (
-          <div className="mt-2.5 space-y-2 max-h-[380px] overflow-y-auto pr-1 animate-fade-in">
-            {remainingStores.map((store) => (
-              <button
-                key={store.type}
-                type="button"
-                disabled={loading}
-                onClick={() => handleDemoClick(store.type)}
-                className={`w-full p-2.5 rounded-xl ${store.bgAccent} border ${store.borderAccent} text-left transition-all group flex items-center justify-between`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xl p-1.5 rounded-lg bg-black/20 border border-white/10">
-                    {store.emoji}
-                  </span>
-                  <div>
-                    <div className={`text-xs font-semibold ${store.textAccent} group-hover:text-white flex items-center gap-1.5`}>
-                      {store.name}
-                      <span className={`text-[9px] px-1 py-0.2 rounded-full bg-white/10 ${store.textAccent} font-normal border border-white/10`}>
-                        {store.badge}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-surface-400 line-clamp-1">{store.desc}</div>
-                  </div>
-                </div>
-                <span className={`text-xs font-semibold ${store.textAccent} group-hover:translate-x-0.5 transition-transform`}>
-                  Enter →
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Quick Auto-Fill Credentials */}

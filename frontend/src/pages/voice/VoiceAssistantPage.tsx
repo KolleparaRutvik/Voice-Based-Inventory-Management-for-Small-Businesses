@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { voiceService, productsService, customersService } from '../../services/api';
 import { useLanguage } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { getStorePersona } from '../../utils/storePersonalization';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import type { VoiceState, VoiceIntent, Product, Customer } from '../../types';
 
@@ -39,7 +41,9 @@ interface ChatTurn {
 
 export default function VoiceAssistantPage() {
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
+  const { shop, user } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
 
   const [conversationId] = useState<string>(() => `conv-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`);
   const [voiceState, setVoiceState] = useState<VoiceState>('ready');
@@ -66,10 +70,10 @@ export default function VoiceAssistantPage() {
       id: 'welcome-msg',
       role: 'assistant',
       content: language === 'te'
-        ? 'నమస్కారం! నేను మీ దుకాణసేతు వాయిస్ అసిస్టెంట్. బియ్యం స్టాక్, అమ్మకాలు, వచ్చే వారానికి సరిపోతుందా లేదా అప్పుల వివరాలు ఏదైనా అడగవచ్చు లేదా వాయిస్ తో స్టాక్, ఉధార్ రికార్డ్ చేయవచ్చు.'
+        ? storePersona.assistantGreeting.te
         : language === 'hi'
-        ? 'नमस्ते! मैं आपका दुकानसेतु वॉयस सहायक हूँ। आप स्टॉक, उधारी, बिक्री या किसी भी Kirana कार्य के लिए बोल सकते हैं।'
-        : 'Welcome to DukaanSetu! Speak naturally in Telugu, Hindi, or English to check stock, projection, customer udhar, or record sales and inventory.',
+        ? storePersona.assistantGreeting.hi
+        : storePersona.assistantGreeting.en,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -372,17 +376,8 @@ export default function VoiceAssistantPage() {
     }
   };
 
-  // Quick Kirana query suggestions
-  const quickSuggestions = [
-    { label: 'What items do I need for the upcoming festival?', query: 'What items do I need for the upcoming festival?' },
-    { label: 'దసరా పండుగకి ఏ సరుకులు కావాలి?', query: 'దసరా పండుగకి ఏ సరుకులు కావాలి?' },
-    { label: 'Check festival demand', query: 'Check festival demand' },
-    { label: 'one person Kiran has taken a loan of 500', query: 'one person Kiran has taken a loan of 500' },
-    { label: 'How much loan does Kiran have?', query: 'How much loan does Kiran have?' },
-    { label: 'Clear loan of Kiran', query: 'Clear loan of Kiran' },
-    { label: 'రైస్ స్టాక్ ఎంత ఉంది?', query: 'రైస్ స్టాక్ ఎంత ఉంది?' },
-    { label: 'Ramesh ki 500 udhar rasi pettu', query: 'Ramesh ki 500 udhar rasi pettu' },
-  ];
+  // Quick store-specific query suggestions
+  const quickSuggestions = storePersona.suggestions;
 
   return (
     <div className="page-container pt-3 space-y-4 animate-fade-in max-w-4xl mx-auto pb-16">
@@ -395,10 +390,13 @@ export default function VoiceAssistantPage() {
           <div>
             <h2 className="text-xl font-bold text-surface-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary-600 animate-pulse" />
-              <span>{t('appName')} Assistant</span>
+              <span>{shop?.name || storePersona.defaultShopName}</span>
             </h2>
-            <p className="text-xs text-surface-500">
-              {products.length > 0 ? `${products.length} products • ${customers.length} customers • Live DB` : 'Unified Voice AI • Telugu, Hindi & English'}
+            <p className="text-xs text-surface-500 flex items-center gap-1.5 mt-0.5">
+              <span className="px-2 py-0.5 rounded-full bg-primary-100 text-primary-800 font-semibold text-[10px]">
+                {storePersona.emoji} {storePersona.name}
+              </span>
+              <span>{products.length > 0 ? `${products.length} products • ${customers.length} customers` : 'Personalized Voice AI'}</span>
             </p>
           </div>
         </div>
@@ -672,9 +670,9 @@ export default function VoiceAssistantPage() {
         ))}
 
         {voiceState === 'understanding' && (
-          <div className="flex items-center gap-2 p-3 bg-white rounded-2xl border border-surface-200 max-w-[220px] animate-pulse">
+          <div className="flex items-center gap-2 p-3 bg-white rounded-2xl border border-surface-200 max-w-[240px] animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin text-primary-600" />
-            <span className="text-xs text-surface-500 font-medium">Checking live Kirana DB...</span>
+            <span className="text-xs text-surface-500 font-medium">{storePersona.assistantDbChecking}</span>
           </div>
         )}
         <div ref={chatBottomRef} />
@@ -692,7 +690,7 @@ export default function VoiceAssistantPage() {
               setManualText('');
             }
           }}
-          placeholder="Ask or type command (e.g. 'Rice stock entha?', 'Ramesh ki 500 udhar rasi pettu')..."
+          placeholder={storePersona.manualInputPlaceholder}
           className="input-field text-sm flex-1 bg-white"
         />
         <button

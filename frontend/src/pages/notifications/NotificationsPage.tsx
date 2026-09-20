@@ -423,14 +423,16 @@ export default function NotificationsPage() {
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  item.type === 'FESTIVAL_DEMAND' ? 'bg-amber-100 text-amber-700' :
-                  item.type === 'LOW_STOCK' ? 'bg-red-100 text-red-600' :
+                  item.type === 'FESTIVAL_DEMAND' || item.type === 'FESTIVAL_SPIKE' ? 'bg-amber-100 text-amber-700' :
+                  item.type === 'FAST_MOVING' ? 'bg-orange-100 text-orange-700' :
+                  item.type === 'LOW_STOCK' || item.type === 'STOCK_WARNING' ? 'bg-red-100 text-red-600' :
                   item.type === 'ORDER_CREATED' ? 'bg-emerald-100 text-emerald-600' :
                   item.type === 'SMART_REORDER' ? 'bg-purple-100 text-purple-600' :
                   'bg-blue-100 text-blue-600'
                 }`}>
-                  {item.type === 'FESTIVAL_DEMAND' ? <Flame className="w-5 h-5 text-amber-600" /> :
-                   item.type === 'LOW_STOCK' ? <AlertTriangle className="w-5 h-5" /> :
+                  {item.type === 'FESTIVAL_DEMAND' || item.type === 'FESTIVAL_SPIKE' ? <Flame className="w-5 h-5 text-amber-600" /> :
+                   item.type === 'FAST_MOVING' ? <Flame className="w-5 h-5 text-orange-600" /> :
+                   item.type === 'LOW_STOCK' || item.type === 'STOCK_WARNING' ? <AlertTriangle className="w-5 h-5" /> :
                    item.type === 'ORDER_CREATED' ? <ShoppingCart className="w-5 h-5" /> :
                    item.type === 'SMART_REORDER' ? <Sparkles className="w-5 h-5" /> :
                    <Package className="w-5 h-5" />}
@@ -447,12 +449,12 @@ export default function NotificationsPage() {
                   <p className="text-xs text-surface-600 leading-relaxed whitespace-pre-line">{item.message}</p>
 
                   <div className="flex items-center gap-3 pt-2">
-                    {item.type === 'LOW_STOCK' && (
+                    {(item.type === 'LOW_STOCK' || item.type === 'FAST_MOVING' || item.type === 'STOCK_WARNING') && (
                       <button
                         onClick={() => navigate('/stock/in')}
                         className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1"
                       >
-                        Reorder Now →
+                        Reorder / Stock In →
                       </button>
                     )}
                     {item.type === 'ORDER_CREATED' && (
