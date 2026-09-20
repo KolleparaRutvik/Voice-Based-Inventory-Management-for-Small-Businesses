@@ -30,12 +30,11 @@ from app.utils.entity_resolver import (
 logger = logging.getLogger(__name__)
 voice_bp = Blueprint('voice', __name__)
 
+
+
 CANDIDATE_MODELS = [
-    'gemini-3.1-flash-lite',
-    'gemini-3.5-flash-lite',
-    'gemini-flash-latest',
-    'gemini-2.5-flash',
-    'gemini-3.6-flash'
+    'gemini-3.6-flash',
+    'gemini-flash-latest'
 ]
 
 
@@ -50,7 +49,7 @@ def generate_with_gemini(contents):
         for model_name in CANDIDATE_MODELS:
             try:
                 m = genai.GenerativeModel(model_name)
-                res = m.generate_content(contents, request_options={'timeout': 10})
+                res = m.generate_content(contents, request_options={'timeout': 8})
                 if res and res.text:
                     return res.text.strip()
             except Exception as ex:
@@ -194,6 +193,28 @@ def interpret_voice():
         supp_res = supabase.table('suppliers').select('id, name, phone').eq('shop_id', shop_id).execute()
         suppliers = supp_res.data or []
 
+        catalog_names = [
+            {
+                'id': p['id'],
+                'name': p['name'],
+                'local_name': p.get('local_name'),
+                'category': p.get('category'),
+                'base_unit': p.get('base_unit', 'unit'),
+                'current_stock': p.get('current_stock', 0),
+                'selling_price': p.get('selling_price', 0)
+            }
+            for p in products
+        ]
+        customer_names = [
+            {
+                'id': c['id'],
+                'name': c['name'],
+                'phone': c.get('phone'),
+                'total_credit': customer_debt_map.get(c['id'], customer_debt_map.get(c['name'].lower(), float(c.get('total_credit', 0))))
+            }
+            for c in customers
+        ]
+
         # 4. Extract numbers and units locally as foundational facts
         extracted_facts = extract_numbers_and_units(transcript)
 
@@ -291,20 +312,24 @@ Return strictly a JSON object with this structure (no markdown fences, no extra 
     "voice_text": "Short spoken version (1-2 sentences) for audio TTS in user's language or null"
 }}"""
 
+        # 1. Evaluate deterministic local parser first for instant (<5ms) zero-timeout response
+        local_ai_data = build_local_interpretation(transcript, last_product_name, last_customer_name, extracted_facts)
         ai_data = None
-        raw_ai_text = generate_with_gemini(prompt)
-        if raw_ai_text:
-            try:
-                txt = raw_ai_text
-                if txt.startswith('```'):
-                    txt = txt.split('\n', 1)[1].rsplit('```', 1)[0].strip()
-                ai_data = json.loads(txt)
-            except Exception as m_err:
-                logger.warning(f"Gemini interpretation JSON parse failed: {m_err}")
 
-        # If LLM failed, use local deterministic fallback parser
-        if not ai_data:
-            ai_data = build_local_interpretation(transcript, last_product_name, last_customer_name, extracted_facts)
+        if local_ai_data.get('intent') not in ('GENERAL', 'UNKNOWN'):
+            ai_data = local_ai_data
+        else:
+            raw_ai_text = generate_with_gemini(prompt)
+            if raw_ai_text:
+                try:
+                    txt = raw_ai_text
+                    if txt.startswith('```'):
+                        txt = txt.split('\n', 1)[1].rsplit('```', 1)[0].strip()
+                    ai_data = json.loads(txt)
+                except Exception as m_err:
+                    logger.warning(f"Gemini interpretation JSON parse failed: {m_err}")
+            if not ai_data:
+                ai_data = local_ai_data
 
         # 7. Robust Entity Resolution on Extracted Data
         detected_intent = ai_data.get('intent', 'UNKNOWN')
@@ -1161,9 +1186,9 @@ def build_local_interpretation(transcript, last_prod, last_cust, facts):
         intent = 'CUSTOMER_ADD'
     elif any(w in lower for w in ['add product', 'new product', 'kotha product', 'naya product']):
         intent = 'PRODUCT_ADD'
-    elif any(w in lower for w in ['add cheyyi', 'vesuko', 'stock me dalo', 'jodo', 'add', 'చేర్చు', 'కలుపు', 'వేయి', 'స్టాక్ లో', 'जोड़ो', 'डालो']):
+    elif any(w in lower for w in ['add cheyyi', 'vesuko', 'stock me dalo', 'jodo', 'add', 'vachayi', 'vachindi', 'aagaya', 'aaya', 'arrived', 'received', 'చేర్చు', 'కలుపు', 'వేయి', 'స్టాక్ లో', 'వచ్చాయి', 'వచ్చింది', 'जोड़ो', 'डालो', 'आ गया']):
         intent = 'STOCK_IN'
-    elif any(w in lower for w in ['sold', 'ammadu', 'becha', 'theesi', 'sale', 'సేల్', 'అమ్మాము', 'అమ్మాను', 'తీసివేయి', 'విక్రయించాము', 'बेचा', 'बिक्री']):
+    elif any(w in lower for w in ['sold', 'ammadu', 'ammamu', 'ammanu', 'ammindi', 'ammesamu', 'becha', 'bech diya', 'beche', 'theesi', 'sale', 'సేల్', 'అమ్మాము', 'అమ్మాను', 'తీసివేయి', 'విక్రయించాము', 'बेचा', 'बिक्री']):
         intent = 'STOCK_OUT'
     elif any(w in lower for w in ['taken a loan', 'took a loan', 'took loan', 'loan of', 'borrowed', 'loan', 'karz liya', 'karz', 'appu theesukunnadu', 'tesukunnadu', 'chebadulu', 'రుణం', 'udhar rasi', 'udhar likho', 'udhar pettu', 'appu rasi', 'udhar', 'ఉధార్', 'అప్పు', 'ఖాతా', 'రాసి పెట్టు', 'రాయి', 'उधार', 'खाते में', 'लिखो']):
         intent = 'BORROW_OUT'
@@ -1210,7 +1235,7 @@ def build_local_interpretation(transcript, last_prod, last_cust, facts):
         'quantity': facts.get('quantity'),
         'unit': facts.get('unit'),
         'price': facts.get('price'),
-        'amount': facts.get('price'),
+        'amount': facts.get('price') or (facts.get('quantity') if intent in ('BORROW_OUT', 'BORROW_RETURN', 'BORROW_CLEAR') else None),
         'confidence': 0.88,
         'detected_language': lang,
         'requires_confirmation': intent in ('STOCK_IN', 'STOCK_OUT', 'BORROW_OUT', 'BORROW_RETURN', 'BORROW_CLEAR', 'STOCK_ADJUST', 'CUSTOMER_ADD', 'PRODUCT_ADD', 'PURCHASE'),

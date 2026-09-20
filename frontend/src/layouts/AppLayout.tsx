@@ -21,9 +21,11 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { getStorePersona } from '../utils/storePersonalization';
 
 export default function AppLayout() {
   const { user, shop, logout } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -67,7 +69,7 @@ export default function AppLayout() {
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="text-base font-bold text-surface-900 truncate">{t('appName')}</h1>
-              <p className="text-xs text-surface-500 truncate">{shop?.name || 'Sri Lakshmi Kirana'}</p>
+              <p className="text-xs text-surface-500 truncate">{shop?.name || storePersona.defaultShopName}</p>
             </div>
           </div>
 

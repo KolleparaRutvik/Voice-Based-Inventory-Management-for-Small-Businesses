@@ -5,6 +5,8 @@ import {
   IndianRupee, Clock, CheckCircle2, AlertCircle, Loader2 
 } from 'lucide-react';
 import { borrowingsService, productsService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { getStorePersona } from '../../utils/storePersonalization';
 import type { Product } from '../../types';
 
 interface BorrowingItem {
@@ -27,6 +29,8 @@ interface BorrowingItem {
 
 export default function BorrowingsPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const [borrowings, setBorrowings] = useState<BorrowingItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -249,7 +253,7 @@ export default function BorrowingsPage() {
                   {/* WhatsApp Reminder Button */}
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
-                      `Namaste ${item.customer_name}, this is a gentle reminder from Sri Lakshmi Kirana regarding your pending bill of Rs. ${item.remaining_balance || item.total_value}. Thank you!`
+                      `Namaste ${item.customer_name}, this is a gentle reminder from ${shop?.name || storePersona.defaultShopName} regarding your pending bill of Rs. ${item.remaining_balance || item.total_value}. Thank you!`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"

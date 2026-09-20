@@ -2,6 +2,7 @@
 import uuid
 from flask import Blueprint, request, g
 from app.utils import require_auth, success_response, error_response
+from app.utils.auth import DEMO_SHOP_MAP
 from app.utils.supabase_client import get_supabase
 
 auth_bp = Blueprint('auth', __name__)
@@ -137,17 +138,31 @@ STORE_SEED_DATA = {
         ]
     },
     'autoparts': {
-        'categories': ['Engine Oils & Lubricants', 'Brake Systems & Pads', 'Ignition & Electricals', 'Tyres & Tubes', 'Batteries & Bulbs', 'Cables & Filters'],
-        'suppliers': [('Castrol Lubricants Agency', '+91 9876552001'), ('Bosch Automotive Parts', '+91 9876552002'), ('Hero Spares Wholesale', '+91 98480bb002')],
-        'customers': [('Prasad Mechanic (Garage Udhar)', '+91 98480bb111', 12500.0), ('Venu Two-Wheeler Works', '+91 98480bb222', 7800.0)],
+        'categories': ['Engine Oils & Lubricants', 'Brake Systems & Pads', 'Ignition & Electricals', 'Transmission & Chains', 'Tyres & Tubes', 'Batteries & Horns', 'Cables & Filters', 'Care & Maintenance'],
+        'suppliers': [
+            ('Castrol India Lubricants Stockist', '+91 98480bb001'),
+            ('Bosch Automotive Parts Wholesale', '+91 98480bb002'),
+            ('Hero & TVS Genuine Spares Agency', '+91 98480bb003'),
+            ('Exide & Amaron Batteries Hub', '+91 98480bb004')
+        ],
+        'customers': [
+            ('Shiva Mechanic (Shiva Auto Garage Tab)', '+91 98480bb111', 12500.0),
+            ('Ramesh Auto Garage (Running Spares Credit)', '+91 98480bb222', 7800.0),
+            ('Raju Bike Point (Engine Oil & Pads Tab)', '+91 98480bb333', 3450.0)
+        ],
         'products': [
-            {'name': 'Castrol Activ 4T 20W-40 1L (ఇంజన్ ఆయిల్)', 'local_name': 'Engine Oil', 'category': 'Engine Oils & Lubricants', 'base_unit': 'bottle', 'purchase_unit': 'box', 'selling_unit': 'bottle', 'conversion_factor': 12, 'purchase_price': 4200, 'selling_price': 420, 'minimum_stock': 12, 'recommended_stock': 60, 'reorder_quantity': 24, 'stock': 38},
-            {'name': 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'local_name': 'Brake Shoes', 'category': 'Brake Systems & Pads', 'base_unit': 'set', 'purchase_unit': 'box', 'selling_unit': 'set', 'conversion_factor': 10, 'purchase_price': 1800, 'selling_price': 240, 'minimum_stock': 8, 'recommended_stock': 40, 'reorder_quantity': 15, 'stock': 26},
-            {'name': 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'local_name': 'Bike Battery', 'category': 'Batteries & Bulbs', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1, 'purchase_price': 1180, 'selling_price': 1450, 'minimum_stock': 3, 'recommended_stock': 18, 'reorder_quantity': 6, 'stock': 11},
-            {'name': 'MRF Nylogrip Tyre 2.75-18 (ఎంఆర్ఎఫ్ టైరు)', 'local_name': 'MRF Tyre', 'category': 'Tyres & Tubes', 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1, 'purchase_price': 1380, 'selling_price': 1650, 'minimum_stock': 4, 'recommended_stock': 20, 'reorder_quantity': 8, 'stock': 14},
-            {'name': 'Clutch Cable for Bajaj Pulsar (క్లచ్ కేబుల్)', 'local_name': 'Clutch Cable', 'category': 'Cables & Filters', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 850, 'selling_price': 130, 'minimum_stock': 6, 'recommended_stock': 35, 'reorder_quantity': 15, 'stock': 22},
-            {'name': 'Spark Plug NGK 2-Wheeler (స్పార్క్ ప్లగ్)', 'local_name': 'Spark Plug', 'category': 'Ignition & Electricals', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 650, 'selling_price': 95, 'minimum_stock': 12, 'recommended_stock': 80, 'reorder_quantity': 25, 'stock': 50},
-            {'name': 'Rolon Chain Sprocket Kit (చైన్ కిట్)', 'local_name': 'Chain Sprocket', 'category': 'Brake Systems & Pads', 'base_unit': 'set', 'purchase_unit': 'set', 'selling_unit': 'set', 'conversion_factor': 1, 'purchase_price': 850, 'selling_price': 1150, 'minimum_stock': 3, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 9},
+            {'name': 'Castrol Activ 4T 20W-40 1L (ఇంజన్ ఆయిల్)', 'local_name': 'Engine Oil', 'category': 'Engine Oils & Lubricants', 'base_unit': 'bottle', 'purchase_unit': 'box', 'selling_unit': 'bottle', 'conversion_factor': 12, 'purchase_price': 4200, 'selling_price': 420, 'minimum_stock': 12, 'recommended_stock': 70, 'reorder_quantity': 24, 'stock': 45},
+            {'name': 'Motul 3000 4T Plus 10W-30 1L (మోటుల్ ఇంజన్ ఆయిల్)', 'local_name': 'Motul Oil', 'category': 'Engine Oils & Lubricants', 'base_unit': 'bottle', 'purchase_unit': 'box', 'selling_unit': 'bottle', 'conversion_factor': 12, 'purchase_price': 4440, 'selling_price': 440, 'minimum_stock': 10, 'recommended_stock': 50, 'reorder_quantity': 20, 'stock': 28},
+            {'name': 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'local_name': 'Brake Shoes', 'category': 'Brake Systems & Pads', 'base_unit': 'set', 'purchase_unit': 'box', 'selling_unit': 'set', 'conversion_factor': 10, 'purchase_price': 1800, 'selling_price': 240, 'minimum_stock': 8, 'recommended_stock': 50, 'reorder_quantity': 20, 'stock': 30},
+            {'name': 'Front Disc Brake Pads Pulsar / Apache (ఫ్రంట్ డిస్క్ ప్యాడ్లు)', 'local_name': 'Disc Brake Pads', 'category': 'Brake Systems & Pads', 'base_unit': 'set', 'purchase_unit': 'box', 'selling_unit': 'set', 'conversion_factor': 10, 'purchase_price': 2600, 'selling_price': 350, 'minimum_stock': 6, 'recommended_stock': 30, 'reorder_quantity': 12, 'stock': 15},
+            {'name': 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'local_name': 'Bike Battery', 'category': 'Batteries & Horns', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1, 'purchase_price': 1180, 'selling_price': 1450, 'minimum_stock': 3, 'recommended_stock': 20, 'reorder_quantity': 6, 'stock': 12},
+            {'name': 'MRF Nylogrip Tyre 90/90-12 Activa (ఎంఆర్ఎఫ్ టైరు)', 'local_name': 'MRF Tyre', 'category': 'Tyres & Tubes', 'base_unit': 'piece', 'purchase_unit': 'piece', 'selling_unit': 'piece', 'conversion_factor': 1, 'purchase_price': 1380, 'selling_price': 1650, 'minimum_stock': 4, 'recommended_stock': 25, 'reorder_quantity': 8, 'stock': 16},
+            {'name': 'Spark Plug NGK 2-Wheeler (స్పార్క్ ప్లగ్)', 'local_name': 'Spark Plug', 'category': 'Ignition & Electricals', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 650, 'selling_price': 95, 'minimum_stock': 15, 'recommended_stock': 100, 'reorder_quantity': 30, 'stock': 60},
+            {'name': 'Rolon Chain Sprocket Kit Splendor (చైన్ కిట్)', 'local_name': 'Chain Sprocket', 'category': 'Transmission & Chains', 'base_unit': 'set', 'purchase_unit': 'set', 'selling_unit': 'set', 'conversion_factor': 1, 'purchase_price': 850, 'selling_price': 1150, 'minimum_stock': 3, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 9},
+            {'name': 'Clutch Cable for Bajaj Pulsar (క్లచ్ కేబుల్)', 'local_name': 'Clutch Cable', 'category': 'Cables & Filters', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 850, 'selling_price': 130, 'minimum_stock': 6, 'recommended_stock': 40, 'reorder_quantity': 15, 'stock': 25},
+            {'name': 'Roots 12V High-Tone Bike Horn (రూట్స్ బైక్ హారన్)', 'local_name': 'Bike Horn', 'category': 'Batteries & Horns', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 6, 'purchase_price': 1500, 'selling_price': 320, 'minimum_stock': 4, 'recommended_stock': 24, 'reorder_quantity': 8, 'stock': 14},
+            {'name': 'Air Filter for Hero Splendor / HF (ఎయిర్ ఫిల్టర్)', 'local_name': 'Air Filter', 'category': 'Cables & Filters', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 950, 'selling_price': 140, 'minimum_stock': 8, 'recommended_stock': 40, 'reorder_quantity': 15, 'stock': 22},
+            {'name': 'WD-40 / Motul Chain Lube Spray 400ml (చైన్ ల్యూబ్ స్ప్రే)', 'local_name': 'Chain Lube', 'category': 'Care & Maintenance', 'base_unit': 'can', 'purchase_unit': 'box', 'selling_unit': 'can', 'conversion_factor': 12, 'purchase_price': 3240, 'selling_price': 350, 'minimum_stock': 6, 'recommended_stock': 30, 'reorder_quantity': 12, 'stock': 18},
         ]
     },
     'vegetables': {
@@ -165,17 +180,31 @@ STORE_SEED_DATA = {
         ]
     },
     'electronics': {
-        'categories': ['Smartphones', 'Fast Chargers & Cables', 'Audio & Earbuds', 'Screen Guards & Covers', 'Powerbanks & Cables', 'Smart Gadgets'],
-        'suppliers': [('Redmi National Distributor', '+91 9876554001'), ('boAt Audio Official Dist.', '+91 98480dd002'), ('Redington India Mobile Wholesale', '+91 98480dd001')],
-        'customers': [('Naresh (Phone EMI Udhar Account)', '+91 98480dd111', 9500.0), ('Sandeep (Student Audio Tab)', '+91 98480dd222', 1199.0)],
+        'categories': ['Smartphones', 'Fast Chargers & Adapters', 'Bluetooth Audio & Sound', 'Powerbanks & Cables', 'Screen Guards & Covers', 'Storage & Memory', 'Smartwatches & Gadgets'],
+        'suppliers': [
+            ('Redmi & Xiaomi National Distributor', '+91 9876554001'),
+            ('boAt Audio Official Distributor', '+91 98480dd002'),
+            ('Samsung Mobile Regional Wholesale', '+91 98480dd001'),
+            ('SanDisk & Portronics Gadgets Agency', '+91 98480dd003')
+        ],
+        'customers': [
+            ('Kalyan (Engineering Student Tab)', '+91 98480dd111', 1500.0),
+            ('Naresh (Samsung Phone EMI Account)', '+91 98480dd222', 9500.0),
+            ('Suresh (Display & Tempered Glass Udhar)', '+91 98480dd333', 2800.0)
+        ],
         'products': [
-            {'name': 'Samsung Galaxy A15 5G 128GB (శాంసంగ్ మొబైల్)', 'local_name': 'Samsung Mobile', 'category': 'Smartphones', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1, 'purchase_price': 13200, 'selling_price': 14999, 'minimum_stock': 2, 'recommended_stock': 10, 'reorder_quantity': 4, 'stock': 7},
-            {'name': 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'local_name': 'boAt Earbuds', 'category': 'Audio & Earbuds', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 8900, 'selling_price': 1199, 'minimum_stock': 5, 'recommended_stock': 30, 'reorder_quantity': 10, 'stock': 20},
-            {'name': 'Fast 20W Type-C Charger (టైప్-సి ఛార్జర్)', 'local_name': 'Fast Charger', 'category': 'Fast Chargers & Cables', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 3200, 'selling_price': 499, 'minimum_stock': 10, 'recommended_stock': 50, 'reorder_quantity': 20, 'stock': 36},
-            {'name': '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'local_name': 'Power Bank', 'category': 'Powerbanks & Cables', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 5, 'purchase_price': 3800, 'selling_price': 999, 'minimum_stock': 3, 'recommended_stock': 20, 'reorder_quantity': 8, 'stock': 14},
-            {'name': 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'local_name': 'Type-C Cable', 'category': 'Powerbanks & Cables', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 20, 'purchase_price': 2200, 'selling_price': 199, 'minimum_stock': 15, 'recommended_stock': 80, 'reorder_quantity': 25, 'stock': 55},
-            {'name': '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'local_name': 'Screen Guard', 'category': 'Screen Guards & Covers', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 25, 'purchase_price': 1250, 'selling_price': 150, 'minimum_stock': 20, 'recommended_stock': 120, 'reorder_quantity': 40, 'stock': 80},
-            {'name': 'Noise ColorFit Pulse Smart Watch (స్మార్ట్ వాచ్)', 'local_name': 'Smart Watch', 'category': 'Smart Gadgets', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 5, 'purchase_price': 6500, 'selling_price': 1799, 'minimum_stock': 3, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 8},
+            {'name': 'Samsung Galaxy A15 5G 128GB (శాంసంగ్ మొబైల్)', 'local_name': 'Samsung Mobile', 'category': 'Smartphones', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1, 'purchase_price': 13200, 'selling_price': 14999, 'minimum_stock': 2, 'recommended_stock': 12, 'reorder_quantity': 4, 'stock': 8},
+            {'name': 'Redmi 13C 5G 128GB (రెడ్‌మి 5G మొబైల్)', 'local_name': 'Redmi Mobile', 'category': 'Smartphones', 'base_unit': 'unit', 'purchase_unit': 'unit', 'selling_unit': 'unit', 'conversion_factor': 1, 'purchase_price': 9800, 'selling_price': 11499, 'minimum_stock': 2, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 9},
+            {'name': 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'local_name': 'boAt Earbuds', 'category': 'Bluetooth Audio & Sound', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 8900, 'selling_price': 1199, 'minimum_stock': 5, 'recommended_stock': 35, 'reorder_quantity': 10, 'stock': 22},
+            {'name': 'boAt Rockerz 255 Pro+ Neckband (బ్లూటూత్ నెక్‌బ్యాండ్)', 'local_name': 'boAt Neckband', 'category': 'Bluetooth Audio & Sound', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 7800, 'selling_price': 1099, 'minimum_stock': 4, 'recommended_stock': 25, 'reorder_quantity': 8, 'stock': 16},
+            {'name': 'Fast 20W Type-C Charger Adapter (టైప్-సి ఛార్జర్)', 'local_name': 'Fast Charger', 'category': 'Fast Chargers & Adapters', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 3200, 'selling_price': 499, 'minimum_stock': 10, 'recommended_stock': 60, 'reorder_quantity': 20, 'stock': 40},
+            {'name': 'SuperVOOC 33W Fast Charger with Cable (33W ఫాస్ట్ ఛార్జర్)', 'local_name': '33W Charger', 'category': 'Fast Chargers & Adapters', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 10, 'purchase_price': 5200, 'selling_price': 799, 'minimum_stock': 5, 'recommended_stock': 30, 'reorder_quantity': 10, 'stock': 18},
+            {'name': '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'local_name': 'Power Bank', 'category': 'Powerbanks & Cables', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 5, 'purchase_price': 3800, 'selling_price': 999, 'minimum_stock': 3, 'recommended_stock': 25, 'reorder_quantity': 10, 'stock': 15},
+            {'name': '20000mAh 22.5W Fast Power Bank (20000mAh పవర్ బ్యాంక్)', 'local_name': '20000mAh Power Bank', 'category': 'Powerbanks & Cables', 'base_unit': 'unit', 'purchase_unit': 'box', 'selling_unit': 'unit', 'conversion_factor': 5, 'purchase_price': 6200, 'selling_price': 1699, 'minimum_stock': 2, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 8},
+            {'name': 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'local_name': 'Type-C Cable', 'category': 'Powerbanks & Cables', 'base_unit': 'piece', 'purchase_unit': 'bundle', 'selling_unit': 'piece', 'conversion_factor': 20, 'purchase_price': 2200, 'selling_price': 199, 'minimum_stock': 15, 'recommended_stock': 100, 'reorder_quantity': 30, 'stock': 65},
+            {'name': '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'local_name': 'Screen Guard', 'category': 'Screen Guards & Covers', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 25, 'purchase_price': 1250, 'selling_price': 150, 'minimum_stock': 20, 'recommended_stock': 150, 'reorder_quantity': 50, 'stock': 90},
+            {'name': 'SanDisk 64GB Ultra MicroSD Card (మెమరీ కార్డు)', 'local_name': 'Memory Card', 'category': 'Storage & Memory', 'base_unit': 'piece', 'purchase_unit': 'pack', 'selling_unit': 'piece', 'conversion_factor': 10, 'purchase_price': 3600, 'selling_price': 499, 'minimum_stock': 5, 'recommended_stock': 30, 'reorder_quantity': 10, 'stock': 18},
+            {'name': 'Noise ColorFit Pulse Smart Watch (స్మార్ట్ వాచ్)', 'local_name': 'Smart Watch', 'category': 'Smartwatches & Gadgets', 'base_unit': 'piece', 'purchase_unit': 'box', 'selling_unit': 'piece', 'conversion_factor': 5, 'purchase_price': 6500, 'selling_price': 1799, 'minimum_stock': 3, 'recommended_stock': 15, 'reorder_quantity': 5, 'stock': 8},
         ]
     },
 }
@@ -339,7 +368,24 @@ def login():
     try:
         supabase = get_supabase()
         
-        # 1. Check if user exists in database directly
+        # 1. Check if email belongs to a demo store account
+        for d_token, d_info in DEMO_SHOP_MAP.items():
+            if d_info.get('email') == email:
+                u_res = supabase.table('users').select('*').eq('email', email).limit(1).execute()
+                s_res = supabase.table('shops').select('*').eq('id', d_info['shop_id']).limit(1).execute()
+                u_rec = u_res.data[0] if (u_res.data and len(u_res.data) > 0) else {'id': d_info['auth_id'], 'email': email, 'full_name': 'Store Owner'}
+                s_rec = s_res.data[0] if (s_res.data and len(s_res.data) > 0) else {'id': d_info['shop_id'], 'name': 'DukaanSetu Store'}
+                return success_response({
+                    'user': u_rec,
+                    'shop': s_rec,
+                    'token': d_token,
+                    'session': {
+                        'access_token': d_token,
+                        'refresh_token': d_token,
+                    }
+                })
+
+        # 2. Check if user exists in database directly
         profile = supabase.table('users').select('*').eq('email', email).limit(1).execute()
         if profile.data and len(profile.data) > 0:
             user_rec = profile.data[0]
@@ -356,7 +402,7 @@ def login():
                 }
             })
             
-        # 2. Try Supabase Auth API
+        # 3. Try Supabase Auth API
         try:
             result = supabase.auth.sign_in_with_password({
                 "email": email,
@@ -392,6 +438,6 @@ def login():
 def get_profile():
     """Get current user profile and shop."""
     return success_response({
-        'user': g.user,
-        'shop': g.shop,
+        'user': getattr(g, 'user', None),
+        'shop': getattr(g, 'shop', None),
     })

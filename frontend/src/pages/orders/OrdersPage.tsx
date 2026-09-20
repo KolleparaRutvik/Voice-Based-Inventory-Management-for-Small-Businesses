@@ -5,6 +5,8 @@ import {
   MessageSquare, Loader2, Download, Sparkles, RefreshCw
 } from 'lucide-react';
 import { purchaseOrdersService, suppliersService, productsService, reorderService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { getStorePersona } from '../../utils/storePersonalization';
 import type { Supplier, Product } from '../../types';
 
 interface PurchaseOrder {
@@ -38,6 +40,8 @@ interface ReorderRecommendation {
 
 export default function OrdersPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
   const [recommendations, setRecommendations] = useState<ReorderRecommendation[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -304,7 +308,7 @@ export default function OrdersPage() {
                 {/* WhatsApp Share Button */}
                 <a
                   href={`https://wa.me/${po.supplier_phone || ''}?text=${encodeURIComponent(
-                    `Namaste! Purchase Order ${po.order_number} from Sri Lakshmi Kirana Store.\nTotal Amount: Rs. ${po.total_amount}\nPlease confirm dispatch.`
+                    `Namaste! Purchase Order ${po.order_number} from ${shop?.name || storePersona.defaultShopName}.\nTotal Amount: Rs. ${po.total_amount}\nPlease confirm dispatch.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

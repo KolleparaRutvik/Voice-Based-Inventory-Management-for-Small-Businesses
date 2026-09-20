@@ -19,7 +19,12 @@ KIRANA_PRODUCT_SYNONYMS = {
     'tandula': 'Rice',
     'rice': 'Rice',
     'sona masoori': 'Rice',
+    'sona masuri': 'Rice',
     'basmati': 'Rice',
+    'bm': 'Rice',
+    'b.m': 'Rice',
+    'b.m.': 'Rice',
+    'bm rice': 'Rice',
 
     # Wheat / Flour
     'godhuma': 'Wheat',
@@ -358,23 +363,75 @@ KIRANA_PRODUCT_SYNONYMS = {
     # Auto Spares
     'engine oil': 'Castrol Activ 4T 20W-40 1L',
     'castrol': 'Castrol Activ 4T 20W-40 1L',
+    'castrol 4t': 'Castrol Activ 4T 20W-40 1L',
+    'mobil': 'Castrol Activ 4T 20W-40 1L',
+    'మోబిల్': 'Castrol Activ 4T 20W-40 1L',
+    'motul': 'Motul 3000 4T Plus 10W-30 1L',
+    'motul 4t': 'Motul 3000 4T Plus 10W-30 1L',
+    'motul oil': 'Motul 3000 4T Plus 10W-30 1L',
+    'మోతుల్': 'Motul 3000 4T Plus 10W-30 1L',
+    'మోటుల్': 'Motul 3000 4T Plus 10W-30 1L',
     'brake shoes': 'Hero Splendor Brake Shoes',
-    'brake pad': 'Hero Splendor Brake Shoes',
+    'splendor brake shoes': 'Hero Splendor Brake Shoes',
+    'splendor brakes': 'Hero Splendor Brake Shoes',
+    'brake shoe': 'Hero Splendor Brake Shoes',
     'బ్రేక్': 'Hero Splendor Brake Shoes',
+    'బ్రేక్ షూస్': 'Hero Splendor Brake Shoes',
+    'disc pads': 'Front Disc Brake Pads Pulsar / Apache',
+    'pulsar disc pads': 'Front Disc Brake Pads Pulsar / Apache',
+    'pulsar brake pads': 'Front Disc Brake Pads Pulsar / Apache',
+    'disc brake': 'Front Disc Brake Pads Pulsar / Apache',
+    'disc brake pads': 'Front Disc Brake Pads Pulsar / Apache',
+    'apache disc pads': 'Front Disc Brake Pads Pulsar / Apache',
+    'డిస్క్ ప్యాడ్లు': 'Front Disc Brake Pads Pulsar / Apache',
     'battery': 'Amaron 12V Bike Battery 4Ah',
     'bike battery': 'Amaron 12V Bike Battery 4Ah',
+    'amaron': 'Amaron 12V Bike Battery 4Ah',
+    'amaron battery': 'Amaron 12V Bike Battery 4Ah',
+    '12v battery': 'Amaron 12V Bike Battery 4Ah',
     'బ్యాటరీ': 'Amaron 12V Bike Battery 4Ah',
-    'tyre': 'MRF Nylogrip Tyre 2.75-18',
-    'mrf tyre': 'MRF Nylogrip Tyre 2.75-18',
-    'టైరు': 'MRF Nylogrip Tyre 2.75-18',
-    'clutch cable': 'Clutch Cable for Bajaj Pulsar',
+    'tyre': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'mrf tyre': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'mrf': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'tubeless tyre': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'zapper tyre': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'activa tyre': 'MRF Nylogrip Tyre 90/90-12 Activa',
+    'టైరు': 'MRF Nylogrip Tyre 90/90-12 Activa',
     'spark plug': 'Spark Plug NGK 2-Wheeler',
+    'ngk': 'Spark Plug NGK 2-Wheeler',
+    'ngk plug': 'Spark Plug NGK 2-Wheeler',
+    'ngk spark plug': 'Spark Plug NGK 2-Wheeler',
     'ప్లగ్': 'Spark Plug NGK 2-Wheeler',
-    'chain sprocket': 'Rolon Chain Sprocket Kit',
-    'sprocket': 'Rolon Chain Sprocket Kit',
-    'chain kit': 'Rolon Chain Sprocket Kit',
-    'చైన్ కిట్': 'Rolon Chain Sprocket Kit',
-    'చైన్ స్ప్రాకెట్': 'Rolon Chain Sprocket Kit',
+    'స్పార్క్ ప్లగ్': 'Spark Plug NGK 2-Wheeler',
+    'chain sprocket': 'Rolon Chain Sprocket Kit Splendor',
+    'sprocket': 'Rolon Chain Sprocket Kit Splendor',
+    'chain kit': 'Rolon Chain Sprocket Kit Splendor',
+    'rolon kit': 'Rolon Chain Sprocket Kit Splendor',
+    'rolon chain kit': 'Rolon Chain Sprocket Kit Splendor',
+    'rolon chain sprocket': 'Rolon Chain Sprocket Kit Splendor',
+    'చైన్ కిట్': 'Rolon Chain Sprocket Kit Splendor',
+    'చైన్ స్ప్రాకెట్': 'Rolon Chain Sprocket Kit Splendor',
+    'clutch cable': 'Clutch Cable for Bajaj Pulsar',
+    'pulsar clutch cable': 'Clutch Cable for Bajaj Pulsar',
+    'క్లచ్ కేబుల్': 'Clutch Cable for Bajaj Pulsar',
+    'horn': 'Roots 12V High-Tone Bike Horn',
+    'roots horn': 'Roots 12V High-Tone Bike Horn',
+    'roots': 'Roots 12V High-Tone Bike Horn',
+    'dual horn': 'Roots 12V High-Tone Bike Horn',
+    'హార్న్': 'Roots 12V High-Tone Bike Horn',
+    'air filter': 'Air Filter for Hero Splendor / HF',
+    'splendor air filter': 'Air Filter for Hero Splendor / HF',
+    'hero air filter': 'Air Filter for Hero Splendor / HF',
+    'filter': 'Air Filter for Hero Splendor / HF',
+    'ఎయిర్ ఫిల్టర్': 'Air Filter for Hero Splendor / HF',
+    'chain lube': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'chain lube spray': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'lube spray': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'chain spray': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'kangaroo lube': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'wd-40': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'wd40': 'WD-40 / Motul Chain Lube Spray 400ml',
+    'చైన్ లూబ్': 'WD-40 / Motul Chain Lube Spray 400ml',
 
     # Vegetables & Fruits
     'tomato': 'Fresh Country Tomatoes / Tamata',
@@ -410,25 +467,84 @@ KIRANA_PRODUCT_SYNONYMS = {
 
     # Electronics & Mobile
     'samsung': 'Samsung Galaxy A15 5G 128GB',
+    'samsung 5g': 'Samsung Galaxy A15 5G 128GB',
+    'samsung 5g phone': 'Samsung Galaxy A15 5G 128GB',
+    'samsung mobile': 'Samsung Galaxy A15 5G 128GB',
+    'galaxy a15': 'Samsung Galaxy A15 5G 128GB',
+    'a15': 'Samsung Galaxy A15 5G 128GB',
+    'శామ్‌సంగ్': 'Samsung Galaxy A15 5G 128GB',
+    'శామ్‌సంగ్ మొబైల్': 'Samsung Galaxy A15 5G 128GB',
     'mobile': 'Samsung Galaxy A15 5G 128GB',
     'మొబైల్': 'Samsung Galaxy A15 5G 128GB',
+    'redmi': 'Redmi 13C 5G 128GB',
+    'redmi 5g': 'Redmi 13C 5G 128GB',
+    'redmi 13c': 'Redmi 13C 5G 128GB',
+    'redmi 13c 5g': 'Redmi 13C 5G 128GB',
+    'redmi mobile': 'Redmi 13C 5G 128GB',
+    '13c': 'Redmi 13C 5G 128GB',
+    'రెడ్‌మి': 'Redmi 13C 5G 128GB',
     'earbuds': 'boAt Airdopes 141 Bluetooth Earbuds',
     'airdopes': 'boAt Airdopes 141 Bluetooth Earbuds',
     'boat': 'boAt Airdopes 141 Bluetooth Earbuds',
+    'boat earbuds': 'boAt Airdopes 141 Bluetooth Earbuds',
+    'boat airdopes': 'boAt Airdopes 141 Bluetooth Earbuds',
+    'airdopes 141': 'boAt Airdopes 141 Bluetooth Earbuds',
     'ఇయర్ బడ్స్': 'boAt Airdopes 141 Bluetooth Earbuds',
+    'neckband': 'boAt Rockerz 255 Pro+ Neckband',
+    'rockerz': 'boAt Rockerz 255 Pro+ Neckband',
+    'rockerz 255': 'boAt Rockerz 255 Pro+ Neckband',
+    'boat neckband': 'boAt Rockerz 255 Pro+ Neckband',
+    'boat rockerz neckband': 'boAt Rockerz 255 Pro+ Neckband',
+    'నెక్‌బ్యాండ్': 'boAt Rockerz 255 Pro+ Neckband',
     'charger': 'Fast 20W Type-C Charger Adapter',
-    'fast charger': 'Fast 20W Type-C Charger Adapter',
+    '20w charger': 'Fast 20W Type-C Charger Adapter',
+    '20w fast charger': 'Fast 20W Type-C Charger Adapter',
+    'type-c charger': 'Fast 20W Type-C Charger Adapter',
     'ఛార్జర్': 'Fast 20W Type-C Charger Adapter',
+    '33w charger': 'SuperVOOC 33W Fast Charger with Cable',
+    '33w fast charger': 'SuperVOOC 33W Fast Charger with Cable',
+    'supervooc': 'SuperVOOC 33W Fast Charger with Cable',
+    'supervooc charger': 'SuperVOOC 33W Fast Charger with Cable',
+    'mi charger': 'SuperVOOC 33W Fast Charger with Cable',
+    'fast charger': 'SuperVOOC 33W Fast Charger with Cable',
+    'soniccharge': 'SuperVOOC 33W Fast Charger with Cable',
+    '33w soniccharge': 'SuperVOOC 33W Fast Charger with Cable',
+    'ఫాస్ట్ ఛార్జర్': 'SuperVOOC 33W Fast Charger with Cable',
     'power bank': '10000mAh Dual USB Power Bank',
     'powerbank': '10000mAh Dual USB Power Bank',
+    '10000mah power bank': '10000mAh Dual USB Power Bank',
+    '10000 power bank': '10000mAh Dual USB Power Bank',
     'పవర్ బ్యాంక్': '10000mAh Dual USB Power Bank',
+    '20000mah power bank': '20000mAh 22.5W Fast Power Bank',
+    '20000 power bank': '20000mAh 22.5W Fast Power Bank',
+    'ambrane': '20000mAh 22.5W Fast Power Bank',
+    'ambrane power bank': '20000mAh 22.5W Fast Power Bank',
+    'ambrane 20000 power bank': '20000mAh 22.5W Fast Power Bank',
+    '22.5w power bank': '20000mAh 22.5W Fast Power Bank',
     'type-c cable': 'Braided 1.5m Type-C Fast Cable',
+    'type c cable': 'Braided 1.5m Type-C Fast Cable',
+    'cable': 'Braided 1.5m Type-C Fast Cable',
+    'fast cable': 'Braided 1.5m Type-C Fast Cable',
+    'braided cable': 'Braided 1.5m Type-C Fast Cable',
+    'టైప్ సి కేబుల్': 'Braided 1.5m Type-C Fast Cable',
     'tempered glass': '9D Edge-to-Edge Tempered Glass',
+    '9d tempered glass': '9D Edge-to-Edge Tempered Glass',
     'screen guard': '9D Edge-to-Edge Tempered Glass',
+    '9d glass': '9D Edge-to-Edge Tempered Glass',
+    'glass': '9D Edge-to-Edge Tempered Glass',
     'స్క్రీన్ గార్డ్': '9D Edge-to-Edge Tempered Glass',
+    'sandisk': 'SanDisk 64GB Ultra MicroSD Card',
+    'sandisk 64gb memory card': 'SanDisk 64GB Ultra MicroSD Card',
+    'sd card': 'SanDisk 64GB Ultra MicroSD Card',
+    'memory card': 'SanDisk 64GB Ultra MicroSD Card',
+    '64gb card': 'SanDisk 64GB Ultra MicroSD Card',
+    'మెమరీ కార్డు': 'SanDisk 64GB Ultra MicroSD Card',
     'smart watch': 'Noise ColorFit Pulse Smart Watch',
     'smartwatch': 'Noise ColorFit Pulse Smart Watch',
+    'noise smart watch': 'Noise ColorFit Pulse Smart Watch',
     'watch': 'Noise ColorFit Pulse Smart Watch',
+    'noise watch': 'Noise ColorFit Pulse Smart Watch',
+    'colorfit': 'Noise ColorFit Pulse Smart Watch',
     'స్మార్ట్ వాచ్': 'Noise ColorFit Pulse Smart Watch',
 
     # Clothing & Textiles Additions
@@ -534,8 +650,12 @@ UNIT_MAP = {
     'stems': 'stem',
     'set': 'set',
     'sets': 'set',
-    'jatha': 'piece',
-    'jathalu': 'piece',
+    'kit': 'kit',
+    'kits': 'kit',
+    'pair': 'pair',
+    'pairs': 'pair',
+    'jatha': 'pair',
+    'jathalu': 'pair',
     'cartons': 'box',
     'can': 'can',
     'cans': 'can',
@@ -722,23 +842,37 @@ def resolve_product(product_query, catalog_products, alias_records=None):
             'is_ambiguous': True
         }
 
-    # 3. Check Built-in Kirana Synonyms & Transliterations
     synonym_target = KIRANA_PRODUCT_SYNONYMS.get(query)
     if not synonym_target:
-        for term, target in KIRANA_PRODUCT_SYNONYMS.items():
+        for term, target in sorted(KIRANA_PRODUCT_SYNONYMS.items(), key=lambda x: len(x[0]), reverse=True):
             if term in query:
                 synonym_target = target
                 break
 
     if synonym_target:
-        syn_matches = []
         synt = synonym_target.lower()
+        # Direct product name matches have highest priority over generic local_name substrings
+        name_matches = [p for p in catalog_products if synt in p['name'].lower() or p['name'].lower() in synt]
+        if len(name_matches) == 1:
+            return {'matched_product': name_matches[0], 'confidence': 0.95, 'ambiguous_candidates': [], 'is_ambiguous': False}
+        elif len(name_matches) > 1:
+            return {
+                'matched_product': None,
+                'confidence': 0.5,
+                'ambiguous_candidates': [p['name'] for p in name_matches],
+                'is_ambiguous': True
+            }
+
+        # Secondary fallback: local/telugu name matches
+        syn_matches = []
         for p in catalog_products:
-            pname = p['name'].lower()
             plocal = (p.get('local_name') or '').lower()
             ptelugu = (p.get('telugu_name') or '').lower()
-            if (synt in pname or pname in synt) or (plocal and (synt in plocal or plocal in synt)) or (ptelugu and (synt in ptelugu or ptelugu in synt)):
+            if (plocal and (synt == plocal or plocal == synt)) or (ptelugu and (synt == ptelugu or ptelugu == synt)):
                 syn_matches.append(p)
+            elif (plocal and (synt in plocal or (len(plocal) >= 4 and plocal in synt))) or (ptelugu and (synt in ptelugu or (len(ptelugu) >= 4 and ptelugu in synt))):
+                syn_matches.append(p)
+
         if len(syn_matches) == 1:
             return {'matched_product': syn_matches[0], 'confidence': 0.95, 'ambiguous_candidates': [], 'is_ambiguous': False}
         elif len(syn_matches) > 1:

@@ -6,6 +6,8 @@ import {
   CheckCircle2, Flame, AlertCircle, RefreshCw
 } from 'lucide-react';
 import { notificationsService, festivalService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { getStorePersona } from '../../utils/storePersonalization';
 
 interface NotificationItem {
   id: string;
@@ -60,6 +62,8 @@ interface FestivalAnalysis {
 
 export default function NotificationsPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [festivalData, setFestivalData] = useState<FestivalAnalysis | null>(null);
@@ -237,7 +241,7 @@ export default function NotificationsPage() {
                 )}
               </div>
               <p className="text-xs text-surface-600 max-w-2xl leading-relaxed">
-                {currentFest.description} (Analyzed from Kirana Festival Demand Dataset).
+                {currentFest.description} (Analyzed from {storePersona.name} Seasonal Demand Dataset).
               </p>
             </div>
 
@@ -366,7 +370,7 @@ export default function NotificationsPage() {
           ) : (
             <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 font-medium">
               <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>Current inventory for core staple items meets or exceeds {currentFest.event} surge targets!</span>
+              <span>Current inventory for core {storePersona.name} items meets or exceeds {currentFest.event} surge targets!</span>
             </div>
           )}
 

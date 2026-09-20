@@ -133,7 +133,7 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold text-surface-900">
           {getGreeting()}, <span className="text-gradient">{user?.full_name?.split(' ')[0] || 'Shopkeeper'}</span>
         </h2>
-        <p className="text-surface-500 text-sm mt-1">{shop?.name || 'Sri Lakshmi Kirana'} • {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <p className="text-surface-500 text-sm mt-1">{shop?.name || storePersona.defaultShopName} • {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       </div>
 
       {/* Voice Hero CTA */}

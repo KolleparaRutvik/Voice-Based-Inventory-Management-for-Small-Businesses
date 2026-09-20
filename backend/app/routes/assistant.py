@@ -6,14 +6,14 @@ import os
 import json
 import logging
 from datetime import datetime, timedelta
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 from app.utils import require_auth, success_response, error_response, get_current_shop_id
 from app.utils.supabase_client import get_supabase
 
 logger = logging.getLogger(__name__)
 assistant_bp = Blueprint('assistant', __name__)
 
-CANDIDATE_MODELS = ['gemini-2.5-flash', 'gemini-3.6-flash']
+CANDIDATE_MODELS = ['gemini-3.6-flash', 'gemini-flash-latest']
 
 
 @assistant_bp.route('/query', methods=['POST'])
@@ -91,8 +91,14 @@ def ask_assistant():
         suppliers_summary = supp_res.data or []
 
         # 5. Build prompt tailored to shop type
-        shop_type = (getattr(g, 'shop', {}) or {}).get('type', 'kirana')
-        shop_name = (getattr(g, 'shop', {}) or {}).get('name', 'DukaanSetu Store')
+        shop_obj = getattr(g, 'shop', None)
+        if not shop_obj:
+            s_res = supabase.table('shops').select('*').eq('id', shop_id).limit(1).execute()
+            if s_res.data:
+                shop_obj = s_res.data[0]
+        shop_obj = shop_obj or {}
+        shop_type = (shop_obj.get('shop_type') or shop_obj.get('type') or 'kirana').lower()
+        shop_name = shop_obj.get('name', 'DukaanSetu Store')
 
         shop_personas = {
             'jewellery': f"an expert Jewellery & Gold Bullion AI business advisor for '{shop_name}'. You advise on 22K/24K gold rates, silver ornaments, gram-level margins, bridal bookings, and customer gold loans / girvi accounts.",
@@ -168,7 +174,7 @@ Return strictly a JSON object with this structure (no markdown fences):
             for model_name in CANDIDATE_MODELS:
                 try:
                     m = genai.GenerativeModel(model_name)
-                    res = m.generate_content(prompt)
+                    res = m.generate_content(prompt, request_options={'timeout': 3})
                     if res and res.text:
                         ai_response_text = res.text.strip()
                         break

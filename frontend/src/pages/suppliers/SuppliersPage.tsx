@@ -5,10 +5,14 @@ import {
   MapPin, MessageSquare, Loader2 
 } from 'lucide-react';
 import { suppliersService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { getStorePersona } from '../../utils/storePersonalization';
 import type { Supplier } from '../../types';
 
 export default function SuppliersPage() {
   const navigate = useNavigate();
+  const { user, shop } = useAuth();
+  const storePersona = getStorePersona(shop?.type || (user as any)?.shop_type || localStorage.getItem('dukaansetu_store_type'));
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -168,7 +172,7 @@ export default function SuppliersPage() {
                     </a>
                     <a
                       href={`https://wa.me/${supplier.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                        `Namaste ${supplier.name}, sending order enquiry from Sri Lakshmi Kirana Store.`
+                        `Namaste ${supplier.name}, sending order enquiry from ${shop?.name || storePersona.defaultShopName}.`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"

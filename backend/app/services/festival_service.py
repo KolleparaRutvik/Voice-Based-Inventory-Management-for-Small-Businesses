@@ -92,6 +92,7 @@ ANNUAL_FESTIVAL_CALENDAR = [
 
 # Canonical item mapping to shop products and aliases
 ITEM_SYNONYM_MAP = {
+    # Kirana
     'rice': ['rice', 'biyyam', 'basmati', 'sona masoori'],
     'basmati rice': ['rice', 'biyyam', 'basmati'],
     'sugar': ['sugar', 'chakkera', 'cheeni'],
@@ -101,7 +102,85 @@ ITEM_SYNONYM_MAP = {
     'pulses': ['toor dal', 'kandi pappu', 'dal', 'pulses', 'pappu'],
     'tea': ['tea', 'tea podi', 'red label'],
     'coffee': ['coffee', 'coffee podi', 'nescafe'],
+
+    # Auto Parts & Spares
+    'castrol engine oil': ['castrol', 'castrol activ', '4t 20w-40', 'engine oil'],
+    'motul engine oil': ['motul', 'motul 3000', '4t 10w-30', 'engine oil'],
+    'brake shoes': ['splendor brake shoes', 'brake shoes', 'hero splendor brake', 'brake shoe'],
+    'disc brake pads': ['pulsar front disc brake', 'disc brake pads', 'brake pads', 'disc pads'],
+    'amaron battery': ['amaron', 'amaron 12v', 'bike battery', 'battery'],
+    'mrf tyre': ['mrf', 'mrf 90/90-12', 'zapper', 'tubeless tyre', 'tyre'],
+    'spark plug': ['ngk spark plug', 'spark plug', 'ngk'],
+    'chain sprocket kit': ['rolon', 'chain sprocket', 'sprocket kit', 'chain kit'],
+    'clutch cable': ['pulsar clutch cable', 'clutch cable'],
+    'dual horn set': ['roots', 'roots 12v', 'dual horn', 'horn set', 'horn'],
+    'air filter': ['splendor air filter', 'air filter', 'hero air filter'],
+    'chain lube spray': ['kangaroo chain lube', 'chain lube spray', 'lube spray', 'chain lube'],
+
+    # Electronics & Mobiles
+    'samsung 5g smartphone': ['samsung galaxy a15', 'samsung galaxy', 'galaxy a15', 'samsung 5g', 'samsung'],
+    'redmi 5g smartphone': ['redmi 13c 5g', 'redmi 13c', 'redmi 5g', 'redmi'],
+    'boat earbuds': ['boat airdopes 141', 'boat airdopes', 'airdopes', 'boat earbuds', 'bluetooth earbuds', 'earbuds'],
+    'boat neckband': ['boat rockerz 255', 'boat rockerz', 'rockerz', 'boat neckband', 'neckband'],
+    '20w type-c charger': ['fast 20w type-c', '20w charger', 'type-c charger adapter', '20w type-c', 'charger'],
+    '33w fast charger': ['mi 33w soniccharge', '33w fast charger', '33w soniccharge', 'soniccharge'],
+    '10000mah power bank': ['10000mah dual usb', '10000mah power bank', '10000mah', 'power bank'],
+    '20000mah power bank': ['ambrane 20000mah', '20000mah fast power bank', '20000mah'],
+    'type-c cable': ['braided 1.5m type-c', 'type-c fast cable', 'type-c cable', 'braided cable', 'cable'],
+    'tempered glass': ['9d edge-to-edge', '9d tempered glass', 'tempered glass', 'screen guard'],
+    'sandisk 64gb microsd': ['sandisk 64gb ultra', 'sandisk 64gb', '64gb microsd', 'microsd card', 'memory card'],
+    'noise smart watch': ['noise colorfit pulse', 'noise colorfit', 'colorfit pulse', 'noise smart watch', 'smart watch'],
 }
+
+# Vertical-tailored seasonal & festival inventory surge rules
+VERTICAL_SEASONAL_RULES = {
+    'autoparts': [
+        # Navratri / Dussehra (Ayudha Pooja & Vahana Pooja vehicle servicing surge)
+        {'event': 'Navratri / Dussehra', 'item': 'Castrol Engine Oil', 'category': 'Lubricants', 'unit': 'bottle', 'multiplier': 2.2, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'Very High', 'note': 'Ayudha Pooja vehicle servicing rush. Massive demand for 4T engine oil.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Motul Engine Oil', 'category': 'Lubricants', 'unit': 'bottle', 'multiplier': 2.0, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Synthetic blend demand spike for holiday road trips.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Brake Shoes', 'category': 'Brakes', 'unit': 'pair', 'multiplier': 2.0, 'lead_time_days': 7, 'prep_days': 12, 'demand_level': 'High', 'note': 'Pre-festival bike servicing replacement.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Disc Brake Pads', 'category': 'Brakes', 'unit': 'pair', 'multiplier': 1.9, 'lead_time_days': 6, 'prep_days': 10, 'demand_level': 'High', 'note': 'Front disc brake inspection replacements.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Chain Sprocket Kit', 'category': 'Transmission', 'unit': 'kit', 'multiplier': 1.8, 'lead_time_days': 8, 'prep_days': 14, 'demand_level': 'High', 'note': 'Full transmission kit overhaul before pooja.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Spark Plug', 'category': 'Electrical', 'unit': 'piece', 'multiplier': 1.9, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'High', 'note': 'Tune-up replacements for holiday travel.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Air Filter', 'category': 'Filters', 'unit': 'piece', 'multiplier': 1.7, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'Moderate', 'note': 'Post-monsoon air filter replacement.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Chain Lube Spray', 'category': 'Lubricants', 'unit': 'can', 'multiplier': 2.5, 'lead_time_days': 3, 'prep_days': 7, 'demand_level': 'Very High', 'note': 'Festive bike cleaning & chain detailing.'},
+        # Diwali / Dhanteras (New vehicle deliveries & highway winter travel)
+        {'event': 'Diwali / Dhanteras', 'item': 'Castrol Engine Oil', 'category': 'Lubricants', 'unit': 'bottle', 'multiplier': 1.9, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Pre-Diwali highway travel bike maintenance.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Amaron Battery', 'category': 'Electrical', 'unit': 'unit', 'multiplier': 1.8, 'lead_time_days': 6, 'prep_days': 10, 'demand_level': 'High', 'note': 'Winter start and self-start battery upgrade surge.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'MRF Tyre', 'category': 'Tyres', 'unit': 'piece', 'multiplier': 1.7, 'lead_time_days': 7, 'prep_days': 12, 'demand_level': 'High', 'note': 'Long-distance festive travel tyre replacements.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Dual Horn Set', 'category': 'Electrical', 'unit': 'pair', 'multiplier': 1.6, 'lead_time_days': 5, 'prep_days': 8, 'demand_level': 'Moderate', 'note': 'Festive bike modification and styling.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Clutch Cable', 'category': 'Cables', 'unit': 'piece', 'multiplier': 1.6, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'Moderate', 'note': 'Routine control cable preventive replacement.'},
+        # Makar Sankranti / Pongal
+        {'event': 'Makar Sankranti / Pongal', 'item': 'Castrol Engine Oil', 'category': 'Lubricants', 'unit': 'bottle', 'multiplier': 1.7, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'Moderate', 'note': 'Village festival travel maintenance.'},
+        {'event': 'Makar Sankranti / Pongal', 'item': 'Brake Shoes', 'category': 'Brakes', 'unit': 'pair', 'multiplier': 1.5, 'lead_time_days': 6, 'prep_days': 10, 'demand_level': 'Moderate', 'note': 'Highway commute safety check.'},
+    ],
+    'electronics': [
+        # Diwali / Dhanteras (Annual peak electronics boom, gifting & bonuses)
+        {'event': 'Diwali / Dhanteras', 'item': 'Samsung 5G Smartphone', 'category': 'Smartphones', 'unit': 'piece', 'multiplier': 2.6, 'lead_time_days': 8, 'prep_days': 14, 'demand_level': 'Critical', 'note': 'Peak festive gifting, Dhanteras prosperity upgrades, and festive bonuses.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Redmi 5G Smartphone', 'category': 'Smartphones', 'unit': 'piece', 'multiplier': 2.5, 'lead_time_days': 8, 'prep_days': 14, 'demand_level': 'Critical', 'note': 'High-volume budget 5G phone demand during festive sales.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'boAt Earbuds', 'category': 'Audio', 'unit': 'piece', 'multiplier': 2.8, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'Very High', 'note': 'Highest velocity festive audio gift.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'boAt Neckband', 'category': 'Audio', 'unit': 'piece', 'multiplier': 2.3, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Affordable festival audio gift.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Noise Smart Watch', 'category': 'Wearables', 'unit': 'piece', 'multiplier': 2.7, 'lead_time_days': 6, 'prep_days': 12, 'demand_level': 'Very High', 'note': 'Massive Dhanteras/Diwali gifting trend.'},
+        {'event': 'Diwali / Dhanteras', 'item': '20W Type-C Charger', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 2.2, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'High', 'note': 'Essential bundle with new smartphone purchases.'},
+        {'event': 'Diwali / Dhanteras', 'item': '33W Fast Charger', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 2.0, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'High', 'note': 'Fast charger upgrade demand.'},
+        {'event': 'Diwali / Dhanteras', 'item': '10000mAh Power Bank', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 2.1, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Diwali holiday travel backup.'},
+        {'event': 'Diwali / Dhanteras', 'item': '20000mAh Power Bank', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 1.9, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Long journey charging companion.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Tempered Glass', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 2.5, 'lead_time_days': 3, 'prep_days': 7, 'demand_level': 'Very High', 'note': 'Applied with every newly purchased phone.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'Type-C Cable', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 2.1, 'lead_time_days': 3, 'prep_days': 7, 'demand_level': 'High', 'note': 'Add-on accessory at checkout.'},
+        {'event': 'Diwali / Dhanteras', 'item': 'SanDisk 64GB MicroSD', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 1.8, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'Moderate', 'note': 'Storage expansion for new cameras & phones.'},
+        # Navratri / Dussehra (Festive sales kickoff)
+        {'event': 'Navratri / Dussehra', 'item': 'Samsung 5G Smartphone', 'category': 'Smartphones', 'unit': 'piece', 'multiplier': 1.9, 'lead_time_days': 8, 'prep_days': 14, 'demand_level': 'High', 'note': 'Navratri festive offers and exchange discounts.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Redmi 5G Smartphone', 'category': 'Smartphones', 'unit': 'piece', 'multiplier': 1.8, 'lead_time_days': 8, 'prep_days': 14, 'demand_level': 'High', 'note': 'Affordable 5G upgrades during Dussehra.'},
+        {'event': 'Navratri / Dussehra', 'item': 'boAt Earbuds', 'category': 'Audio', 'unit': 'piece', 'multiplier': 2.1, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Youth festive music and audio purchases.'},
+        {'event': 'Navratri / Dussehra', 'item': 'Noise Smart Watch', 'category': 'Wearables', 'unit': 'piece', 'multiplier': 2.0, 'lead_time_days': 6, 'prep_days': 12, 'demand_level': 'High', 'note': 'Dussehra gift purchases.'},
+        {'event': 'Navratri / Dussehra', 'item': '20W Type-C Charger', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 1.8, 'lead_time_days': 4, 'prep_days': 8, 'demand_level': 'Moderate', 'note': 'Phone bundle sales.'},
+        # Christmas / New Year
+        {'event': 'Christmas / New Year', 'item': 'Noise Smart Watch', 'category': 'Wearables', 'unit': 'piece', 'multiplier': 2.3, 'lead_time_days': 6, 'prep_days': 12, 'demand_level': 'High', 'note': 'New Year fitness resolution gifting.'},
+        {'event': 'Christmas / New Year', 'item': 'boAt Earbuds', 'category': 'Audio', 'unit': 'piece', 'multiplier': 2.0, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'High', 'note': 'Holiday audio gifts.'},
+        {'event': 'Christmas / New Year', 'item': '10000mAh Power Bank', 'category': 'Accessories', 'unit': 'piece', 'multiplier': 1.8, 'lead_time_days': 5, 'prep_days': 10, 'demand_level': 'Moderate', 'note': 'Year-end holiday travel accessory.'},
+    ]
+}
+
 
 
 def load_festival_dataset(excel_path=None):
@@ -260,14 +339,30 @@ def analyze_festival_demand(shop_id, festival_name=None, window_days=15, referen
     selected_event_name = target_festival['event']
     days_left = target_festival['days_until']
 
-    # 2. Filter dataset rules for this event
-    event_rules = [r for r in dataset if r['event'].lower() == selected_event_name.lower()]
-    if not event_rules:
-        # Fallback partial match on event name
-        event_rules = [r for r in dataset if any(part.strip().lower() in r['event'].lower() for part in selected_event_name.split('/'))]
+    # 2. Filter dataset / vertical rules for this event
+    supabase = get_supabase()
+    shop_type = 'kirana'
+    try:
+        shop_res = supabase.table('shops').select('type').eq('id', shop_id).limit(1).execute()
+        if shop_res.data and len(shop_res.data) > 0:
+            shop_type = (shop_res.data[0].get('type') or 'kirana').lower()
+    except Exception as e:
+        logger.warning(f"Failed to fetch shop_type for shop {shop_id}: {e}")
+
+    if shop_type in VERTICAL_SEASONAL_RULES:
+        v_rules = VERTICAL_SEASONAL_RULES[shop_type]
+        event_rules = [r for r in v_rules if r['event'].lower() == selected_event_name.lower()]
+        if not event_rules:
+            event_rules = [r for r in v_rules if any(part.strip().lower() in r['event'].lower() for part in selected_event_name.split('/'))]
+        if not event_rules:
+            event_rules = v_rules[:6]
+    else:
+        event_rules = [r for r in dataset if r['event'].lower() == selected_event_name.lower()]
+        if not event_rules:
+            # Fallback partial match on event name
+            event_rules = [r for r in dataset if any(part.strip().lower() in r['event'].lower() for part in selected_event_name.split('/'))]
 
     # 3. Fetch live shop products and inventory
-    supabase = get_supabase()
     prods_res = supabase.table('products').select('*').eq('shop_id', shop_id).eq('is_active', True).execute()
     inv_res = supabase.table('inventory').select('*').eq('shop_id', shop_id).execute()
     suppliers_res = supabase.table('suppliers').select('*').eq('shop_id', shop_id).execute()

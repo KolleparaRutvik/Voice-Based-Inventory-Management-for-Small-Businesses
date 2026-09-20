@@ -484,20 +484,31 @@ def seed_database():
             'shop_type': 'autoparts',
             'address': 'Auto Nagar',
             'gst': '36IIIP1111K1Z7',
-            'categories': ['Engine Oils & Lubricants', 'Brake & Clutch Parts', 'Tyres & Tubes', 'Electrical & Bulbs', 'Cables & Filters'],
+            'categories': ['Engine Oils & Lubricants', 'Brake & Clutch Parts', 'Tyres & Tubes', 'Electrical & Batteries', 'Chains & Sprockets', 'Horns & Styling', 'Filters & Cables', 'Lubricants & Care'],
             'suppliers': [
                 ('bbbbbbbb-0000-0000-0000-000000000001', 'Castrol India Lubricants Stockist', '+91 98480bb001', 'orders@castrolhub.com', 'Auto Market, Secunderabad'),
+                ('bbbbbbbb-0000-0000-0000-000000000002', 'Hero & Bajaj Genuine Spares Agency', '+91 98480bb002', 'genuineparts@herobajaj.in', 'Ranigunj, Secunderabad'),
+                ('bbbbbbbb-0000-0000-0000-000000000003', 'Amaron Batteries & MRF Tyres Hub', '+91 98480bb003', 'sales@tyrebatteryhub.com', 'Warangal Bypass Road'),
+                ('bbbbbbbb-0000-0000-0000-000000000004', 'Rolon Chains & NGK Electricals Depo', '+91 98480bb004', 'supply@rolonngk.in', 'Auto Nagar, Hyderabad')
             ],
             'customers': [
                 ('bbbbbbbb-1111-0000-0000-000000000001', 'Prasad Mechanic (Auto Garage Tab)', '+91 98480bb111', 12500.0, 'Engine oil cartons & brake parts'),
+                ('bbbbbbbb-1111-0000-0000-000000000002', 'Ramesh Garage (Pulsar & Splendor Specialist)', '+91 98480bb222', 8200.0, 'Chain sprocket kits and disc pads monthly tab'),
+                ('bbbbbbbb-1111-0000-0000-000000000003', 'Suresh (Fleet Delivery Bike Account)', '+91 98480bb333', 3400.0, 'Engine oil and clutch cable replacement')
             ],
             'products': [
                 ('bbbbbbbb-2222-0000-0000-000000000001', 'Castrol Activ 4T 20W-40 1L (ఇంజన్ ఆయిల్)', 'Engine Oil', 'Engine Oils & Lubricants', 'bottle', 'box', 'bottle', 12.0, 4200.0, 420.0, 12.0, 70.0, 24.0, 45.0),
-                ('bbbbbbbb-2222-0000-0000-000000000002', 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'Brake Shoes', 'Brake & Clutch Parts', 'set', 'box', 'set', 10.0, 1800.0, 240.0, 8.0, 50.0, 20.0, 30.0),
-                ('bbbbbbbb-2222-0000-0000-000000000003', 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'Bike Battery', 'Electrical & Bulbs', 'unit', 'unit', 'unit', 1.0, 1180.0, 1450.0, 3.0, 20.0, 6.0, 12.0),
-                ('bbbbbbbb-2222-0000-0000-000000000004', 'MRF Nylogrip Tyre 2.75-18 (ఎంఆర్ఎఫ్ టైరు)', 'MRF Tyre', 'Tyres & Tubes', 'piece', 'piece', 'piece', 1.0, 1380.0, 1650.0, 4.0, 25.0, 8.0, 16.0),
-                ('bbbbbbbb-2222-0000-0000-000000000005', 'Clutch Cable for Bajaj Pulsar (క్లచ్ కేబుల్)', 'Clutch Cable', 'Cables & Filters', 'piece', 'bundle', 'piece', 10.0, 850.0, 130.0, 6.0, 40.0, 15.0, 25.0),
-                ('bbbbbbbb-2222-0000-0000-000000000006', 'Spark Plug NGK 2-Wheeler (స్పార్క్ ప్లగ్)', 'Spark Plug', 'Electrical & Bulbs', 'piece', 'box', 'piece', 10.0, 650.0, 95.0, 15.0, 100.0, 30.0, 60.0),
+                ('bbbbbbbb-2222-0000-0000-000000000002', 'Motul 3000 4T 10W-30 1L (మోతుల్ ఇంజన్ ఆయిల్)', 'Motul Engine Oil', 'Engine Oils & Lubricants', 'bottle', 'box', 'bottle', 12.0, 4400.0, 450.0, 10.0, 50.0, 20.0, 32.0),
+                ('bbbbbbbb-2222-0000-0000-000000000003', 'Hero Splendor Brake Shoes (బ్రేక్ షూస్)', 'Brake Shoes', 'Brake & Clutch Parts', 'pair', 'box', 'pair', 10.0, 1800.0, 240.0, 8.0, 50.0, 20.0, 30.0),
+                ('bbbbbbbb-2222-0000-0000-000000000004', 'Bajaj Pulsar Front Disc Brake Pads (డిస్క్ ప్యాడ్లు)', 'Disc Brake Pads', 'Brake & Clutch Parts', 'pair', 'box', 'pair', 10.0, 2200.0, 290.0, 6.0, 40.0, 15.0, 22.0),
+                ('bbbbbbbb-2222-0000-0000-000000000005', 'Amaron 12V Bike Battery 4Ah (బైక్ బ్యాటరీ)', 'Bike Battery', 'Electrical & Batteries', 'unit', 'unit', 'unit', 1.0, 1180.0, 1450.0, 3.0, 20.0, 6.0, 12.0),
+                ('bbbbbbbb-2222-0000-0000-000000000006', 'MRF 90/90-12 Zapper Tubeless Tyre (ఎంఆర్ఎఫ్ టైరు)', 'MRF Tyre', 'Tyres & Tubes', 'piece', 'piece', 'piece', 1.0, 1380.0, 1650.0, 4.0, 25.0, 8.0, 16.0),
+                ('bbbbbbbb-2222-0000-0000-000000000007', 'NGK Spark Plug 2-Wheeler (స్పార్క్ ప్లగ్)', 'Spark Plug', 'Electrical & Batteries', 'piece', 'box', 'piece', 10.0, 650.0, 95.0, 15.0, 100.0, 30.0, 60.0),
+                ('bbbbbbbb-2222-0000-0000-000000000008', 'Rolon Chain Sprocket Kit Pulsar (రోలాన్ చైన్ కిట్)', 'Chain Sprocket', 'Chains & Sprockets', 'kit', 'box', 'kit', 5.0, 4200.0, 1150.0, 3.0, 20.0, 6.0, 10.0),
+                ('bbbbbbbb-2222-0000-0000-000000000009', 'Bajaj Pulsar Clutch Cable (క్లచ్ కేబుల్)', 'Clutch Cable', 'Filters & Cables', 'piece', 'bundle', 'piece', 10.0, 850.0, 130.0, 6.0, 40.0, 15.0, 25.0),
+                ('bbbbbbbb-2222-0000-0000-000000000010', 'Roots 12V Dual Horn Set (రూట్స్ హార్న్ సెట్)', 'Roots Horn', 'Horns & Styling', 'pair', 'box', 'pair', 5.0, 2400.0, 650.0, 4.0, 25.0, 8.0, 14.0),
+                ('bbbbbbbb-2222-0000-0000-000000000011', 'Hero Splendor Air Filter (ఎయిర్ ఫిల్టర్)', 'Air Filter', 'Filters & Cables', 'piece', 'box', 'piece', 10.0, 950.0, 140.0, 8.0, 45.0, 15.0, 28.0),
+                ('bbbbbbbb-2222-0000-0000-000000000012', 'Kangaroo Chain Lube Spray 500ml (చైన్ లూబ్ స్ప్రే)', 'Chain Lube', 'Lubricants & Care', 'can', 'box', 'can', 6.0, 1100.0, 250.0, 5.0, 30.0, 12.0, 18.0),
             ]
         },
         {
@@ -538,20 +549,31 @@ def seed_database():
             'shop_type': 'electronics',
             'address': 'Complex Road',
             'gst': '36KKKP3333M1Z9',
-            'categories': ['Smartphones', 'Fast Chargers & Adapters', 'Bluetooth Audio', 'Screen Guards & Covers', 'Powerbanks & Cables'],
+            'categories': ['Smartphones', 'Fast Chargers & Adapters', 'Bluetooth Audio & Sound', 'Powerbanks & Cables', 'Screen Guards & Covers', 'Storage & Memory', 'Smartwatches & Gadgets'],
             'suppliers': [
-                ('dddddddd-0000-0000-0000-000000000001', 'Redington India Mobile Wholesale', '+91 98480dd001', 'redington@mobilehub.com', 'Electronics Plaza, Hyderabad'),
+                ('dddddddd-0000-0000-0000-000000000001', 'Redmi & Xiaomi National Distributor', '+91 9876554001', 'xiaomidist@mobilehub.com', 'Electronics Plaza, Hyderabad'),
+                ('dddddddd-0000-0000-0000-000000000002', 'boAt Audio Official Distributorship', '+91 98480dd002', 'boatdist@audio.in', 'Warangal'),
+                ('dddddddd-0000-0000-0000-000000000003', 'Samsung Mobile Regional Wholesale', '+91 98480dd001', 'samsung@wholesalehub.com', 'Secunderabad'),
+                ('dddddddd-0000-0000-0000-000000000004', 'SanDisk & Portronics Gadgets Agency', '+91 98480dd003', 'orders@gadgetagency.in', 'Koti, Hyderabad')
             ],
             'customers': [
-                ('dddddddd-1111-0000-0000-000000000001', 'Naresh (Phone EMI / Udhar Account)', '+91 98480dd111', 9500.0, 'Samsung Galaxy balance installment'),
+                ('dddddddd-1111-0000-0000-000000000001', 'Kalyan (Engineering Student Tab)', '+91 98480dd111', 1500.0, 'Fast charger and earbuds balance'),
+                ('dddddddd-1111-0000-0000-000000000002', 'Naresh (Samsung Phone EMI Account)', '+91 98480dd222', 9500.0, 'Samsung Galaxy balance installment'),
+                ('dddddddd-1111-0000-0000-000000000003', 'Suresh (Display & Tempered Glass Udhar)', '+91 98480dd333', 2800.0, 'Screen replacement & 11D tempered glass')
             ],
             'products': [
                 ('dddddddd-2222-0000-0000-000000000001', 'Samsung Galaxy A15 5G 128GB (శాంసంగ్ మొబైల్)', 'Samsung Mobile', 'Smartphones', 'unit', 'unit', 'unit', 1.0, 13200.0, 14999.0, 2.0, 12.0, 4.0, 8.0),
-                ('dddddddd-2222-0000-0000-000000000002', 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'boAt Earbuds', 'Bluetooth Audio', 'unit', 'box', 'unit', 10.0, 8900.0, 1199.0, 5.0, 35.0, 10.0, 22.0),
-                ('dddddddd-2222-0000-0000-000000000003', 'Fast 20W Type-C Charger Adapter (టైప్-సి ఛార్జర్)', 'Fast Charger', 'Fast Chargers & Adapters', 'unit', 'box', 'unit', 10.0, 3200.0, 499.0, 10.0, 60.0, 20.0, 40.0),
-                ('dddddddd-2222-0000-0000-000000000004', '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'Power Bank', 'Powerbanks & Cables', 'unit', 'box', 'unit', 5.0, 3800.0, 999.0, 3.0, 25.0, 10.0, 15.0),
-                ('dddddddd-2222-0000-0000-000000000005', 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'Type-C Cable', 'Powerbanks & Cables', 'piece', 'bundle', 'piece', 20.0, 2200.0, 199.0, 15.0, 100.0, 30.0, 65.0),
-                ('dddddddd-2222-0000-0000-000000000006', '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'Screen Guard', 'Screen Guards & Covers', 'piece', 'box', 'piece', 25.0, 1250.0, 150.0, 20.0, 150.0, 50.0, 90.0),
+                ('dddddddd-2222-0000-0000-000000000002', 'Redmi 13C 5G 128GB (రెడ్‌మి 5G మొబైల్)', 'Redmi Mobile', 'Smartphones', 'unit', 'unit', 'unit', 1.0, 9800.0, 11499.0, 2.0, 15.0, 5.0, 9.0),
+                ('dddddddd-2222-0000-0000-000000000003', 'boAt Airdopes 141 Bluetooth Earbuds (ఇయర్ బడ్స్)', 'boAt Earbuds', 'Bluetooth Audio & Sound', 'unit', 'box', 'unit', 10.0, 8900.0, 1199.0, 5.0, 35.0, 10.0, 22.0),
+                ('dddddddd-2222-0000-0000-000000000004', 'boAt Rockerz 255 Pro+ Neckband (బ్లూటూత్ నెక్‌బ్యాండ్)', 'boAt Neckband', 'Bluetooth Audio & Sound', 'unit', 'box', 'unit', 10.0, 7800.0, 1099.0, 4.0, 25.0, 8.0, 16.0),
+                ('dddddddd-2222-0000-0000-000000000005', 'Fast 20W Type-C Charger Adapter (టైప్-సి ఛార్జర్)', 'Fast Charger', 'Fast Chargers & Adapters', 'unit', 'box', 'unit', 10.0, 3200.0, 499.0, 10.0, 60.0, 20.0, 40.0),
+                ('dddddddd-2222-0000-0000-000000000006', 'SuperVOOC 33W Fast Charger with Cable (33W ఫాస్ట్ ఛార్జర్)', '33W Charger', 'Fast Chargers & Adapters', 'unit', 'box', 'unit', 10.0, 5200.0, 799.0, 5.0, 30.0, 10.0, 18.0),
+                ('dddddddd-2222-0000-0000-000000000007', '10000mAh Dual USB Power Bank (పవర్ బ్యాంక్)', 'Power Bank', 'Powerbanks & Cables', 'unit', 'box', 'unit', 5.0, 3800.0, 999.0, 3.0, 25.0, 10.0, 15.0),
+                ('dddddddd-2222-0000-0000-000000000008', '20000mAh 22.5W Fast Power Bank (20000mAh పవర్ బ్యాంక్)', '20000mAh Power Bank', 'Powerbanks & Cables', 'unit', 'box', 'unit', 5.0, 6200.0, 1699.0, 2.0, 15.0, 5.0, 8.0),
+                ('dddddddd-2222-0000-0000-000000000009', 'Braided 1.5m Type-C Fast Cable (యూఎస్బీ కేబుల్)', 'Type-C Cable', 'Powerbanks & Cables', 'piece', 'bundle', 'piece', 20.0, 2200.0, 199.0, 15.0, 100.0, 30.0, 65.0),
+                ('dddddddd-2222-0000-0000-000000000010', '9D Edge-to-Edge Tempered Glass (స్క్రీన్ గార్డ్)', 'Screen Guard', 'Screen Guards & Covers', 'piece', 'box', 'piece', 25.0, 1250.0, 150.0, 20.0, 150.0, 50.0, 90.0),
+                ('dddddddd-2222-0000-0000-000000000011', 'SanDisk 64GB Ultra MicroSD Card (మెమరీ కార్డు)', 'Memory Card', 'Storage & Memory', 'piece', 'pack', 'piece', 10.0, 3600.0, 499.0, 5.0, 30.0, 10.0, 18.0),
+                ('dddddddd-2222-0000-0000-000000000012', 'Noise ColorFit Pulse Smart Watch (స్మార్ట్ వాచ్)', 'Smart Watch', 'Smartwatches & Gadgets', 'piece', 'box', 'piece', 5.0, 6500.0, 1799.0, 3.0, 15.0, 5.0, 8.0),
             ]
         }
     ]
